@@ -61,7 +61,7 @@ export default async function Home() {
 
       {/* Hero Welcome Section */}
       <div className="mb-16 text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-merriweather font-black tracking-tight text-foreground mb-6">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-merriweather font-black tracking-tight text-foreground mb-4">
           Eventyret starter her
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-8">
