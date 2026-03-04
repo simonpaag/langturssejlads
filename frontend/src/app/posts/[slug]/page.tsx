@@ -44,63 +44,42 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         );
     }
 
+    const displayImage = post.imageUrl || 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop';
+
     return (
         <article className="min-h-screen bg-background pb-24">
 
             {/* Hero Image Section (if present) or Typographic Header */}
-            {post.imageUrl ? (
-                <div className="relative w-full h-[60vh] min-h-[500px] mb-12 lg:mb-20 overflow-hidden border-b border-border/40">
-                    <img
-                        src={post.imageUrl}
-                        alt="Hero Billede"
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+            <div className="relative w-full h-[60vh] min-h-[500px] mb-12 lg:mb-20 overflow-hidden border-b border-border/40">
+                <img
+                    src={displayImage}
+                    alt="Hero Billede"
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
 
-                    <div className="absolute bottom-0 left-0 w-full">
-                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16 text-center md:text-left">
-                            <div className="inline-flex items-center justify-center md:justify-start gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary drop-shadow-sm">
-                                <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-2 items-center">
-                                    {post.boat.name}
-                                </Link>
-                                <span className="text-muted-foreground">&bull;</span>
-                                <time dateTime={post.createdAt} className="text-muted-foreground/80">
-                                    {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
-                                </time>
-                            </div>
+                <div className="absolute bottom-0 left-0 w-full">
+                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16 text-center md:text-left">
+                        <div className="inline-flex items-center justify-center md:justify-start gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary drop-shadow-sm">
+                            <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-2 items-center">
+                                {post.boat.name}
+                            </Link>
+                            <span className="text-muted-foreground">&bull;</span>
+                            <time dateTime={post.createdAt} className="text-muted-foreground/80">
+                                {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
+                            </time>
+                        </div>
 
-                            <h1 className="text-4xl md:text-5xl lg:text-7xl font-merriweather font-black text-foreground drop-shadow-md leading-tight mb-8">
-                                {post.title || (post.postType === 'PHOTO' ? 'Billedopdatering' : 'Logbogsopdatering')}
-                            </h1>
+                        <h1 className="text-4xl md:text-5xl lg:text-7xl font-merriweather font-black text-foreground drop-shadow-md leading-tight mb-8">
+                            {post.title || (post.postType === 'PHOTO' ? 'Billedopdatering' : 'Logbogsopdatering')}
+                        </h1>
 
-                            <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider backdrop-blur-sm p-3 inline-flex rounded-2xl bg-muted/10">
-                                <span className="text-foreground">Af {post.author.name}</span>
-                            </div>
+                        <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider backdrop-blur-sm p-3 inline-flex rounded-2xl bg-muted/10">
+                            <span className="text-foreground">Af {post.author.name}</span>
                         </div>
                     </div>
                 </div>
-            ) : (
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center border-b border-border/50 mb-12">
-                    <div className="inline-flex items-center justify-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary">
-                        <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4">
-                            {post.boat.name}
-                        </Link>
-                        <span className="text-muted-foreground">&bull;</span>
-                        <time dateTime={post.createdAt} className="text-muted-foreground">
-                            {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
-                        </time>
-                    </div>
-
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-merriweather font-black text-foreground leading-[1.1] mb-8">
-                        {post.title || 'Logbogsopdatering'}
-                    </h1>
-
-                    <div className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                        <span>Skrevet af</span>
-                        <span className="text-foreground">{post.author.name}</span>
-                    </div>
-                </div>
-            )}
+            </div>
 
             {/* Reading Container */}
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
