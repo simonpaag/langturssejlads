@@ -178,7 +178,7 @@ export default function Dashboard() {
     return (
         <div className="flex min-h-[calc(100vh-4rem)] bg-muted/30">
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-border flex flex-col hidden md:flex">
+            <aside className="w-64 bg-card border-r border-border flex flex-col hidden md:flex">
                 <div className="p-6 border-b border-border">
                     <h2 className="font-bold text-lg mb-1">Kaptajnens Kahyt</h2>
                     <p className="text-sm text-muted-foreground">{currentBoat?.name || 'Ingen båd'}</p>
@@ -232,8 +232,8 @@ export default function Dashboard() {
             <main className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="max-w-3xl mx-auto">
                     {activeTab === 'write' ? (
-                        <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
-                            <div className="p-6 border-b border-border bg-slate-50">
+                        <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                            <div className="p-6 border-b border-border bg-muted/30">
                                 <h1 className="text-2xl font-bold font-merriweather">Offentliggør på Logbogen</h1>
                                 <p className="text-muted-foreground mt-1">Hvad har {currentBoat?.name || 'I'} oplevet for nylig?</p>
                             </div>
@@ -273,7 +273,7 @@ export default function Dashboard() {
                                             value={title}
                                             onChange={(e) => setTitle(e.target.value)}
                                             placeholder="F.eks. Stormvejr i Biscayen..."
-                                            className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-medium placeholder:font-normal"
+                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-medium placeholder:font-normal"
                                             required
                                         />
                                     </div>
@@ -288,7 +288,7 @@ export default function Dashboard() {
                                             value={imageUrl}
                                             onChange={(e) => setImageUrl(e.target.value)}
                                             placeholder="Indsæt et link til dit billede..."
-                                            className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                                             required={postType === 'PHOTO'}
                                         />
                                     </div>
@@ -303,7 +303,7 @@ export default function Dashboard() {
                                             value={youtubeUrl}
                                             onChange={(e) => setYoutubeUrl(e.target.value)}
                                             placeholder="F.eks. https://www.youtube.com/embed/jfKfPfyJRdk"
-                                            className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                                             required
                                         />
                                     </div>
@@ -317,7 +317,7 @@ export default function Dashboard() {
                                         onChange={(e) => setContent(e.target.value)}
                                         placeholder={postType === 'QUICK_TEXT' ? "Hvad sker der lige nu?" : "Beskriv oplevelsen..."}
                                         rows={postType === 'ARTICLE' ? 14 : 4}
-                                        className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed"
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed"
                                         required
                                     />
                                 </div>
@@ -330,8 +330,8 @@ export default function Dashboard() {
                             </form>
                         </div>
                     ) : activeTab === 'voyages' ? (
-                        <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
-                            <div className="p-6 border-b border-border bg-slate-50">
+                        <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                            <div className="p-6 border-b border-border bg-muted/30">
                                 <h1 className="text-2xl font-bold font-merriweather">Planlæg Nyt Togt</h1>
                                 <p className="text-muted-foreground mt-1">Hvor går rejsen hen, og hvem skal med?</p>
                             </div>
@@ -339,7 +339,7 @@ export default function Dashboard() {
                                 {/* Title */}
                                 <div>
                                     <label htmlFor="voyageTitle" className="block text-sm font-semibold mb-2">Togtets Navn</label>
-                                    <input type="text" id="voyageTitle" value={voyageTitle} onChange={(e) => setVoyageTitle(e.target.value)} placeholder="F.eks. Vær med på rejsen fra Sydney til Thailand..." className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-medium" required />
+                                    <input type="text" id="voyageTitle" value={voyageTitle} onChange={(e) => setVoyageTitle(e.target.value)} placeholder="F.eks. Vær med på rejsen fra Sydney til Thailand..." className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-medium" required />
                                 </div>
                                 {/* From / To */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -347,14 +347,14 @@ export default function Dashboard() {
                                         <label htmlFor="voyageFrom" className="block text-sm font-semibold mb-2">Fra Lokation</label>
                                         <div className="relative">
                                             <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
-                                            <input type="text" id="voyageFrom" value={voyageFrom} onChange={(e) => setVoyageFrom(e.target.value)} placeholder="F.eks. Darling Harbour" className="w-full pl-10 pr-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
+                                            <input type="text" id="voyageFrom" value={voyageFrom} onChange={(e) => setVoyageFrom(e.target.value)} placeholder="F.eks. Darling Harbour" className="w-full pl-10 pr-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
                                         </div>
                                     </div>
                                     <div>
                                         <label htmlFor="voyageTo" className="block text-sm font-semibold mb-2">Til Lokation</label>
                                         <div className="relative">
                                             <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
-                                            <input type="text" id="voyageTo" value={voyageTo} onChange={(e) => setVoyageTo(e.target.value)} placeholder="F.eks. Kings Port Phuket" className="w-full pl-10 pr-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
+                                            <input type="text" id="voyageTo" value={voyageTo} onChange={(e) => setVoyageTo(e.target.value)} placeholder="F.eks. Kings Port Phuket" className="w-full pl-10 pr-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
                                         </div>
                                     </div>
                                 </div>
@@ -362,22 +362,22 @@ export default function Dashboard() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label htmlFor="voyageStart" className="block text-sm font-semibold mb-2">Start Dato</label>
-                                        <input type="date" id="voyageStart" value={voyageStart} onChange={(e) => setVoyageStart(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
+                                        <input type="date" id="voyageStart" value={voyageStart} onChange={(e) => setVoyageStart(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
                                     </div>
                                     <div>
                                         <label htmlFor="voyageEnd" className="block text-sm font-semibold mb-2">Slut Dato (Valgfri)</label>
-                                        <input type="date" id="voyageEnd" value={voyageEnd} onChange={(e) => setVoyageEnd(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        <input type="date" id="voyageEnd" value={voyageEnd} onChange={(e) => setVoyageEnd(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
                                     </div>
                                 </div>
                                 {/* Image */}
                                 <div>
                                     <label htmlFor="voyageImage" className="block text-sm font-semibold mb-2">Kort / Coverbillede (URL - Valgfrit)</label>
-                                    <input type="url" id="voyageImage" value={voyageImage} onChange={(e) => setVoyageImage(e.target.value)} placeholder="Indsæt link til billede af et kort eller ruten..." className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                    <input type="url" id="voyageImage" value={voyageImage} onChange={(e) => setVoyageImage(e.target.value)} placeholder="Indsæt link til billede af et kort eller ruten..." className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
                                 </div>
                                 {/* Description */}
                                 <div>
                                     <label htmlFor="voyageDescription" className="block text-sm font-semibold mb-2">Beskiv ruten (F.eks: Vær med på togtet til Thailand...)</label>
-                                    <textarea id="voyageDescription" value={voyageDescription} onChange={(e) => setVoyageDescription(e.target.value)} placeholder="Beskriv turen, og fremhæv hvem der sejler med..." rows={5} className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed" required />
+                                    <textarea id="voyageDescription" value={voyageDescription} onChange={(e) => setVoyageDescription(e.target.value)} placeholder="Beskriv turen, og fremhæv hvem der sejler med..." rows={5} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed" required />
                                 </div>
                                 <div className="flex justify-end pt-4 border-t border-border mt-2">
                                     <button type="submit" disabled={isSubmittingVoyage} className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50">
@@ -387,14 +387,14 @@ export default function Dashboard() {
                             </form>
 
                             {/* List of active voyages */}
-                            <div className="p-6 border-t border-border bg-slate-50">
+                            <div className="p-6 border-t border-border bg-muted/30">
                                 <h3 className="text-lg font-bold mb-4 font-merriweather">Aktuelle & Tidligere Togter</h3>
                                 {voyages.length === 0 ? (
                                     <p className="text-muted-foreground text-sm">Der er ingen togter endnu.</p>
                                 ) : (
                                     <div className="space-y-4">
                                         {voyages.map((v) => (
-                                            <div key={v.id} className="bg-white border md:flex-row flex-col flex border-border rounded-xl p-4 gap-4 items-center justify-between shadow-sm">
+                                            <div key={v.id} className="bg-card border md:flex-row flex-col flex border-border rounded-xl p-4 gap-4 items-center justify-between shadow-sm">
                                                 <div>
                                                     <h4 className="font-bold">{v.title}</h4>
                                                     <p className="text-sm text-foreground my-1">{v.fromLocation} &rarr; {v.toLocation}</p>
@@ -413,7 +413,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden p-8 text-center">
+                        <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden p-8 text-center">
                             <Ship className="h-16 w-16 text-primary/30 mx-auto mb-4" />
                             <h2 className="text-xl font-bold mb-2">Båd Profil Indstillinger</h2>
                             <p className="text-muted-foreground mb-6">Her kan du redigere {currentBoat?.name}'s profilbillede, beskrivelse og administrere mandskabet.</p>
