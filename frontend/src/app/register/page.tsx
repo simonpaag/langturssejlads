@@ -95,6 +95,14 @@ export default function RegisterPage() {
                         Har du allerede en konto? <Link href="/login" className="text-primary hover:underline font-semibold">Log ind her</Link>
                     </p>
                 </form>
+
+                <div className="mt-8 pt-6 border-t border-border/60 text-center px-4">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                        Langturssejlads.dk er et non-profit projekt, der er 100% drevet af frivillige kræfter, og baseret på en stærk passion for sejlerfællesskabet.
+                        <br />
+                        <Link href="/om" className="text-primary hover:text-primary/80 transition-colors font-bold mt-1 inline-block">Læs mere om projektet her</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );
