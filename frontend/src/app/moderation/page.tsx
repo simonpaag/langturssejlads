@@ -30,7 +30,7 @@ export default function ModerationPage() {
                 {/* Intro */}
                 <section className="prose prose-lg dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-medium">
                     <p className="text-2xl font-merriweather !leading-snug text-foreground mb-8 text-balance">
-                        Llangturssejlads.dk er bygget af hjertet for at skabe et positivt, lærerigt og eventyrligt digitalt fællesskab for danske sejlere verden over. For at bevare den gode stemning har vi nogle ufravigelige regler for det indhold, der deles.
+                        Langturssejlads.dk er bygget af hjertet for at skabe et positivt, lærerigt og eventyrligt digitalt fællesskab for danske sejlere verden over. For at bevare den gode stemning har vi nogle ufravigelige regler for det indhold, der deles.
                     </p>
                     <p>
                         Vi betragter os alle som besætningsmedlemmer på det samme skib, og der er nultolerance over for en rådden tone. Vores administration forbeholder sig – til enhver tid gældende – den fulde, ubestridte og omgående ret til at fjerne alt indhold, enhver profil eller ethvert fartøj, der bevidst eller ubevidst overtræder nedenstående retningslinjer, <strong>uden forudgående varsel</strong>.
@@ -93,7 +93,7 @@ export default function ModerationPage() {
                         <ul>
                             <li>Vi forbeholder os retten til at fjerne, afpublicere (unpublish), nedtone, eller permanent slette <strong>ethvert stykke information, indlæg eller billede</strong> på platformen, som – efter platformens egen ensidige fortolkning – virker anstødeligt, misvisende, skadeligt eller blot ukorrekt ift. formålet med hjemmesiden.</li>
                             <li>Brugere eller fartøjer, der bryder retningslinjerne, medfører <strong>øjeblikkelig suspendering og sletning</strong> af hele kontoen samt al tilhørende data – uden advarsel, begrundelseskrav eller formel høringsret. Vi lytter naturligvis, men platformens beslutninger betragtes som endelige.</li>
-                            <li>Llangturssejlads.dk fraskriver sig ethvert objektivt ansvar for krav indsendt på baggrund af tabt kildedata som følge af en modereringssletning. Upload derfor altid indhold hertil ud fra princippet om, at du har gemt dine vigtigste rejsefortællinger i et lokalt backup andetsteds.</li>
+                            <li>Langturssejlads.dk fraskriver sig ethvert objektivt ansvar for krav indsendt på baggrund af tabt kildedata som følge af en modereringssletning. Upload derfor altid indhold hertil ud fra princippet om, at du har gemt dine vigtigste rejsefortællinger i et lokalt backup andetsteds.</li>
                         </ul>
                     </div>
                 </section>

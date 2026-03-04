@@ -70,7 +70,7 @@ export default async function Home() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
-            href="https://www.facebook.com/groups/Llangturssejlads/"
+            href="https://www.facebook.com/groups/Langturssejlads/"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-6 py-2.5 text-sm bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2"
