@@ -49,10 +49,11 @@ export const getBoats = async (req: AuthRequest, res: Response): Promise<void> =
                 crewMemberships: {
                     include: {
                         user: {
-                            select: { id: true, name: true, email: true }
+                            select: { id: true, name: true, email: true, profileImage: true }
                         }
                     }
-                }
+                },
+                voyages: true
             }
         });
         res.json(boats);
@@ -70,10 +71,11 @@ export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<vo
                 crewMemberships: {
                     include: {
                         user: {
-                            select: { id: true, name: true, email: true }
+                            select: { id: true, name: true, email: true, profileImage: true }
                         }
                     }
-                }
+                },
+                voyages: true
             }
         });
 
