@@ -16,6 +16,7 @@ model User {
   name           String
   profileImage   String?
   isSystemAdmin  Boolean   @default(false)
+  interests      String[]
   
   crewMemberships CrewMember[]
   posts           Post[]

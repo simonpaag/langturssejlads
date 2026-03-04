@@ -30,7 +30,18 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             },
         });
 
-        res.status(201).json({ message: 'User created successfully', user: { id: newUser.id, name: newUser.name, email: newUser.email } });
+        // Generate JWT for auto-login
+        const token = jwt.sign(
+            { userId: newUser.id, isSystemAdmin: newUser.isSystemAdmin },
+            JWT_SECRET,
+            { expiresIn: '30d' }
+        );
+
+        res.status(201).json({
+            message: 'User created successfully',
+            token,
+            user: { id: newUser.id, name: newUser.name, email: newUser.email }
+        });
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -99,6 +110,36 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
         res.json({ user: userWithoutPassword });
     } catch (error) {
         console.error('Get me error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const updateInterests = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { interests } = req.body;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        if (!Array.isArray(interests)) {
+            res.status(400).json({ error: 'Interests must be an array of strings' });
+            return;
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: { interests },
+        });
+
+        res.status(200).json({
+            message: 'Interests updated successfully',
+            interests: updatedUser.interests
+        });
+    } catch (error) {
+        console.error('Update interests error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };

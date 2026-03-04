@@ -29,9 +29,15 @@ export default function RegisterPage() {
 
             if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-            // Optionally auto-login, or just redirect to login
-            alert('Konto oprettet succesfuldt! Log ind nu.');
-            router.push('/login');
+            // Auto-login med den nye token
+            if (data.token) {
+                localStorage.setItem('user_token', data.token);
+                // Trig menuen til at opdatere sig
+                window.dispatchEvent(new Event('userStateChange'));
+                router.push('/velkommen');
+            } else {
+                router.push('/login');
+            }
         } catch (err: any) {
             setError(err.message);
         } finally {
