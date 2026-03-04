@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { format } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
 import { da } from 'date-fns/locale';
-import { MapPin, CalendarDays, Ship, Anchor, Users, Compass } from 'lucide-react';
+import { MapPin, Navigation, CalendarDays, Users, Anchor, CheckCircle2, Navigation2, FileText, UserCircle2, Settings2, ShieldAlert, Ship, Compass } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -174,6 +174,14 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
                         </div>
 
                     </div>
+                </div>
+
+                {/* Moderation Link for the entire Voyage Page */}
+                <div className="mt-16 flex justify-center border-t border-border/40 pt-10">
+                    <Link href="/moderation" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100" title="Rapportér anstødeligt indhold">
+                        <ShieldAlert className="w-4 h-4" />
+                        Rapportér Indhold
+                    </Link>
                 </div>
             </main>
 

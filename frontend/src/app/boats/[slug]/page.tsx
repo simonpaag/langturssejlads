@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
-import { Anchor, Compass, UserCircle2 } from 'lucide-react';
+import { Anchor, Compass, UserCircle2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 
 export interface Post {
@@ -249,6 +249,14 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                                 </Link>
                                             </div>
                                         )}
+                                    </div>
+
+                                    {/* Moderation Link */}
+                                    <div className="bg-muted/10 px-6 py-3 border-t border-border/30 flex justify-end">
+                                        <Link href="/moderation" className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100">
+                                            <ShieldAlert className="w-3.5 h-3.5" />
+                                            Rapportér Indhold
+                                        </Link>
                                     </div>
                                     <div className="px-6 py-3 bg-muted/30 border-t border-border/50 text-xs font-bold uppercase tracking-widest text-muted-foreground/50 text-right">
                                         {post.postType}

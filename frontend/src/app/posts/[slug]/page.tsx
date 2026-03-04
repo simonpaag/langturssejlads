@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 import Link from 'next/link';
+import { CalendarDays, Navigation, MapPin, UserCircle2, ArrowLeft, ShieldAlert } from 'lucide-react';
 
 interface Post {
     id: number;
@@ -111,9 +112,15 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     <Link href={`/boats/${post.boat.slug}`} className="hover:text-foreground transition-colors border border-border/50 bg-muted/30 px-6 py-3 rounded-full hover:bg-muted/50">
                         &larr; Flere beretninger fra {post.boat.name}
                     </Link>
-                    <Link href="/" className="hover:text-foreground transition-colors px-6 py-3">
-                        Gå til forsiden
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-center gap-6">
+                        <Link href="/moderation" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100" title="Rapportér anstødeligt indhold">
+                            <ShieldAlert className="w-4 h-4" />
+                            Rapportér Indhold
+                        </Link>
+                        <Link href="/" className="hover:text-foreground transition-colors px-6 py-3">
+                            Gå til forsiden
+                        </Link>
+                    </div>
                 </div>
             </div>
 
