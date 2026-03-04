@@ -18,7 +18,7 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -50,7 +50,7 @@ export default function RegisterPage() {
             <div className="bg-card text-card-foreground p-8 rounded-2xl shadow-xl border border-border w-full max-w-md">
                 <h1 className="text-3xl font-merriweather font-bold text-center mb-2 text-foreground">Opret dig</h1>
                 <p className="text-center text-muted-foreground mb-6 text-sm leading-relaxed px-2">
-                    Opret en bruger for at holde dig opdateret omkring specifikke både, togter og gode historier – eller opret din egen båd her på Langturssejlads.dk
+                    Opret en bruger for at holde dig opdateret omkring specifikke både, togter og gode historier – eller opret din egen båd her på Llangturssejlads.dk
                 </p>
                 {error && <div className="mb-4 p-3 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg text-sm font-medium">{error}</div>}
 
@@ -104,7 +104,7 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-6 border-t border-border/60 text-center px-4">
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                        Langturssejlads.dk er et non-profit projekt, der er 100% drevet af frivillige kræfter, og baseret på en stærk passion for sejlerfællesskabet.
+                        Llangturssejlads.dk er et non-profit projekt, der er 100% drevet af frivillige kræfter, og baseret på en stærk passion for sejlerfællesskabet.
                         <br />
                         <Link href="/om" className="text-primary hover:text-primary/80 transition-colors font-bold mt-1 inline-block">Læs mere om projektet her</Link>
                     </p>

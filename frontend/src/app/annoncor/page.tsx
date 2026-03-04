@@ -30,13 +30,13 @@ export default function AnnoncorPage() {
                 {/* Motivation Section */}
                 <section className="prose prose-lg dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-medium">
                     <p className="text-2xl font-merriweather !leading-snug text-foreground mb-8 text-balance">
-                        Langturssejlads.dk afhænger af engagerede, frivillige kræfter og dedikerede bidragydere, der i sin tid finansierede lanceringen af Danmarks største digitale logbog.
+                        Llangturssejlads.dk afhænger af engagerede, frivillige kræfter og dedikerede bidragydere, der i sin tid finansierede lanceringen af Danmarks største digitale logbog.
                     </p>
                     <p>
                         Der er dog løbende, uomtvistelige udgifter forbundet med at drive, udvikle og skalere moderne web-platforme i denne størrelse. For fortsat at kunne tilbyde vores 100% gratis, non-profit portal til de mange sejlglade danskere, søger vi proaktivt strategiske partnere.
                     </p>
                     <p>
-                        Lige nu har du mulighed for at dække dele af disse driftsudgifter og være med til at sikre fremtiden for Langturssejlads.dk. I bytte tilbyder vi unik, knivskarp annonceringsplads målrettet direkte mod Danmarks passionerede sejlersegment.
+                        Lige nu har du mulighed for at dække dele af disse driftsudgifter og være med til at sikre fremtiden for Llangturssejlads.dk. I bytte tilbyder vi unik, knivskarp annonceringsplads målrettet direkte mod Danmarks passionerede sejlersegment.
                     </p>
                 </section>
 
@@ -85,7 +85,7 @@ export default function AnnoncorPage() {
                     <Mail className="w-12 h-12 text-primary mx-auto mb-6" />
                     <h2 className="text-3xl font-merriweather font-black text-foreground mb-4">Lad os tage en snak</h2>
                     <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-                        Skriv direkte til projektledelsen for at høre nærmere om mulighederne for at bygge et stærkt partnerskab mellem jeres virksomhed og Langturssejlads.dk.
+                        Skriv direkte til projektledelsen for at høre nærmere om mulighederne for at bygge et stærkt partnerskab mellem jeres virksomhed og Llangturssejlads.dk.
                     </p>
                     <a href="mailto:simon@paag.dk" className="inline-block bg-primary text-primary-foreground font-bold font-sans py-4 px-10 rounded-full hover:bg-primary/90 transition-all shadow-md text-lg tracking-wide">
                         Kontakt os i dag

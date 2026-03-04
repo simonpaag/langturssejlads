@@ -24,7 +24,7 @@ export default function Navbar() {
             // Hent brugerdata hvis logget ind som almindelig bruger
             if (userToken) {
                 try {
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
                     const res = await fetch(`${apiUrl}/api/auth/me`, {
                         headers: { 'Authorization': `Bearer ${userToken}` }
                     });
@@ -74,9 +74,9 @@ export default function Navbar() {
 
                 {/* Desktop Left: Links */}
                 <div className="hidden md:flex items-center gap-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                    <a href="https://langturssejlads.dk/" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">Langturssejlads.dk</a>
+                    <a href="https://llangturssejlads.dk/" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">Llangturssejlads.dk</a>
                     <span className="text-border">|</span>
-                    <Link href="/om" className="hover:text-foreground transition-colors">Om Langturssejlads</Link>
+                    <Link href="/om" className="hover:text-foreground transition-colors">Om Llangturssejlads</Link>
                     <span className="text-border">|</span>
                     <Link href="/annoncor" className="hover:text-foreground transition-colors">Bliv annoncør</Link>
                 </div>
@@ -120,7 +120,7 @@ export default function Navbar() {
                         </Link>
                     )}
                     <Link href="/om" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                        Om Langturssejlads
+                        Om Llangturssejlads
                     </Link>
                     <Link href="/annoncor" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                         Bliv annoncør
@@ -150,7 +150,7 @@ export default function Navbar() {
                     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-48 mt-[15%] md:mt-12 flex flex-col items-center justify-center text-center">
                         <Link href="/" className="group drop-shadow-lg">
                             <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-white group-hover:text-primary transition-colors">
-                                Langturssejlads
+                                Llangturssejlads
                             </h1>
                         </Link>
                         <p className="mt-6 text-sm md:text-base font-bold uppercase tracking-widest text-zinc-300 max-w-2xl balance drop-shadow-md">

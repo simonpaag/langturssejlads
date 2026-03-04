@@ -35,7 +35,7 @@ export default function AdminPanel() {
         setIsLoading(true);
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -59,7 +59,7 @@ export default function AdminPanel() {
 
     const fetchArticles = async (authToken: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/articles/admin`, {
                 headers: { Authorization: `Bearer ${authToken}` },
             });
@@ -79,7 +79,7 @@ export default function AdminPanel() {
 
     const updateStatus = async (articleId: number, newStatus: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/articles/${articleId}/status`, {
                 method: 'PUT',
                 headers: {

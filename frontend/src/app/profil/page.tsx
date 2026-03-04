@@ -22,7 +22,7 @@ export default function ProfilePage() {
             }
 
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
                 const res = await fetch(`${apiUrl}/api/auth/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -51,7 +51,7 @@ export default function ProfilePage() {
         const token = localStorage.getItem('user_token');
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/auth/profile`, {
                 method: 'PUT',
                 headers: {

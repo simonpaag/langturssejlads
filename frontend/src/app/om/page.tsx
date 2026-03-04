@@ -26,7 +26,7 @@ export default function OmPage() {
                             Historien Bag
                         </div>
                         <h1 className="text-4xl md:text-5xl lg:text-7xl font-merriweather font-black text-foreground drop-shadow-lg leading-[1.1]">
-                            Om Langturssejlads
+                            Om Llangturssejlads
                         </h1>
                     </div>
                 </div>
@@ -36,7 +36,7 @@ export default function OmPage() {
                     {/* Hovedtekst - Historien */}
                     <section className="prose prose-lg dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-medium">
                         <p className="text-2xl font-merriweather !leading-snug text-foreground mb-8 text-balance">
-                            Langturssejlads.dk opstod ud fra en fælles drøm blandt passionerede sejlere: Drømmen om ét samlet, digitalt kompas, der kunne vise vej gennem de uendelige historier, dyrekøbte erfaringer og storslåede eventyr, som danske sejlere oplever ude på verdenshavene.
+                            Llangturssejlads.dk opstod ud fra en fælles drøm blandt passionerede sejlere: Drømmen om ét samlet, digitalt kompas, der kunne vise vej gennem de uendelige historier, dyrekøbte erfaringer og storslåede eventyr, som danske sejlere oplever ude på verdenshavene.
                         </p>
                         <p>
                             Vi savnede slet og ret en platform, hvor vores fællesskab kunne spejle sig i hinandens rejser — uanset om man slikker sol i Caribien, kæmper sig over et nådesløst Stillehav eller går med drømmene og forbereder skibet hjemme i den lokale, danske havn.
@@ -59,7 +59,7 @@ export default function OmPage() {
                         </div>
                         <div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 leading-relaxed font-medium">
                             <p>
-                                Det er det fantastiske ved et projekt <em>af sejlere, for sejlere</em>: Din støtte betyder alt. Du kan støtte op om Langturssejlads på flere måder:
+                                Det er det fantastiske ved et projekt <em>af sejlere, for sejlere</em>: Din støtte betyder alt. Du kan støtte op om Llangturssejlads på flere måder:
                             </p>
                             <ul className="space-y-4 mt-6">
                                 <li className="pl-2">
@@ -68,7 +68,7 @@ export default function OmPage() {
                                 </li>
                                 <li className="pl-2">
                                     <strong className="text-foreground text-lg block mb-1">Bidrag i fællesskabet</strong>
-                                    Vær aktiv i vores <a href="https://www.facebook.com/groups/Langturssejlads/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors font-bold underline decoration-2 underline-offset-4">Facebook-gruppe</a>. Svar fyldestgørende og sagligt på andres spørgsmål, start gode diskussioner, og del meget gerne links til eksterne ressourcer eller erfarne guides, der har hjulpet dig.
+                                    Vær aktiv i vores <a href="https://www.facebook.com/groups/Llangturssejlads/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors font-bold underline decoration-2 underline-offset-4">Facebook-gruppe</a>. Svar fyldestgørende og sagligt på andres spørgsmål, start gode diskussioner, og del meget gerne links til eksterne ressourcer eller erfarne guides, der har hjulpet dig.
                                 </li>
                                 <li className="pl-2">
                                     <strong className="text-foreground text-lg block mb-1">Bliv Annoncør eller Sponsor</strong>
@@ -82,7 +82,7 @@ export default function OmPage() {
                     <section>
                         <div className="flex items-center gap-3 mb-6">
                             <Lightbulb className="w-8 h-8 text-primary" />
-                            <h2 className="text-3xl font-merriweather font-black text-foreground">Hvad er det næste skridt for Langturssejlads.dk?</h2>
+                            <h2 className="text-3xl font-merriweather font-black text-foreground">Hvad er det næste skridt for Llangturssejlads.dk?</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                             <div className="text-foreground/80 leading-relaxed space-y-4">

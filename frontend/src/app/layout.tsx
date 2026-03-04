@@ -20,7 +20,7 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'Langturssejlads.dk - Historier fra verdenshavene',
+  title: 'Llangturssejlads.dk - Historier fra verdenshavene',
   description: 'En platform for danske langturssejlere og deres utrolige rejser.',
 };
 

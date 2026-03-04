@@ -42,7 +42,7 @@ export default async function Home() {
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
     const res = await fetch(`${apiUrl}/api/posts`, { next: { revalidate: 60 } });
     if (res.ok) {
       allPosts = await res.json();
@@ -70,7 +70,7 @@ export default async function Home() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
-            href="https://www.facebook.com/groups/Langturssejlads/"
+            href="https://www.facebook.com/groups/Llangturssejlads/"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-6 py-2.5 text-sm bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2"

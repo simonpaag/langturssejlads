@@ -54,7 +54,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
 
     let boat: Boat | null = null;
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/boats/${slug}`, { next: { revalidate: 60 } });
         if (res.ok) {
             boat = await res.json();
@@ -66,7 +66,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     // Fetch posts specifically for this boat
     let posts: Post[] = [];
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/posts`, { cache: 'no-store' });
         if (res.ok) {
             const allPosts: Post[] = await res.json();
