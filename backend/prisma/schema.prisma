@@ -80,6 +80,9 @@ model Voyage {
   description String?
   startDate   DateTime
   endDate     DateTime?     // Null means ongoing
+  fromLocation String?
+  toLocation   String?
+  imageUrl     String?
   
   boat        Boat          @relation(fields: [boatId], references: [id])
   boatId      Int

@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText } from 'lucide-react';
+import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function Dashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'write' | 'profile'>('write');
+    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages'>('write');
     const [user, setUser] = useState<any>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
 
@@ -18,6 +18,17 @@ export default function Dashboard() {
     const [imageUrl, setImageUrl] = useState('');
     const [youtubeUrl, setYoutubeUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Voyage states
+    const [voyages, setVoyages] = useState<any[]>([]);
+    const [voyageTitle, setVoyageTitle] = useState('');
+    const [voyageDescription, setVoyageDescription] = useState('');
+    const [voyageFrom, setVoyageFrom] = useState('');
+    const [voyageTo, setVoyageTo] = useState('');
+    const [voyageImage, setVoyageImage] = useState('');
+    const [voyageStart, setVoyageStart] = useState('');
+    const [voyageEnd, setVoyageEnd] = useState('');
+    const [isSubmittingVoyage, setIsSubmittingVoyage] = useState(false);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -48,6 +59,26 @@ export default function Dashboard() {
 
         fetchUser();
     }, [router]);
+
+    // Fetch Voyages when user/boat is loaded
+    useEffect(() => {
+        const fetchVoyages = async () => {
+            if (user && user.crewMemberships.length > 0) {
+                const boatId = user.crewMemberships[0].boat.id;
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+                try {
+                    const res = await fetch(`${apiUrl}/api/voyages/boat/${boatId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setVoyages(data);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch voyages", err);
+                }
+            }
+        };
+        fetchVoyages();
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,6 +127,48 @@ export default function Dashboard() {
         }
     };
 
+    const handleVoyageSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user || user.crewMemberships.length === 0) return;
+
+        setIsSubmittingVoyage(true);
+        const token = localStorage.getItem('user_token');
+        const boatId = user.crewMemberships[0].boat.id;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/voyages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    boatId,
+                    title: voyageTitle,
+                    description: voyageDescription,
+                    fromLocation: voyageFrom,
+                    toLocation: voyageTo,
+                    imageUrl: voyageImage,
+                    startDate: voyageStart,
+                    endDate: voyageEnd || undefined
+                })
+            });
+
+            if (!res.ok) throw new Error('Kunne ikke oprette togt');
+
+            const newVoyage = await res.json();
+            setVoyages([newVoyage, ...voyages]);
+
+            alert('Togtet er oprettet!');
+            setVoyageTitle(''); setVoyageDescription(''); setVoyageFrom(''); setVoyageTo(''); setVoyageImage(''); setVoyageStart(''); setVoyageEnd('');
+        } catch (error: any) {
+            alert(`Fejl: ${error.message}`);
+        } finally {
+            setIsSubmittingVoyage(false);
+        }
+    };
+
     if (isLoadingUser) {
         return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
     }
@@ -118,6 +191,14 @@ export default function Dashboard() {
                     >
                         <PenLine className="h-5 w-5" />
                         <span className="font-medium">Skriv Logbog</span>
+                    </button>
+
+                    <button
+                        onClick={() => setActiveTab('voyages')}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'voyages' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
+                    >
+                        <Compass className="h-5 w-5" />
+                        <span className="font-medium">Planlæg Togter</span>
                     </button>
 
                     <button
@@ -247,6 +328,89 @@ export default function Dashboard() {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    ) : activeTab === 'voyages' ? (
+                        <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                            <div className="p-6 border-b border-border bg-slate-50">
+                                <h1 className="text-2xl font-bold font-merriweather">Planlæg Nyt Togt</h1>
+                                <p className="text-muted-foreground mt-1">Hvor går rejsen hen, og hvem skal med?</p>
+                            </div>
+                            <form onSubmit={handleVoyageSubmit} className="p-6 flex flex-col gap-6">
+                                {/* Title */}
+                                <div>
+                                    <label htmlFor="voyageTitle" className="block text-sm font-semibold mb-2">Togtets Navn</label>
+                                    <input type="text" id="voyageTitle" value={voyageTitle} onChange={(e) => setVoyageTitle(e.target.value)} placeholder="F.eks. Vær med på rejsen fra Sydney til Thailand..." className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-medium" required />
+                                </div>
+                                {/* From / To */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label htmlFor="voyageFrom" className="block text-sm font-semibold mb-2">Fra Lokation</label>
+                                        <div className="relative">
+                                            <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                                            <input type="text" id="voyageFrom" value={voyageFrom} onChange={(e) => setVoyageFrom(e.target.value)} placeholder="F.eks. Darling Harbour" className="w-full pl-10 pr-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label htmlFor="voyageTo" className="block text-sm font-semibold mb-2">Til Lokation</label>
+                                        <div className="relative">
+                                            <MapPin className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
+                                            <input type="text" id="voyageTo" value={voyageTo} onChange={(e) => setVoyageTo(e.target.value)} placeholder="F.eks. Kings Port Phuket" className="w-full pl-10 pr-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Dates */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label htmlFor="voyageStart" className="block text-sm font-semibold mb-2">Start Dato</label>
+                                        <input type="date" id="voyageStart" value={voyageStart} onChange={(e) => setVoyageStart(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="voyageEnd" className="block text-sm font-semibold mb-2">Slut Dato (Valgfri)</label>
+                                        <input type="date" id="voyageEnd" value={voyageEnd} onChange={(e) => setVoyageEnd(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                    </div>
+                                </div>
+                                {/* Image */}
+                                <div>
+                                    <label htmlFor="voyageImage" className="block text-sm font-semibold mb-2">Kort / Coverbillede (URL - Valgfrit)</label>
+                                    <input type="url" id="voyageImage" value={voyageImage} onChange={(e) => setVoyageImage(e.target.value)} placeholder="Indsæt link til billede af et kort eller ruten..." className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                </div>
+                                {/* Description */}
+                                <div>
+                                    <label htmlFor="voyageDescription" className="block text-sm font-semibold mb-2">Beskiv ruten (F.eks: Vær med på togtet til Thailand...)</label>
+                                    <textarea id="voyageDescription" value={voyageDescription} onChange={(e) => setVoyageDescription(e.target.value)} placeholder="Beskriv turen, og fremhæv hvem der sejler med..." rows={5} className="w-full px-4 py-3 rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed" required />
+                                </div>
+                                <div className="flex justify-end pt-4 border-t border-border mt-2">
+                                    <button type="submit" disabled={isSubmittingVoyage} className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50">
+                                        {isSubmittingVoyage ? 'Opretter...' : 'Opret Togt'}
+                                    </button>
+                                </div>
+                            </form>
+
+                            {/* List of active voyages */}
+                            <div className="p-6 border-t border-border bg-slate-50">
+                                <h3 className="text-lg font-bold mb-4 font-merriweather">Aktuelle & Tidligere Togter</h3>
+                                {voyages.length === 0 ? (
+                                    <p className="text-muted-foreground text-sm">Der er ingen togter endnu.</p>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {voyages.map((v) => (
+                                            <div key={v.id} className="bg-white border md:flex-row flex-col flex border-border rounded-xl p-4 gap-4 items-center justify-between shadow-sm">
+                                                <div>
+                                                    <h4 className="font-bold">{v.title}</h4>
+                                                    <p className="text-sm text-foreground my-1">{v.fromLocation} &rarr; {v.toLocation}</p>
+                                                    <div className="text-xs text-muted-foreground flex items-center gap-2">
+                                                        <span>{new Date(v.startDate).toLocaleDateString('da-DK')}</span>
+                                                        {v.endDate && <span>- {new Date(v.endDate).toLocaleDateString('da-DK')}</span>}
+                                                    </div>
+                                                </div>
+                                                <Link href={`/boats/${currentBoat?.slug}/voyages/${v.id}`} className="px-4 py-2 border-2 border-primary/20 rounded-lg text-sm font-bold text-primary hover:bg-primary/5 transition-colors whitespace-nowrap">
+                                                    Vis Invitation
+                                                </Link>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ) : (
                         <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden p-8 text-center">
