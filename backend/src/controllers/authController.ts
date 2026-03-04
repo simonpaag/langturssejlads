@@ -143,3 +143,35 @@ export const updateInterests = async (req: AuthRequest, res: Response): Promise<
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { name, profileImage } = req.body;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const dataToUpdate: any = {};
+        if (name) dataToUpdate.name = name;
+        if (profileImage !== undefined) dataToUpdate.profileImage = profileImage;
+
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: dataToUpdate,
+        });
+
+        // Fjern password-hashet før the returneres
+        const { passwordHash, ...userWithoutPassword } = updatedUser;
+
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user: userWithoutPassword
+        });
+    } catch (error) {
+        console.error('Update profile error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

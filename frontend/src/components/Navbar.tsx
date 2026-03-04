@@ -12,18 +12,41 @@ export default function Navbar() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
+    const [user, setUser] = useState<{ id: number; name: string; profileImage?: string | null } | null>(null);
 
     useEffect(() => {
-        const checkAuth = () => {
+        const checkAuth = async () => {
             const userToken = localStorage.getItem('user_token');
             const adminToken = localStorage.getItem('admin_token');
             setIsLoggedIn(!!userToken);
             setIsAdmin(!!adminToken);
+
+            // Hent brugerdata hvis logget ind som almindelig bruger
+            if (userToken) {
+                try {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+                    const res = await fetch(`${apiUrl}/api/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${userToken}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setUser(data.user);
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch user data for Navbar');
+                }
+            } else {
+                setUser(null);
+            }
         };
 
         checkAuth();
         window.addEventListener('auth-change', checkAuth);
-        return () => window.removeEventListener('auth-change', checkAuth);
+        window.addEventListener('userStateChange', checkAuth); // Opdateret auto-login lytter
+        return () => {
+            window.removeEventListener('auth-change', checkAuth);
+            window.removeEventListener('userStateChange', checkAuth);
+        };
     }, []);
 
     const handleLogout = () => {
@@ -60,7 +83,17 @@ export default function Navbar() {
 
                 {/* Right: Auth */}
                 <div className="flex items-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                    {(isLoggedIn || isAdmin) ? (
+                    {(isLoggedIn) ? (
+                        <Link href="/profil" className="group flex items-center gap-2 hover:opacity-80 transition-opacity">
+                            <div className="w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] overflow-hidden rounded-full border-2 border-primary/20 bg-muted flex items-center justify-center shadow-sm relative">
+                                {user?.profileImage ? (
+                                    <img src={user.profileImage} alt="Profil" className="w-full h-full object-cover" />
+                                ) : (
+                                    <UserCircle className="w-6 h-6 text-muted-foreground opacity-60" />
+                                )}
+                            </div>
+                        </Link>
+                    ) : isAdmin ? (
                         <button onClick={handleLogout} className="flex items-center gap-1.5 px-4 py-2 bg-muted/50 hover:bg-destructive/10 hover:text-destructive rounded-full transition-all">
                             <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Log ud</span>
                         </button>
