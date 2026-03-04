@@ -7,12 +7,13 @@ interface Post {
     slug: string;
     title: string | null;
     content: string | null;
+    postType: string;
     youtubeUrl: string | null;
     imageUrl: string | null;
     status: string;
     createdAt: string;
-    author: { id: number; name: string };
-    boat: { id: number; slug: string; name: string };
+    author: { id: number; name: string; profileImage?: string | null; };
+    boat: { id: number; slug: string; name: string; profileImage?: string | null; };
 }
 
 export const dynamic = 'force-dynamic';
@@ -44,70 +45,97 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     }
 
     return (
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <article className="min-h-screen bg-background pb-24">
 
-            {/* Header / Meta */}
-            <div className="text-center mb-12 md:mb-16">
-                <div className="inline-flex items-center justify-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary">
-                    <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4">
-                        {post.boat.name}
-                    </Link>
-                    <span className="text-muted-foreground">&bull;</span>
-                    <time dateTime={post.createdAt} className="text-muted-foreground">
-                        {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
-                    </time>
-                </div>
-
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-merriweather font-black text-foreground leading-[1.1] mb-8">
-                    {post.title || 'Logbogsopdatering'}
-                </h1>
-
-                <div className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                    <span>Skrevet af</span>
-                    <span className="text-foreground">{post.author.name}</span>
-                </div>
-            </div>
-
-            <hr className="border-t-[3px] border-foreground mb-12" />
-
-            {/* Image Lead (if exists) */}
-            {post.imageUrl && (
-                <div className="mb-12 aspect-[16/9] w-full rounded-xl overflow-hidden shadow-sm bg-muted/20">
+            {/* Hero Image Section (if present) or Typographic Header */}
+            {post.imageUrl ? (
+                <div className="relative w-full h-[60vh] min-h-[500px] mb-12 lg:mb-20 overflow-hidden border-b border-border/40">
                     <img
                         src={post.imageUrl}
-                        alt="Post Billede"
-                        className="w-full h-full object-cover"
+                        alt="Hero Billede"
+                        className="absolute inset-0 w-full h-full object-cover"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+
+                    <div className="absolute bottom-0 left-0 w-full">
+                        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16 text-center md:text-left">
+                            <div className="inline-flex items-center justify-center md:justify-start gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary drop-shadow-sm">
+                                <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-2 items-center">
+                                    {post.boat.name}
+                                </Link>
+                                <span className="text-muted-foreground">&bull;</span>
+                                <time dateTime={post.createdAt} className="text-muted-foreground/80">
+                                    {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
+                                </time>
+                            </div>
+
+                            <h1 className="text-4xl md:text-5xl lg:text-7xl font-merriweather font-black text-foreground drop-shadow-md leading-tight mb-8">
+                                {post.title || (post.postType === 'PHOTO' ? 'Billedopdatering' : 'Logbogsopdatering')}
+                            </h1>
+
+                            <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider backdrop-blur-sm p-3 inline-flex rounded-2xl bg-muted/10">
+                                <span className="text-foreground">Af {post.author.name}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center border-b border-border/50 mb-12">
+                    <div className="inline-flex items-center justify-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary">
+                        <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4">
+                            {post.boat.name}
+                        </Link>
+                        <span className="text-muted-foreground">&bull;</span>
+                        <time dateTime={post.createdAt} className="text-muted-foreground">
+                            {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
+                        </time>
+                    </div>
+
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-merriweather font-black text-foreground leading-[1.1] mb-8">
+                        {post.title || 'Logbogsopdatering'}
+                    </h1>
+
+                    <div className="flex items-center justify-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                        <span>Skrevet af</span>
+                        <span className="text-foreground">{post.author.name}</span>
+                    </div>
                 </div>
             )}
 
-            {/* Video Lead (if exists) */}
-            {post.youtubeUrl && (
-                <div className="mb-12 aspect-video w-full rounded-xl overflow-hidden shadow-sm bg-muted/20">
-                    <iframe
-                        className="w-full h-full"
-                        src={post.youtubeUrl}
-                        title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen>
-                    </iframe>
+            {/* Reading Container */}
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                {/* Video Lead (if exists) */}
+                {post.youtubeUrl && (
+                    <div className="mb-16 aspect-video w-full rounded-2xl overflow-hidden shadow-2xl border border-border/40 bg-black">
+                        <iframe
+                            className="w-full h-full"
+                            src={post.youtubeUrl}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen>
+                        </iframe>
+                    </div>
+                )}
+
+                {/* Main Content Body */}
+                {post.content && (
+                    <div className="prose prose-lg md:prose-xl max-w-none font-merriweather text-foreground/90 leading-relaxed dark:prose-invert prose-p:mb-8 prose-h2:text-3xl prose-h2:font-black prose-h2:mb-6">
+                        {post.content.split('\n').map((paragraph: string, index: number) => (
+                            <p key={index}>{paragraph}</p>
+                        ))}
+                    </div>
+                )}
+
+                <div className="border-t border-border/60 mt-20 pt-10 flex flex-col md:flex-row gap-6 justify-between items-center text-sm font-bold uppercase tracking-widest text-primary">
+                    <Link href={`/boats/${post.boat.slug}`} className="hover:text-foreground transition-colors border border-border/50 bg-muted/30 px-6 py-3 rounded-full hover:bg-muted/50">
+                        &larr; Flere beretninger fra {post.boat.name}
+                    </Link>
+                    <Link href="/" className="hover:text-foreground transition-colors px-6 py-3">
+                        Gå til forsiden
+                    </Link>
                 </div>
-            )}
-
-            {/* Main Content Body */}
-            {post.content && (
-                <div className="prose prose-lg md:prose-xl max-w-none font-merriweather text-foreground/90 leading-relaxed">
-                    {post.content.split('\n').map((paragraph: string, index: number) => (
-                        <p key={index} className="mb-6">{paragraph}</p>
-                    ))}
-                </div>
-            )}
-
-            <hr className="border-t border-border mt-16 mb-8" />
-
-            <div className="flex justify-between items-center text-sm font-bold uppercase tracking-wide">
-                <Link href="/" className="text-primary hover:underline underline-offset-4">&larr; Tilbage til forsiden</Link>
-                <Link href={`/boats/${post.boat.slug}`} className="text-primary hover:underline underline-offset-4">Flere beretninger fra {post.boat.name} &rarr;</Link>
             </div>
 
         </article>
