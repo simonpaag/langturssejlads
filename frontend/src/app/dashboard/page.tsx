@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin } from 'lucide-react';
+import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PostManager from '@/components/dashboard/PostManager';
@@ -37,6 +37,8 @@ export default function Dashboard() {
     const [boatDescription, setBoatDescription] = useState('');
     const [boatCoverImage, setBoatCoverImage] = useState('');
     const [boatProfileImage, setBoatProfileImage] = useState('');
+    const [boatWebsiteUrl, setBoatWebsiteUrl] = useState('');
+    const [boatSocialLinks, setBoatSocialLinks] = useState<{ platform: string, url: string }[]>([]);
     const [isSubmittingBoat, setIsSubmittingBoat] = useState(false);
 
     useEffect(() => {
@@ -98,6 +100,8 @@ export default function Dashboard() {
             setBoatDescription(currentBoat.description || '');
             setBoatCoverImage(currentBoat.coverImage || '');
             setBoatProfileImage(currentBoat.profileImage || '');
+            setBoatWebsiteUrl(currentBoat.websiteUrl || '');
+            setBoatSocialLinks(Array.isArray(currentBoat.socialLinks) ? currentBoat.socialLinks : []);
         }
     }, [currentBoat]);
 
@@ -210,7 +214,9 @@ export default function Dashboard() {
                     name: boatName,
                     description: boatDescription,
                     coverImage: boatCoverImage,
-                    profileImage: boatProfileImage
+                    profileImage: boatProfileImage,
+                    websiteUrl: boatWebsiteUrl,
+                    socialLinks: boatSocialLinks
                 })
             });
 
@@ -538,6 +544,81 @@ export default function Dashboard() {
                                             placeholder="https://..."
                                             className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                                         />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="boatWebsiteUrl" className="block text-sm font-semibold mb-2">Hjemmeside (URL - Valgfrit)</label>
+                                    <input
+                                        type="url"
+                                        id="boatWebsiteUrl"
+                                        value={boatWebsiteUrl}
+                                        onChange={(e) => setBoatWebsiteUrl(e.target.value)}
+                                        placeholder="https://..."
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                    />
+                                </div>
+
+                                <div className="p-5 border border-border rounded-2xl bg-muted/10">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                                        <div>
+                                            <h3 className="block text-sm font-semibold">Sociale Medier / Andre Links</h3>
+                                            <p className="text-xs text-muted-foreground mt-1">Tilføj op til flere links til blogs, kanaler og netværk.</p>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setBoatSocialLinks([...boatSocialLinks, { platform: '', url: '' }])}
+                                            className="text-xs font-bold text-primary hover:text-primary/80 uppercase tracking-widest bg-primary/10 hover:bg-primary/20 transition-colors px-4 py-2 rounded-lg w-fit"
+                                        >
+                                            + Tilføj Link
+                                        </button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {boatSocialLinks.map((link, index) => (
+                                            <div key={index} className="flex flex-col sm:flex-row gap-3">
+                                                <input
+                                                    type="text"
+                                                    value={link.platform}
+                                                    onChange={(e) => {
+                                                        const newLinks = [...boatSocialLinks];
+                                                        newLinks[index].platform = e.target.value;
+                                                        setBoatSocialLinks(newLinks);
+                                                    }}
+                                                    placeholder="F.eks. Instagram"
+                                                    className="sm:w-1/3 px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                                                    required
+                                                />
+                                                <input
+                                                    type="url"
+                                                    value={link.url}
+                                                    onChange={(e) => {
+                                                        const newLinks = [...boatSocialLinks];
+                                                        newLinks[index].url = e.target.value;
+                                                        setBoatSocialLinks(newLinks);
+                                                    }}
+                                                    placeholder="https://..."
+                                                    className="flex-1 px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm"
+                                                    required
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newLinks = [...boatSocialLinks];
+                                                        newLinks.splice(index, 1);
+                                                        setBoatSocialLinks(newLinks);
+                                                    }}
+                                                    className="p-3 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-xl transition-colors border border-transparent hover:border-destructive/20 self-end sm:self-auto"
+                                                    title="Slet link"
+                                                >
+                                                    <Trash2 className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        ))}
+                                        {boatSocialLinks.length === 0 && (
+                                            <div className="text-sm text-muted-foreground/70 p-6 border border-dashed rounded-xl border-border/60 text-center bg-transparent">
+                                                Tryk på knappen ovenfor for at tilføje et netværk.
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 

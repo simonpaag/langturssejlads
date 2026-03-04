@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
-import { Anchor, Compass, UserCircle2, ShieldAlert } from 'lucide-react';
+import { Anchor, Compass, UserCircle2, ShieldAlert, Globe, Link as LinkIcon, Instagram, Youtube, Facebook } from 'lucide-react';
 import Link from 'next/link';
 
 export interface Post {
@@ -24,6 +24,8 @@ interface Boat {
     description: string;
     coverImage: string | null;
     profileImage: string | null;
+    websiteUrl: string | null;
+    socialLinks: { platform: string; url: string }[] | null;
     crewMemberships: {
         user: { name: string; profileImage: string | null; };
         role: string;
@@ -107,9 +109,30 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                     <h1 className="text-5xl md:text-7xl font-merriweather font-black text-foreground mb-6 tracking-tighter drop-shadow-sm">
                         {boat.name}
                     </h1>
-                    <p className="text-xl md:text-2xl text-muted-foreground font-merriweather italic leading-relaxed max-w-3xl">
+                    <p className="text-xl md:text-2xl text-muted-foreground font-merriweather italic leading-relaxed max-w-3xl mb-8">
                         "{boat.description || 'En fantastisk rejse ud i det ukendte. Følg med i vores eventyr her på siden.'}"
                     </p>
+
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        {boat.websiteUrl && (
+                            <a href={boat.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-bold text-xs uppercase tracking-widest rounded-full hover:bg-primary transition-all hover:-translate-y-1 duration-200 shadow-md">
+                                <Globe className="w-4 h-4" /> Hjemmeside
+                            </a>
+                        )}
+                        {boat.socialLinks && boat.socialLinks.map((link, idx) => {
+                            const platformLower = link.platform.toLowerCase();
+                            let Icon = LinkIcon;
+                            if (platformLower.includes('insta')) Icon = Instagram;
+                            else if (platformLower.includes('you') || platformLower.includes('yt')) Icon = Youtube;
+                            else if (platformLower.includes('face') || platformLower.includes('fb')) Icon = Facebook;
+
+                            return (
+                                <a key={idx} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 bg-background shadow-sm border border-border text-foreground font-bold text-xs uppercase tracking-widest rounded-full hover:bg-primary hover:text-white hover:border-primary transition-all hover:-translate-y-1 duration-200">
+                                    <Icon className="w-4 h-4" /> {link.platform}
+                                </a>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 

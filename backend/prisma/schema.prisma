@@ -28,6 +28,8 @@ model Boat {
   description  String?
   coverImage   String?
   profileImage String?
+  websiteUrl   String?
+  socialLinks  Json?     // [{ platform: 'Instagram', url: '...' }]
   
   crewMemberships CrewMember[]
   posts           Post[]

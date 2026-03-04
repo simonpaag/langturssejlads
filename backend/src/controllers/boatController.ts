@@ -94,7 +94,7 @@ export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<vo
 export const updateBoat = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const boatId = parseInt(req.params.id as string);
-        const { name, description, coverImage, profileImage } = req.body;
+        const { name, description, coverImage, profileImage, websiteUrl, socialLinks } = req.body;
         const userId = req.user?.userId;
 
         if (!userId) {
@@ -125,7 +125,9 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
         const updateData: any = {
             description,
             coverImage,
-            profileImage
+            profileImage,
+            websiteUrl,
+            socialLinks
         };
 
         // Only update name and slug if the name is provided and changed
