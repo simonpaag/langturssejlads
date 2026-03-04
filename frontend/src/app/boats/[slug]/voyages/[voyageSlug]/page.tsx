@@ -15,8 +15,11 @@ async function getVoyage(voyageSlug: string) {
     return res.json();
 }
 
-export default async function VoyagePage({ params }: { params: { slug: string; voyageSlug: string } }) {
-    const voyage = await getVoyage(params.voyageSlug);
+export default async function VoyagePage({ params }: { params: Promise<{ slug: string; voyageSlug: string }> | { slug: string; voyageSlug: string } }) {
+    const resolvedParams = await Promise.resolve(params);
+    const voyageSlug = resolvedParams.voyageSlug;
+
+    const voyage = await getVoyage(voyageSlug);
 
     if (!voyage || voyage.error) {
         return <div className="p-10 font-mono text-red-500">API Error debugging on Vercel: {JSON.stringify(voyage)}</div>;
