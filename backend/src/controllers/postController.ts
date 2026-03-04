@@ -142,3 +142,90 @@ export const getAllPostsForAdmin = async (req: AuthRequest, res: Response): Prom
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const getPostsByBoatId = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { boatId } = req.params;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const membership = await prisma.crewMember.findUnique({
+            where: {
+                userId_boatId: {
+                    userId,
+                    boatId: Number(boatId),
+                },
+            },
+        });
+
+        if (!membership) {
+            res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
+            return;
+        }
+
+        const posts = await prisma.post.findMany({
+            where: { boatId: Number(boatId) },
+            include: {
+                author: { select: { id: true, name: true, profileImage: true } },
+                voyage: { select: { id: true, title: true } }
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        res.json(posts);
+    } catch (error) {
+        console.error('Get posts by boat ID error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const togglePostStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const post = await prisma.post.findUnique({
+            where: { id: Number(id) },
+        });
+
+        if (!post) {
+            res.status(404).json({ error: 'Post not found' });
+            return;
+        }
+
+        const membership = await prisma.crewMember.findUnique({
+            where: {
+                userId_boatId: {
+                    userId,
+                    boatId: post.boatId,
+                },
+            },
+        });
+
+        if (!membership) {
+            res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
+            return;
+        }
+
+        const newStatus = post.status === 'PUBLISHED' ? 'DRAFT' : 'PUBLISHED';
+
+        const updatedPost = await prisma.post.update({
+            where: { id: Number(id) },
+            data: { status: newStatus },
+        });
+
+        res.json({ message: 'Post status toggled', post: updatedPost });
+    } catch (error) {
+        console.error('Toggle post status error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
