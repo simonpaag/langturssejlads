@@ -19,8 +19,8 @@ async function main() {
     ];
 
     const boatsData = [
-        { name: 'S/Y Nordstjernen', description: 'En solid Hallberg-Rassy 42 klare til verdenshavene.', coverImage: 'https://images.unsplash.com/photo-1590529840250-70f92591604a?w=1600&q=80', profileImage: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=400&q=80' },
-        { name: 'S/Y Havanna', description: 'Beason 36 undervejs mod Caribien og måske videre i Stillehavet.', coverImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600&q=80', profileImage: 'https://images.unsplash.com/photo-1582098056263-6c0b9db8d227?w=400&q=80' },
+        { name: 'S/Y Nordstjernen', description: 'En solid Hallberg-Rassy 42 klare til verdenshavene.', coverImage: '/images/dummy/dummy-4.jpg', profileImage: 'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=400&q=80' },
+        { name: 'S/Y Havanna', description: 'Beason 36 undervejs mod Caribien og måske videre i Stillehavet.', coverImage: '/images/dummy/dummy-5.jpg', profileImage: 'https://images.unsplash.com/photo-1582098056263-6c0b9db8d227?w=400&q=80' },
         { name: 'S/Y Penelope', description: 'Beneteau Oceanis på eventyr over det blå Ocean.', coverImage: 'https://images.unsplash.com/photo-1500412803855-66270fbca921?w=1600&q=80', profileImage: 'https://images.unsplash.com/photo-1560067132-bb525cd57dbf?w=400&q=80' },
         { name: 'S/Y Fregatten', description: 'Bavaria 40 Cruiser med en storvoksen besætning fra Fyn.', coverImage: 'https://images.unsplash.com/photo-1512497005662-8e7c1f8cb1fb?w=1600&q=80', profileImage: 'https://images.unsplash.com/photo-1595015354922-26db1da9bdf8?w=400&q=80' },
         { name: 'S/Y Karoline', description: 'Et flydende hjem gennem Europas kanaler mod Middelhavet.', coverImage: 'https://images.unsplash.com/photo-1544321045-31cece73ccf2?w=1600&q=80', profileImage: 'https://images.unsplash.com/photo-1505322022379-7c3353ee6291?w=400&q=80' },
@@ -129,7 +129,7 @@ async function main() {
                 toLocation: 'Lissabon',
                 availableSeats: 0,
                 boatId: boat.id,
-                imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80'
+                imageUrl: '/images/dummy/dummy-1.jpg'
             }
         });
 
@@ -142,7 +142,7 @@ async function main() {
                 toLocation: 'St. Lucia',
                 availableSeats: 0,
                 boatId: boat.id,
-                imageUrl: 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop'
+                imageUrl: '/images/dummy/dummy-2.jpg'
             }
         });
 
@@ -155,7 +155,7 @@ async function main() {
                 toLocation: 'Grenada',
                 availableSeats: 2,
                 boatId: boat.id,
-                imageUrl: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=1200&q=80'
+                imageUrl: '/images/dummy/dummy-3.jpg'
             }
         });
 
@@ -186,16 +186,16 @@ async function main() {
             };
 
             const postImages = [
-                'https://images.unsplash.com/photo-1623947477544-e2b527b140bb?w=1200&q=80', // dolphins
-                'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=1200&q=80', // beach
-                'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?w=1200&q=80', // helm
-                'https://images.unsplash.com/photo-1518044738734-93e1fd0ce6a8?w=1200&q=80', // boat interior/water
-                'https://images.unsplash.com/photo-1473042904451-00171c69419d?w=1200&q=80', // ocean sunset
-                'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80', // stormy sea
-                'https://images.unsplash.com/photo-1500412803855-66270fbca921?w=1200&q=80', // deck
-                'https://images.unsplash.com/photo-1505364407870-ab1df7bd5f73?w=1200&q=80', // navigation
-                'https://images.unsplash.com/photo-1512497005662-8e7c1f8cb1fb?w=1200&q=80', // port
-                'https://images.unsplash.com/photo-1530053969600-caed2596d242?w=1200&q=80', // sailing
+                '/images/dummy/dummy-1.jpg',
+                '/images/dummy/dummy-2.jpg',
+                '/images/dummy/dummy-3.jpg',
+                '/images/dummy/dummy-4.jpg',
+                '/images/dummy/dummy-5.jpg',
+                'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80',
+                'https://images.unsplash.com/photo-1500412803855-66270fbca921?w=1200&q=80',
+                'https://images.unsplash.com/photo-1505364407870-ab1df7bd5f73?w=1200&q=80',
+                'https://images.unsplash.com/photo-1512497005662-8e7c1f8cb1fb?w=1200&q=80',
+                'https://images.unsplash.com/photo-1530053969600-caed2596d242?w=1200&q=80',
             ];
             const imageIndex = (i * 10 + j * 7) % postImages.length;
 
