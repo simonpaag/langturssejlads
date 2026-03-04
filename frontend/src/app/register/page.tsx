@@ -41,39 +41,42 @@ export default function RegisterPage() {
 
     return (
         <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-muted/30 p-4">
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-border w-full max-w-md">
-                <h1 className="text-3xl font-merriweather font-bold text-center mb-6">Bliv en del af besætningen</h1>
+            <div className="bg-card text-card-foreground p-8 rounded-2xl shadow-xl border border-border w-full max-w-md">
+                <h1 className="text-3xl font-merriweather font-bold text-center mb-6 text-foreground">Bliv en del af besætningen</h1>
 
-                {error && <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">{error}</div>}
+                {error && <div className="mb-4 p-3 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg text-sm font-medium">{error}</div>}
 
-                <form onSubmit={handleRegister} className="flex flex-col gap-4">
+                <form onSubmit={handleRegister} className="flex flex-col gap-5">
                     <div>
-                        <label className="block text-sm font-semibold mb-2">Fulde Navn</label>
+                        <label className="block text-sm font-bold mb-2 text-foreground/90">Fulde Navn</label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-2 rounded-xl border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            className="w-full px-4 py-3 bg-background text-foreground rounded-xl border border-border/80 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                            placeholder="Dit navn"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold mb-2">Email</label>
+                        <label className="block text-sm font-bold mb-2 text-foreground/90">Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2 rounded-xl border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            className="w-full px-4 py-3 bg-background text-foreground rounded-xl border border-border/80 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                            placeholder="din@email.dk"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold mb-2">Adgangskode</label>
+                        <label className="block text-sm font-bold mb-2 text-foreground/90">Adgangskode</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded-xl border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            className="w-full px-4 py-3 bg-background text-foreground rounded-xl border border-border/80 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                            placeholder="••••••••"
                             required
                             minLength={6}
                         />
