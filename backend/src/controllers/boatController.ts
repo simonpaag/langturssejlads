@@ -59,3 +59,30 @@ export const getBoats = async (req: AuthRequest, res: Response): Promise<void> =
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+export const getBoatById = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const boat = await prisma.boat.findUnique({
+            where: { id: Number(id) },
+            include: {
+                crewMemberships: {
+                    include: {
+                        user: {
+                            select: { id: true, name: true, email: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!boat) {
+            res.status(404).json({ error: 'Boat not found' });
+            return;
+        }
+
+        res.json(boat);
+    } catch (error) {
+        console.error('Get boat by id error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

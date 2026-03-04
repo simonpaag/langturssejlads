@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Author {
   id: number;
@@ -46,7 +47,7 @@ export default async function Home() {
       {/* Featured Story */}
       {featured ? (
         <article className="mb-16 md:mb-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center border-b-[2px] border-foreground pb-12">
-          <div className="lg:col-span-8 group hover-lift cursor-pointer">
+          <Link href={`/articles/${featured.id}`} className="lg:col-span-8 group hover-lift cursor-pointer block">
             <div className="relative w-full aspect-[16/9] lg:aspect-[2/1] bg-muted overflow-hidden border border-border">
               {/* Beautiful Unsplash Placeholder image to make it look premium */}
               <img
@@ -62,20 +63,22 @@ export default async function Home() {
                 )
               }
             </div >
-          </div >
+          </Link >
 
-          <div className="lg:col-span-4 flex flex-col justify-center">
+          <div className="lg:col-span-4 flex flex-col justify-center h-full">
             <div className="flex items-center gap-3 mb-4 text-xs font-bold uppercase tracking-widest text-primary">
-              <span>{featured.boat.name}</span>
+              <Link href={`/boats/${featured.boat.id}`} className="hover:underline underline-offset-4">{featured.boat.name}</Link>
               <span className="text-muted-foreground font-normal">&bull;</span>
               <time className="text-muted-foreground font-normal" dateTime={featured.createdAt}>
                 {format(new Date(featured.createdAt), 'd. MMMM yyyy', { locale: da })}
               </time>
             </div>
 
-            <h2 className="text-4xl md:text-5xl lg:text-5xl font-merriweather font-bold leading-tight mb-5 hover:text-primary transition-colors cursor-pointer">
-              {featured.title}
-            </h2>
+            <Link href={`/articles/${featured.id}`}>
+              <h2 className="text-4xl md:text-5xl lg:text-5xl font-merriweather font-bold leading-tight mb-5 hover:text-primary transition-colors cursor-pointer">
+                {featured.title}
+              </h2>
+            </Link>
 
             <p className="text-muted-foreground text-lg leading-relaxed mb-8 line-clamp-4">
               {featured.content}
@@ -83,9 +86,9 @@ export default async function Home() {
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
               <span className="font-semibold text-sm">Af {featured.author.name}</span>
-              <button className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
+              <Link href={`/articles/${featured.id}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
                 Læs hele historien
-              </button>
+              </Link>
             </div>
           </div>
         </article >
@@ -105,8 +108,8 @@ export default async function Home() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
               {restOfArticles.map((article, idx) => (
-                <article key={article.id} className="group flex flex-col h-full hover-lift cursor-pointer">
-                  <div className="relative w-full aspect-[4/3] bg-muted mb-4 overflow-hidden border border-border">
+                <article key={article.id} className="group flex flex-col h-full hover-lift">
+                  <Link href={`/articles/${article.id}`} className="block relative w-full aspect-[4/3] bg-muted mb-4 overflow-hidden border border-border">
                     <img
                       src={`https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${article.id}`}
                       alt="Sailing grid image"
@@ -117,16 +120,18 @@ export default async function Home() {
                         <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Video
                       </div>
                     )}
-                  </div>
+                  </Link>
 
                   <div className="flex items-center gap-2 mb-2 text-[11px] font-bold uppercase tracking-widest text-primary">
-                    <span>{article.boat.name}</span>
+                    <Link href={`/boats/${article.boat.id}`} className="hover:underline underline-offset-4">{article.boat.name}</Link>
                     <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(article.createdAt), 'd. MMM yyyy', { locale: da })}</span>
                   </div>
 
-                  <h3 className="text-2xl font-merriweather font-bold mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-3">
-                    {article.title}
-                  </h3>
+                  <Link href={`/articles/${article.id}`}>
+                    <h3 className="text-2xl font-merriweather font-bold mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-3">
+                      {article.title}
+                    </h3>
+                  </Link>
 
                   <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3 flex-grow">
                     {article.content}

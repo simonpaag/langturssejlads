@@ -85,6 +85,29 @@ export const getPublicArticles = async (req: AuthRequest, res: Response): Promis
     }
 };
 
+export const getArticleById = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const article = await prisma.article.findUnique({
+            where: { id: Number(id) },
+            include: {
+                author: { select: { id: true, name: true } },
+                boat: { select: { id: true, name: true } },
+            },
+        });
+
+        if (!article) {
+            res.status(404).json({ error: 'Article not found' });
+            return;
+        }
+
+        res.json(article);
+    } catch (error) {
+        console.error('Get article by id error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 export const getAllArticlesForAdmin = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const isSystemAdmin = req.user?.isSystemAdmin;

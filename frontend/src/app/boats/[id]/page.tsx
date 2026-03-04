@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 import { Anchor } from 'lucide-react';
+import Link from 'next/link';
 
 interface Article {
     id: number;
@@ -118,9 +119,11 @@ export default async function BoatProfile({ params }: { params: { id: string } }
                                 </time>
                             </div>
 
-                            <h3 className="text-3xl font-merriweather font-bold mb-4 leading-snug group-hover:text-primary transition-colors">
-                                {article.title}
-                            </h3>
+                            <Link href={`/articles/${article.id}`}>
+                                <h3 className="text-3xl font-merriweather font-bold mb-4 leading-snug group-hover:text-primary transition-colors">
+                                    {article.title}
+                                </h3>
+                            </Link>
 
                             <p className="text-muted-foreground text-base leading-relaxed mb-6 line-clamp-4 flex-grow">
                                 {article.content}
@@ -128,7 +131,7 @@ export default async function BoatProfile({ params }: { params: { id: string } }
 
                             <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between">
                                 <span className="text-xs font-semibold text-muted-foreground">Af {article.author.name}</span>
-                                <span className="text-xs font-bold uppercase tracking-widest text-primary group-hover:underline underline-offset-4">Læs Fortælling</span>
+                                <Link href={`/articles/${article.id}`} className="text-xs font-bold uppercase tracking-widest text-primary group-hover:underline underline-offset-4">Læs Fortælling</Link>
                             </div>
                         </article>
                     ))
