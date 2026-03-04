@@ -9,15 +9,17 @@ import Footer from '@/components/Footer';
 async function getVoyage(voyageSlug: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
     const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { cache: 'no-store' });
-    if (!res.ok) return null;
+    if (!res.ok) {
+        return { error: true, status: res.status, url: `${apiUrl}/api/voyages/${voyageSlug}` };
+    }
     return res.json();
 }
 
 export default async function VoyagePage({ params }: { params: { slug: string; voyageSlug: string } }) {
     const voyage = await getVoyage(params.voyageSlug);
 
-    if (!voyage) {
-        notFound();
+    if (!voyage || voyage.error) {
+        return <div className="p-10 font-mono text-red-500">API Error debugging on Vercel: {JSON.stringify(voyage)}</div>;
     }
 
     const fallbackImage = 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop';
