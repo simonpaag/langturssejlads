@@ -42,8 +42,10 @@ export default function RegisterPage() {
     return (
         <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-muted/30 p-4">
             <div className="bg-card text-card-foreground p-8 rounded-2xl shadow-xl border border-border w-full max-w-md">
-                <h1 className="text-3xl font-merriweather font-bold text-center mb-6 text-foreground">Bliv en del af besætningen</h1>
-
+                <h1 className="text-3xl font-merriweather font-bold text-center mb-2 text-foreground">Opret dig</h1>
+                <p className="text-center text-muted-foreground mb-6 text-sm leading-relaxed px-2">
+                    Opret en bruger for at holde dig opdateret omkring specifikke både, togter og gode historier – eller opret din egen båd her på Langturssejlads.dk
+                </p>
                 {error && <div className="mb-4 p-3 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg text-sm font-medium">{error}</div>}
 
                 <form onSubmit={handleRegister} className="flex flex-col gap-5">
