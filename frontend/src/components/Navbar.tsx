@@ -65,14 +65,23 @@ export default function Navbar() {
 
             {/* Main Masthead - Only show on Home Page (/) */}
             {pathname === "/" && (
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-                    <div className="flex flex-col items-center justify-center text-center">
-                        <Link href="/" className="group">
-                            <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-foreground group-hover:text-primary transition-colors">
+                <div className="relative w-full overflow-hidden bg-black mb-0 shadow-2xl">
+                    {/* Background Image */}
+                    <img
+                        src="/images/hero-sunset.jpg"
+                        alt="Hero solnedgang"
+                        className="absolute inset-0 w-full h-[140%] object-cover object-[center_40%] opacity-[0.65]"
+                    />
+                    {/* Subtle Gradient Overlay for Text Readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent"></div>
+
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 flex flex-col items-center justify-center text-center">
+                        <Link href="/" className="group drop-shadow-lg">
+                            <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-white group-hover:text-primary transition-colors">
                                 Langturssejlads
                             </h1>
                         </Link>
-                        <p className="mt-4 text-sm md:text-base font-bold uppercase tracking-widest text-muted-foreground/80 max-w-2xl balance">
+                        <p className="mt-6 text-sm md:text-base font-bold uppercase tracking-widest text-zinc-300 max-w-2xl balance drop-shadow-md">
                             Følg de danske sejlere på langfart på de syv verdenshave.
                         </p>
                     </div>
