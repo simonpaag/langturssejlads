@@ -36,7 +36,13 @@ export default function Navbar() {
         <nav className="bg-background">
             {/* Top utility bar */}
             <div className="border-b border-border py-2 px-4 sm:px-6 lg:px-8 text-xs font-semibold text-muted-foreground uppercase tracking-widest flex justify-between items-center max-w-7xl mx-auto">
-                <div>Langturssejlads &middot; Historier</div>
+                <div className="flex items-center gap-4">
+                    <a href="https://langturssejlads.dk/" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">Langturssejlads.dk</a>
+                    <span className="text-border">|</span>
+                    <Link href="/om" className="hover:text-foreground transition-colors">Om Langturssejlads</Link>
+                    <span className="text-border">|</span>
+                    <Link href="/annoncor" className="hover:text-foreground transition-colors">Bliv annoncør</Link>
+                </div>
                 <div className="flex items-center gap-4">
                     <button className="hover:text-foreground transition-colors"><Search className="h-4 w-4" /></button>
                     {(isLoggedIn || isAdmin) ? (
@@ -78,17 +84,16 @@ export default function Navbar() {
                             Forside
                         </Link>
                         <Link href="/boats" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Bådene
+                            Både til søs
                         </Link>
                         <Link href="#" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Destinationer
+                            Togter
                         </Link>
-                        <Link href="#" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Udstyr & Grej
-                        </Link>
-                        <Link href="/dashboard" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Kahyt (Dashboard)
-                        </Link>
+                        {(isLoggedIn || isAdmin) && (
+                            <Link href="/dashboard" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
+                                Kahyt (Dashboard)
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

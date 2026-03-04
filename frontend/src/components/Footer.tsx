@@ -20,9 +20,8 @@ export default function Footer() {
                     <div>
                         <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Information</h3>
                         <ul className="space-y-4 text-sm font-medium text-muted-foreground">
-                            <li><Link href="/boats" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Oversigt over både</Link></li>
-                            <li><Link href="#" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Destinationer</Link></li>
-                            <li><Link href="#" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Udstyr & Grej</Link></li>
+                            <li><Link href="/boats" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Både til søs</Link></li>
+                            <li><Link href="#" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Togter</Link></li>
                             <li><Link href="/dashboard" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Kahyt (Kaptajn Login)</Link></li>
                         </ul>
                     </div>
