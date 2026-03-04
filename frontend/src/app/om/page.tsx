@@ -1,7 +1,5 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { Send, Lightbulb, ShieldAlert, Anchor } from 'lucide-react';
 
 export default function OmPage() {
@@ -17,8 +15,6 @@ export default function OmPage() {
 
     return (
         <div className="min-h-screen bg-background flex flex-col font-inter">
-            <Navbar />
-
             <main className="flex-1 pb-24">
                 {/* Hero Section */}
                 <div className="relative w-full h-[50vh] min-h-[400px] mb-16 overflow-hidden border-b border-border/40">
@@ -151,8 +147,6 @@ export default function OmPage() {
 
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }
