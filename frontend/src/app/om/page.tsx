@@ -87,7 +87,7 @@ export default function OmPage() {
                     <section>
                         <div className="flex items-center gap-3 mb-6">
                             <Lightbulb className="w-8 h-8 text-primary" />
-                            <h2 className="text-3xl font-merriweather font-black text-foreground">Hvad er det næste skridt?</h2>
+                            <h2 className="text-3xl font-merriweather font-black text-foreground">Hvad er det næste skridt for Langturssejlads.dk?</h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                             <div className="text-foreground/80 leading-relaxed space-y-4">
