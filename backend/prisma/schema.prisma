@@ -14,10 +14,11 @@ model User {
   email          String    @unique
   passwordHash   String
   name           String
+  profileImage   String?
   isSystemAdmin  Boolean   @default(false)
   
   crewMemberships CrewMember[]
-  articles        Article[]
+  posts           Post[]
 }
 
 model Boat {
@@ -26,9 +27,11 @@ model Boat {
   name         String
   description  String?
   coverImage   String?
+  profileImage String?
   
   crewMemberships CrewMember[]
-  articles        Article[]
+  posts           Post[]
+  voyages         Voyage[]
 }
 
 model CrewMember {
@@ -41,12 +44,22 @@ model CrewMember {
   @@id([userId, boatId])
 }
 
-model Article {
+enum PostType {
+  ARTICLE
+  QUICK_TEXT
+  YOUTUBE
+  PHOTO
+  VOYAGE_UPDATE
+}
+
+model Post {
   id          Int           @id @default(autoincrement())
-  slug        String        @unique
-  title       String
-  content     String
+  slug        String        @unique // Used for ARTICLE routing, or unique generic ID for others
+  postType    PostType      @default(ARTICLE)
+  title       String?       // Used by ARTICLE and VOYAGE_UPDATE
+  content     String?       // Body text/HTML
   youtubeUrl  String?
+  imageUrl    String?       // Image for PHOTO or Cover for ARTICLE
   status      String        @default("DRAFT") // 'DRAFT' | 'APPROVED' | 'PUBLISHED' | 'REJECTED'
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -56,4 +69,23 @@ model Article {
   
   boat        Boat          @relation(fields: [boatId], references: [id])
   boatId      Int
+
+  voyage      Voyage?       @relation(fields: [voyageId], references: [id])
+  voyageId    Int?
+}
+
+model Voyage {
+  id          Int           @id @default(autoincrement())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?     // Null means ongoing
+  
+  boat        Boat          @relation(fields: [boatId], references: [id])
+  boatId      Int
+
+  posts       Post[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }

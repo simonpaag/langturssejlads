@@ -16,13 +16,13 @@ app.get('/', (req: Request, res: Response) => {
 import authRoutes from './routes/authRoutes';
 import boatRoutes from './routes/boatRoutes';
 import crewRoutes from './routes/crewRoutes';
-import articleRoutes from './routes/articleRoutes';
+import postRoutes from './routes/postRoutes';
 
 // We will import and mount routes here later
 app.use('/api/auth', authRoutes);
 app.use('/api/boats', boatRoutes);
 app.use('/api/crew', crewRoutes);
-app.use('/api/articles', articleRoutes);
+app.use('/api/posts', postRoutes);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

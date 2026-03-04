@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import slugify from 'slugify';
 
 export const createBoat = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -17,6 +18,7 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
             const boat = await tx.boat.create({
                 data: {
                     name,
+                    slug: slugify(name, { lower: true, strict: true }),
                     description,
                     coverImage,
                 },
@@ -63,7 +65,7 @@ export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<vo
     try {
         const { slug } = req.params;
         const boat = await prisma.boat.findUnique({
-            where: { slug: slug },
+            where: { slug: String(slug) },
             include: {
                 crewMemberships: {
                     include: {
