@@ -19,6 +19,7 @@ import crewRoutes from './routes/crewRoutes';
 import postRoutes from './routes/postRoutes';
 import voyageRoutes from './routes/voyageRoutes';
 import boardMessageRoutes from './routes/boardMessageRoutes';
+import inviteRoutes from './routes/inviteRoutes';
 
 // We will import and mount routes here later
 app.use('/api/auth', authRoutes);
@@ -27,6 +28,7 @@ app.use('/api/crew', crewRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/voyages', voyageRoutes);
 app.use('/api', boardMessageRoutes); // Mounts to /api/boats/:id/messages and /api/messages/:id
+app.use('/api/invite', inviteRoutes);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

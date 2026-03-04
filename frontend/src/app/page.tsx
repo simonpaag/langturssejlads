@@ -33,6 +33,7 @@ export interface Post {
 }
 
 import { unstable_noStore as noStore } from 'next/cache';
+import InviteCard from '@/components/InviteCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -152,6 +153,7 @@ export default async function Home() {
               Flere Nyheder fra Havene
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+              <InviteCard />
               {restOfPosts.map((post, idx) => (
                 <article key={post.id} className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
                   <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
