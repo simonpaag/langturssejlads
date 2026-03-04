@@ -18,11 +18,12 @@ interface Message {
 
 interface NoticeboardProps {
     boatId: number;
+    boatName?: string;
     isPublic: boolean;
     isAdmin: boolean;
 }
 
-export default function Noticeboard({ boatId, isPublic, isAdmin }: NoticeboardProps) {
+export default function Noticeboard({ boatId, boatName, isPublic, isAdmin }: NoticeboardProps) {
     const [token, setToken] = useState<string | null>(null);
     const [user, setUser] = useState<{ userId: number; name?: string; profileImage?: string | null } | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -141,12 +142,19 @@ export default function Noticeboard({ boatId, isPublic, isAdmin }: NoticeboardPr
         <div className="bg-background rounded-[1.5rem] border border-border/50 overflow-hidden shadow-sm mt-16 mt-32 md:mt-40 mb-20 max-w-4xl mx-auto">
             {/* Header */}
             <div className="bg-muted/30 px-6 py-5 border-b border-border flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <MessageCircle className="w-5 h-5 text-primary" />
-                    <h3 className="font-merriweather font-bold text-xl text-foreground tracking-tight">Vandrygter & Hilsner</h3>
+                <div>
+                    <div className="flex items-center gap-3">
+                        <MessageCircle className="w-5 h-5 text-primary" />
+                        <h3 className="font-merriweather font-bold text-xl text-foreground tracking-tight">
+                            {boatName ? `${boatName}'s opslagstavle` : "Opslagstavle"}
+                        </h3>
+                    </div>
+                    <p className="text-muted-foreground text-sm mt-2 max-w-2xl">
+                        Du kan oprette en bruger og skrive en hilsen til båden og dens gaster her.
+                    </p>
                 </div>
                 {!isPublic && isAdmin && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-2 py-1 rounded-full">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-destructive bg-destructive/10 px-2 py-1 rounded-full shrink-0">
                         Privat
                     </span>
                 )}

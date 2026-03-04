@@ -303,6 +303,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                     <div id="opslagstavle">
                         <Noticeboard
                             boatId={boat.id}
+                            boatName={boat.name}
                             isPublic={boat.isBoardPublic}
                             isAdmin={false} // isAdmin håndteres internt af komponentet eller passes fra auth context
                         />
