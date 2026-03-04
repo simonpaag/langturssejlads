@@ -26,7 +26,8 @@ interface Boat {
 export default async function BoatProfile({ params }: { params: { id: string } }) {
     let boat: Boat | null = null;
     try {
-        const res = await fetch(`http://localhost:3001/api/boats`, { cache: 'no-store' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/boats`, { cache: 'no-store' });
         if (res.ok) {
             // Find specific boat. Ideally we'd have a backend GET /api/boats/:id endpoint but this works for now.
             const allBoats: Boat[] = await res.json();
@@ -39,7 +40,8 @@ export default async function BoatProfile({ params }: { params: { id: string } }
     // Fetch articles specifically for this boat
     let articles: Article[] = [];
     try {
-        const res = await fetch('http://localhost:3001/api/articles', { cache: 'no-store' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/articles`, { cache: 'no-store' });
         if (res.ok) {
             const allArticles: Article[] = await res.json();
             // Filter to only this boat's articles

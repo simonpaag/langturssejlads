@@ -15,7 +15,8 @@ interface Boat {
 export default async function BoatsPage() {
     let boats: Boat[] = [];
     try {
-        const res = await fetch('http://localhost:3001/api/boats', { cache: 'no-store' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/boats`, { cache: 'no-store' });
         if (res.ok) {
             boats = await res.json();
         }
