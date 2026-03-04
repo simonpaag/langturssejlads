@@ -59,7 +59,7 @@ export const getBoats = async (req: AuthRequest, res: Response): Promise<void> =
         res.json(boats);
     } catch (error) {
         console.error('Get boats error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error instanceof Error ? error.message : String(error) });
     }
 };
 export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<void> => {
