@@ -27,7 +27,7 @@ interface Boat {
 export default async function BoatProfile({ params }: { params: { id: string } }) {
     let boat: Boat | null = null;
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/boats`, { cache: 'no-store' });
         if (res.ok) {
             // Find specific boat. Ideally we'd have a backend GET /api/boats/:id endpoint but this works for now.
@@ -41,7 +41,7 @@ export default async function BoatProfile({ params }: { params: { id: string } }
     // Fetch articles specifically for this boat
     let articles: Article[] = [];
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/articles`, { cache: 'no-store' });
         if (res.ok) {
             const allArticles: Article[] = await res.json();

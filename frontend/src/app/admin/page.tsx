@@ -35,7 +35,7 @@ export default function AdminPanel() {
         setIsLoading(true);
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -59,7 +59,7 @@ export default function AdminPanel() {
 
     const fetchArticles = async (authToken: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/articles/admin`, {
                 headers: { Authorization: `Bearer ${authToken}` },
             });
@@ -79,7 +79,7 @@ export default function AdminPanel() {
 
     const updateStatus = async (articleId: number, newStatus: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/articles/${articleId}/status`, {
                 method: 'PUT',
                 headers: {
@@ -183,9 +183,9 @@ export default function AdminPanel() {
                                 </td>
                                 <td className="p-4">
                                     <span className={`inline-flex px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-md ${article.status === 'PUBLISHED' ? 'bg-green-100 text-green-800' :
-                                            article.status === 'APPROVED' ? 'bg-blue-100 text-blue-800' :
-                                                article.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                                                    'bg-gray-100 text-gray-800'
+                                        article.status === 'APPROVED' ? 'bg-blue-100 text-blue-800' :
+                                            article.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                                                'bg-gray-100 text-gray-800'
                                         }`}>
                                         {article.status}
                                     </span>

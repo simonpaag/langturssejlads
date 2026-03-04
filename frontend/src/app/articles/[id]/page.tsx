@@ -16,7 +16,7 @@ interface Article {
 export default async function ArticlePage({ params }: { params: { id: string } }) {
     let article: Article | null = null;
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/articles/${params.id}`, { cache: 'no-store' });
         if (res.ok) {
             article = await res.json();
