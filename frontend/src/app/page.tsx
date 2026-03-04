@@ -32,9 +32,12 @@ export interface Post {
   voyage: { id: number; title: string } | null;
 }
 
+import { unstable_noStore as noStore } from 'next/cache';
+
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  noStore();
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];
   try {

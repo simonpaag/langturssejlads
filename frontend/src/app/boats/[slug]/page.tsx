@@ -37,9 +37,12 @@ interface Boat {
     }[];
 }
 
+import { unstable_noStore as noStore } from 'next/cache';
+
 export const dynamic = 'force-dynamic';
 
 export default async function BoatProfile({ params }: { params: { slug: string } }) {
+    noStore();
     let boat: Boat | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
