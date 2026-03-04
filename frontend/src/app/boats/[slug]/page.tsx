@@ -45,9 +45,11 @@ export default async function BoatProfile({ params }: { params: { slug: string }
     noStore();
     let boat: Boat | null = null;
     let debugError = '';
+    let fetchUrl = '';
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/boats/${params.slug}`, { cache: 'no-store' });
+        fetchUrl = `${apiUrl}/api/boats/${params.slug}`;
+        const res = await fetch(fetchUrl, { cache: 'no-store' });
         if (res.ok) {
             boat = await res.json();
         } else {
@@ -77,7 +79,8 @@ export default async function BoatProfile({ params }: { params: { slug: string }
                 <h1 className="text-3xl font-merriweather font-bold text-muted-foreground">Logbogen er tom.</h1>
                 <p className="text-muted-foreground mt-4">Denne profil eksisterer ikke eller er blevet slettet.</p>
                 <code className="block mt-8 p-4 bg-muted text-xs text-left max-w-lg mx-auto overflow-x-auto text-red-500 rounded">
-                    DEBUG: {debugError || 'No error caught, boat simply returned null'}
+                    DEBUG: {debugError || 'No error caught, boat simply returned null'}<br />
+                    URL ATTEMPTED: {fetchUrl}
                 </code>
             </div>
         );
