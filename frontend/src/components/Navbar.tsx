@@ -80,7 +80,7 @@ export default function Navbar() {
 
             {/* Mobile Dropdown Menu (Overlay) */}
             {isMenuOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-card border-b border-border p-6 shadow-2xl z-40 flex flex-col gap-5 animate-in slide-in-from-top-4 fade-in duration-200">
+                <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border p-6 shadow-2xl z-40 flex flex-col gap-5 animate-in slide-in-from-top-4 fade-in duration-200">
                     <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                         <Compass className="w-5 h-5 text-primary" /> Forside
                     </Link>
