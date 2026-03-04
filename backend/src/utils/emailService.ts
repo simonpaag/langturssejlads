@@ -1,12 +1,17 @@
 import { Resend } from 'resend';
 
-// Vær sikker på at RESEND_API_KEY er defineret i din .env fil
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export const sendInviteEmail = async (toEmail: string) => {
     try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            console.error('BEMÆRK: RESEND_API_KEY mangler i serverens miljøvariabler. Invitation afbrudt.');
+            return { success: false, error: 'API nøgle mangler.' };
+        }
+
+        const resend = new Resend(apiKey);
+
         const data = await resend.emails.send({
-            from: 'Langturssejlads.dk <info@langturssejlads.dk>', // Bemærk: Dette virker kun hvis domænet er verificeret på Resend, ellers skal vi bruge deres test-domæne: 'onboarding@resend.dev'
+            from: 'Langturssejlads.dk <info@langturssejlads.dk>', // Bemærk: Dette virker kun hvis domænet er verificeret på Resend
             to: [toEmail],
             subject: 'Du er blevet anbefalet til Langturssejlads.dk ⛵',
             html: `
