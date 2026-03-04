@@ -70,12 +70,12 @@ export default function Navbar() {
                     <img
                         src="/images/hero-sunset.jpg"
                         alt="Hero solnedgang"
-                        className="absolute inset-0 w-full h-[140%] object-cover object-[center_40%] opacity-[0.65]"
+                        className="absolute inset-0 w-full h-full object-cover object-[80%_75%] md:object-[center_65%] opacity-[0.65]"
                     />
                     {/* Subtle Gradient Overlay for Text Readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
 
-                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 flex flex-col items-center justify-center text-center">
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-48 mt-[15%] md:mt-12 flex flex-col items-center justify-center text-center">
                         <Link href="/" className="group drop-shadow-lg">
                             <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-white group-hover:text-primary transition-colors">
                                 Langturssejlads
