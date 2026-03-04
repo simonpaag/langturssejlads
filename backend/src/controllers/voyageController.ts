@@ -3,7 +3,7 @@ import { prisma } from '../server';
 
 export const createVoyage = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { title, description, startDate, endDate, boatId, fromLocation, toLocation, imageUrl } = req.body;
+        const { title, description, startDate, endDate, boatId, fromLocation, toLocation, imageUrl, availableSeats } = req.body;
 
         if (!title || !startDate || !boatId) {
             res.status(400).json({ error: 'Titel, Startdato og Båd-ID er påkrævet.' });
@@ -19,6 +19,7 @@ export const createVoyage = async (req: Request, res: Response): Promise<void> =
                 imageUrl,
                 startDate: new Date(startDate),
                 endDate: endDate ? new Date(endDate) : null,
+                availableSeats: availableSeats ? Number(availableSeats) : 0,
                 boatId: Number(boatId)
             }
         });
@@ -75,6 +76,20 @@ export const getVoyagesForBoat = async (req: Request, res: Response): Promise<vo
         res.json(voyages);
     } catch (error) {
         res.status(500).json({ error: 'Fejl ved hentning af togter for båden' });
+    }
+};
+
+export const getAllVoyages = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const voyages = await prisma.voyage.findMany({
+            orderBy: { startDate: 'asc' },
+            include: {
+                boat: true
+            }
+        });
+        res.json(voyages);
+    } catch (error) {
+        res.status(500).json({ error: 'Fejl ved hentning af alle togter' });
     }
 };
 

@@ -110,19 +110,57 @@ async function main() {
         });
         console.log(`Linked ${user.name} to ${boat.name}`);
 
-        // Create a Voyage for the boat
+        // Create 3 Voyages for the boat (Past/Ongoing, Future Full, Future Open)
         const pastDate = new Date();
         pastDate.setDate(pastDate.getDate() - (i * 30 + 10)); // Started between 10 to 160 days ago
 
-        const voyage = await prisma.voyage.create({
+        const futureDate1 = new Date();
+        futureDate1.setMonth(futureDate1.getMonth() + 2 + i); // 2 to 6 months in future
+
+        const futureDate2 = new Date();
+        futureDate2.setMonth(futureDate2.getMonth() + 6 + i); // 6 to 10 months in future
+
+        const pastVoyage = await prisma.voyage.create({
             data: {
                 title: `Sommertogt ${pastDate.getFullYear()}`,
                 description: 'En lang rejse venter forude. Følg med her på ruten.',
                 startDate: pastDate,
-                boatId: boat.id
+                fromLocation: 'København',
+                toLocation: 'Lissabon',
+                availableSeats: 0,
+                boatId: boat.id,
+                imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80'
             }
         });
-        console.log(`Created voyage for ${boat.name}`);
+
+        const futureFullVoyage = await prisma.voyage.create({
+            data: {
+                title: `Atlantkryds ${futureDate1.getFullYear()}`,
+                description: 'Vi krydser atlanten. Holdet er sat, og vi glæder os!',
+                startDate: futureDate1,
+                fromLocation: 'Las Palmas',
+                toLocation: 'St. Lucia',
+                availableSeats: 0,
+                boatId: boat.id,
+                imageUrl: 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop'
+            }
+        });
+
+        const futureOpenVoyage = await prisma.voyage.create({
+            data: {
+                title: `Caribien Øhop ${futureDate2.getFullYear()}`,
+                description: 'Drømmer du om hvide strande og palmer? Vi har 2 ledige pladser på vores tur ned gennem Antillerne. Skriv til os!',
+                startDate: futureDate2,
+                fromLocation: 'St. Lucia',
+                toLocation: 'Grenada',
+                availableSeats: 2,
+                boatId: boat.id,
+                imageUrl: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=1200&q=80'
+            }
+        });
+
+        console.log(`Created 3 voyages for ${boat.name}`);
+        const voyage = pastVoyage; // Link posts to the active/past voyage
 
         // Create 5 mixed posts for this boat
         for (let j = 0; j < 5; j++) {

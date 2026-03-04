@@ -28,6 +28,7 @@ export default function Dashboard() {
     const [voyageImage, setVoyageImage] = useState('');
     const [voyageStart, setVoyageStart] = useState('');
     const [voyageEnd, setVoyageEnd] = useState('');
+    const [voyageSeats, setVoyageSeats] = useState('0');
     const [isSubmittingVoyage, setIsSubmittingVoyage] = useState(false);
 
     useEffect(() => {
@@ -151,7 +152,8 @@ export default function Dashboard() {
                     toLocation: voyageTo,
                     imageUrl: voyageImage,
                     startDate: voyageStart,
-                    endDate: voyageEnd || undefined
+                    endDate: voyageEnd || undefined,
+                    availableSeats: Number(voyageSeats)
                 })
             });
 
@@ -358,8 +360,8 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Dates */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Dates and Seats */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
                                         <label htmlFor="voyageStart" className="block text-sm font-semibold mb-2">Start Dato</label>
                                         <input type="date" id="voyageStart" value={voyageStart} onChange={(e) => setVoyageStart(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" required />
@@ -367,6 +369,10 @@ export default function Dashboard() {
                                     <div>
                                         <label htmlFor="voyageEnd" className="block text-sm font-semibold mb-2">Slut Dato (Valgfri)</label>
                                         <input type="date" id="voyageEnd" value={voyageEnd} onChange={(e) => setVoyageEnd(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="voyageSeats" className="block text-sm font-semibold mb-2">Ledige Pladser</label>
+                                        <input type="number" min="0" id="voyageSeats" value={voyageSeats} onChange={(e) => setVoyageSeats(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
                                     </div>
                                 </div>
                                 {/* Image */}
