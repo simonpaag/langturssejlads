@@ -37,6 +37,8 @@ interface Boat {
     }[];
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function BoatProfile({ params }: { params: { slug: string } }) {
     let boat: Boat | null = null;
     try {

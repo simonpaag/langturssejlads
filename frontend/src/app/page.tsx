@@ -32,6 +32,8 @@ export interface Post {
   voyage: { id: number; title: string } | null;
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];

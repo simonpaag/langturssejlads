@@ -15,6 +15,8 @@ interface Post {
     boat: { id: number; slug: string; name: string };
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function PostPage({ params }: { params: { slug: string } }) {
     let post: Post | null = null;
     try {
