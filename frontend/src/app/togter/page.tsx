@@ -34,7 +34,7 @@ export default function VoyagesOverviewPage() {
     useEffect(() => {
         const fetchVoyages = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/voyages`);
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/voyages`, { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setVoyages(data);

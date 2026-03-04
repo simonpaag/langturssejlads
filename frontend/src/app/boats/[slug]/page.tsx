@@ -30,6 +30,7 @@ interface Boat {
     }[];
     voyages: {
         id: number;
+        slug: string;
         title: string;
         description: string | null;
         startDate: string;
@@ -146,14 +147,14 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                         {boat.voyages && boat.voyages.length > 0 ? (
                             <div className="space-y-6">
                                 {boat.voyages.map(v => (
-                                    <div key={v.id} className="border-l-2 border-primary pl-4 py-1">
-                                        <h4 className="font-bold text-lg font-merriweather">{v.title}</h4>
+                                    <Link key={v.id} href={`/boats/${boat.slug}/voyages/${v.slug}`} className="block border-l-2 border-primary pl-4 py-1 hover:bg-muted/30 transition-colors rounded-r-lg group cursor-pointer">
+                                        <h4 className="font-bold text-lg font-merriweather group-hover:text-primary transition-colors">{v.title}</h4>
                                         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
                                             {format(new Date(v.startDate), 'MMMM yyyy', { locale: da })}
                                             {v.endDate ? ` - ${format(new Date(v.endDate), 'MMMM yyyy', { locale: da })}` : ' - Nu'}
                                         </p>
                                         <p className="text-sm text-foreground line-clamp-3">{v.description}</p>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
                         ) : (
