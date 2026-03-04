@@ -81,9 +81,11 @@ export default function Navbar() {
             {/* Mobile Dropdown Menu (Overlay) */}
             {isMenuOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border p-6 shadow-2xl z-40 flex flex-col gap-5 animate-in slide-in-from-top-4 fade-in duration-200">
-                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                        <Compass className="w-5 h-5 text-primary" /> Forside
-                    </Link>
+                    {pathname !== "/" && (
+                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                            <Compass className="w-5 h-5 text-primary" /> Forside
+                        </Link>
+                    )}
                     <Link href="/om" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                         Om Langturssejlads
                     </Link>
@@ -129,9 +131,11 @@ export default function Navbar() {
             <div className="border-y border-border/60 shadow-sm sticky top-0 bg-background/80 backdrop-blur-xl z-50 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex h-14 justify-center items-center space-x-8 md:space-x-12 overflow-x-auto no-scrollbar">
-                        <Link href="/" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Forside
-                        </Link>
+                        {pathname !== "/" && (
+                            <Link href="/" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
+                                Forside
+                            </Link>
+                        )}
                         <Link href="/boats" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
                             Både til søs
                         </Link>
