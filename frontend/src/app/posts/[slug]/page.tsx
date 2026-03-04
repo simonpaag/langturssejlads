@@ -17,7 +17,7 @@ interface Post {
     boat: { id: number; slug: string; name: string; profileImage?: string | null; };
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
     const resolvedParams = await Promise.resolve(params);
@@ -25,7 +25,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     let post: Post | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/posts/${slug}`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/posts/${slug}`, { next: { revalidate: 60 } });
         if (res.ok) {
             post = await res.json();
         }

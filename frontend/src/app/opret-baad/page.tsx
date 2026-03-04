@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sailboat } from 'lucide-react';
+import ImageUpload from '@/components/ImageUpload';
 
 export default function CreateBoatPage() {
     const router = useRouter();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [coverImage, setCoverImage] = useState<string | null>(null);
+    const [profileImage, setProfileImage] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState<string | null>(null);
@@ -36,7 +39,7 @@ export default function CreateBoatPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ name, description }),
+                body: JSON.stringify({ name, description, coverImage, profileImage }),
             });
 
             const data = await res.json();
@@ -104,6 +107,25 @@ export default function CreateBoatPage() {
                                 className="w-full px-5 py-4 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground min-h-[120px] resize-y"
                                 placeholder="Hvor er vi på vej hen? Hvad er båden for en type?"
                             />
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-6">
+                            <div className="flex-1">
+                                <ImageUpload
+                                    onUploadSuccess={setCoverImage}
+                                    currentImage={coverImage}
+                                    label="Coverbillede til Båden (Valgfrit)"
+                                    aspectRatio="video"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <ImageUpload
+                                    onUploadSuccess={setProfileImage}
+                                    currentImage={profileImage}
+                                    label="Bådens Profilbillede (Logo - Valgfrit)"
+                                    aspectRatio="square"
+                                />
+                            </div>
                         </div>
 
                         <button

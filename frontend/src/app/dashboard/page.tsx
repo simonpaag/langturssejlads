@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2 } from 'lucide-react';
+import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PostManager from '@/components/dashboard/PostManager';
+import ImageUpload from '@/components/ImageUpload';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -285,10 +286,6 @@ export default function Dashboard() {
         return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
     }
 
-    if (isLoadingUser) {
-        return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
-    }
-
     return (
         <div className="flex min-h-[calc(100vh-4rem)] bg-muted/30">
             {/* Sidebar */}
@@ -406,16 +403,12 @@ export default function Dashboard() {
                                 )}
 
                                 {(postType === 'PHOTO' || postType === 'ARTICLE') && (
-                                    <div>
-                                        <label htmlFor="imageUrl" className="block text-sm font-semibold mb-2">{postType === 'ARTICLE' ? 'Coverbillede URL (Valgfri)' : 'Billede URL'}</label>
-                                        <input
-                                            type="url"
-                                            id="imageUrl"
-                                            value={imageUrl}
-                                            onChange={(e) => setImageUrl(e.target.value)}
-                                            placeholder="Indsæt et link til dit billede..."
-                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                                            required={postType === 'PHOTO'}
+                                    <div className="mb-4">
+                                        <ImageUpload
+                                            onUploadSuccess={setImageUrl}
+                                            currentImage={imageUrl}
+                                            label={postType === 'ARTICLE' ? 'Coverbillede URL (Valgfri)' : 'Billede til dit indlæg'}
+                                            aspectRatio="video"
                                         />
                                     </div>
                                 )}
@@ -499,10 +492,14 @@ export default function Dashboard() {
                                         <input type="number" min="0" id="voyageSeats" value={voyageSeats} onChange={(e) => setVoyageSeats(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
                                     </div>
                                 </div>
-                                {/* Image */}
+                                {/* Image Upload (Kompressor) */}
                                 <div>
-                                    <label htmlFor="voyageImage" className="block text-sm font-semibold mb-2">Kort / Coverbillede (URL - Valgfrit)</label>
-                                    <input type="url" id="voyageImage" value={voyageImage} onChange={(e) => setVoyageImage(e.target.value)} placeholder="Indsæt link til billede af et kort eller ruten..." className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                    <ImageUpload
+                                        onUploadSuccess={setVoyageImage}
+                                        currentImage={voyageImage}
+                                        label="Kort / Coverbillede til Togtet (Valgfrit)"
+                                        aspectRatio="video"
+                                    />
                                 </div>
                                 {/* Description */}
                                 <div>
@@ -563,27 +560,21 @@ export default function Dashboard() {
                                     <p className="text-xs text-muted-foreground mt-1">Ændres navnet, opdateres URL'en automatisk.</p>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label htmlFor="boatCoverImage" className="block text-sm font-semibold mb-2">Coverbillede (URL til topbillede)</label>
-                                        <input
-                                            type="url"
-                                            id="boatCoverImage"
-                                            value={boatCoverImage}
-                                            onChange={(e) => setBoatCoverImage(e.target.value)}
-                                            placeholder="https://..."
-                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        <ImageUpload
+                                            onUploadSuccess={setBoatCoverImage}
+                                            currentImage={boatCoverImage}
+                                            label="Coverbillede (Topbillede)"
+                                            aspectRatio="video"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="boatProfileImage" className="block text-sm font-semibold mb-2">Profilbillede (F.eks logo - URL)</label>
-                                        <input
-                                            type="url"
-                                            id="boatProfileImage"
-                                            value={boatProfileImage}
-                                            onChange={(e) => setBoatProfileImage(e.target.value)}
-                                            placeholder="https://..."
-                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        <ImageUpload
+                                            onUploadSuccess={setBoatProfileImage}
+                                            currentImage={boatProfileImage}
+                                            label="Profilbillede (F.eks Logo)"
+                                            aspectRatio="square"
                                         />
                                     </div>
                                 </div>

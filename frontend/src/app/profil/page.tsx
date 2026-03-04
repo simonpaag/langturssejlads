@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserCircle, Camera, Save, LogOut } from 'lucide-react';
+import { Save, LogOut } from 'lucide-react';
+import ImageUpload from '@/components/ImageUpload';
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -105,35 +106,13 @@ export default function ProfilePage() {
                         )}
 
                         <div className="flex flex-col sm:flex-row gap-8 items-start sm:items-center">
-                            {/* Avatar Preview */}
-                            <div className="relative group shrink-0">
-                                <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-background shadow-lg bg-muted flex items-center justify-center relative z-10">
-                                    {profileImage ? (
-                                        <img src={profileImage} alt="Preview" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <UserCircle className="w-16 h-16 text-muted-foreground opacity-50" />
-                                    )}
-                                </div>
-                                <div className="absolute inset-0 bg-primary/10 blur-xl rounded-full scale-110 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            </div>
-
                             <div className="flex-1 w-full space-y-2">
-                                <label className="block text-[11px] font-bold uppercase tracking-widest text-foreground/80">
-                                    Profilbillede URL
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Camera className="w-4 h-4 text-muted-foreground" />
-                                    </div>
-                                    <input
-                                        type="url"
-                                        value={profileImage}
-                                        onChange={(e) => setProfileImage(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3 bg-background text-foreground text-sm rounded-xl border border-border/80 focus:ring-2 focus:ring-primary/50 outline-none transition-all placeholder:text-muted-foreground/60"
-                                        placeholder="https://eksempel.dk/mit-billede.jpg"
-                                    />
-                                </div>
-                                <p className="text-xs text-muted-foreground pt-1 px-1">Tip: Find et godt billede, højreklik og vælg "Kopier Billedadresse".</p>
+                                <ImageUpload
+                                    onUploadSuccess={(url) => setProfileImage(url)}
+                                    currentImage={profileImage}
+                                    label="Dit profilbillede"
+                                    aspectRatio="square"
+                                />
                             </div>
                         </div>
 

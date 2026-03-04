@@ -6,9 +6,11 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+export const revalidate = 60; // 60 sek. Cache
+
 async function getVoyage(voyageSlug: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-    const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { next: { revalidate: 60 } });
     if (!res.ok) {
         return { error: true, status: res.status, url: `${apiUrl}/api/voyages/${voyageSlug}` };
     }

@@ -46,16 +46,16 @@ import { unstable_noStore as noStore } from 'next/cache';
 import PostVotes from '@/components/PostVotes';
 import Noticeboard from '@/components/Noticeboard';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Cache i et minut for superhastighed
 
 export default async function BoatProfile({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
     const resolvedParams = await Promise.resolve(params);
     const slug = resolvedParams.slug;
-    noStore();
+
     let boat: Boat | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/boats/${slug}`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/boats/${slug}`, { next: { revalidate: 60 } });
         if (res.ok) {
             boat = await res.json();
         }

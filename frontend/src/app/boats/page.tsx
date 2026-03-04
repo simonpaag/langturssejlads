@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Ship } from 'lucide-react';
+import Image from 'next/image';
 
 interface Boat {
     id: number;
@@ -14,16 +15,13 @@ interface Boat {
     }[];
 }
 
-import { unstable_noStore as noStore } from 'next/cache';
-
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Cachet i 60 sekunder på Vercel
 
 export default async function BoatsPage() {
-    noStore();
     let boats: Boat[] = [];
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/boats`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/boats`, { next: { revalidate: 60 } });
         if (res.ok) {
             boats = await res.json();
         }
@@ -51,10 +49,12 @@ export default async function BoatsPage() {
                         <div className="flex flex-col h-full hover-lift">
                             <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
                                 {/* Visuel prioritet: Cover -> Profilbillede -> Placeholder */}
-                                <img
+                                <Image
                                     src={boat.coverImage || boat.profileImage || `https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=800&auto=format&fit=crop&sig=${boat.id * 10}`}
-                                    alt={boat.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
+                                    alt={`Sejlbåden ${boat.name} - Danske Sejlere`}
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
                                 />
                             </div>
                             <div className="flex-1 border-t border-border pt-4">

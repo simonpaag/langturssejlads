@@ -33,17 +33,17 @@ export interface Post {
 }
 
 import { unstable_noStore as noStore } from 'next/cache';
+import { Ship, Sailboat, ChevronRight, User } from 'lucide-react';
 import InviteCard from '@/components/InviteCard';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // Cached per minut
 
 export default async function Home() {
-  noStore();
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-    const res = await fetch(`${apiUrl}/api/posts`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/api/posts`, { next: { revalidate: 60 } });
     if (res.ok) {
       allPosts = await res.json();
     }
@@ -92,12 +92,16 @@ export default async function Home() {
       {/* Featured Story */}
       {featured ? (
         <article className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-20 items-center">
-          <Link href={`/posts/${featured.slug}`} className="block lg:col-span-8 group overflow-hidden rounded-[2rem] relative h-[400px] md:h-[500px] lg:h-[600px] shadow-xl border border-border/40">
-            <img
-              src={featured.imageUrl || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=1600&auto=format&fit=crop`}
-              alt="Featured sailing image"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
-            />
+          <Link href={`/posts/${featured.slug}`} className="relative h-64 md:h-full min-h-[400px] w-full lg:col-span-8 overflow-hidden rounded-3xl shadow-2xl group flex-shrink-0">
+            <div className="absolute inset-0 relative w-full h-full">
+              <Image
+                src={featured.imageUrl || `https://images.unsplash.com/photo-1544331046-ad6498b846bf?q=80&w=1200&auto=format&fit=crop`}
+                alt={`Opdatering fra ${featured.boat.name}: ${featured.title || 'Ingen titel'}`}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                priority
+              />
+            </div>
             {/* Subtle overlay gradient to frame the image and highlight UI elements inside */}
             <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/10 pointer-events-none"></div>
 
@@ -129,7 +133,16 @@ export default async function Home() {
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
               <span className="font-semibold text-sm flex items-center gap-2">
-                {featured.author.profileImage && <img src={featured.author.profileImage} alt={featured.author.name} className="w-6 h-6 rounded-full" />}
+                {featured.author.profileImage ? (
+                  <Image
+                    src={featured.author.profileImage}
+                    alt={`Profilbillede af Kaptajn ${featured.author.name}`}
+                    width={24} height={24}
+                    className="rounded-full object-cover w-6 h-6"
+                  />
+                ) : (
+                  <User className="w-5 h-5 text-muted-foreground mr-1" />
+                )}
                 Af {featured.author.name}
               </span>
               <Link href={`/posts/${featured.slug}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
@@ -157,10 +170,12 @@ export default async function Home() {
               {restOfPosts.map((post, idx) => (
                 <article key={post.id} className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
                   <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
-                    <img
+                    <Image
                       src={post.imageUrl || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${post.id}`}
-                      alt="Sailing grid image"
-                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+                      alt={`Glimt fra havet: ${post.title || post.boat.name}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                     />
                     {post.youtubeUrl && (
                       <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase flex items-center gap-1.5 shadow-md">
@@ -172,7 +187,16 @@ export default async function Home() {
                   <div className="flex flex-col flex-grow p-6">
                     <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-primary">
                       <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-1.5 items-center">
-                        {post.boat.profileImage && <img src={post.boat.profileImage} alt={post.boat.name} className="w-5 h-5 rounded-full object-cover" />}
+                        {post.boat.profileImage && (
+                          <div className="w-5 h-5 relative">
+                            <Image
+                              src={post.boat.profileImage}
+                              alt={`Logo for ${post.boat.name}`}
+                              fill
+                              className="rounded-full object-cover"
+                            />
+                          </div>
+                        )}
                         {post.boat.name}
                       </Link>
                       <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(post.createdAt), 'd. MMM yyyy', { locale: da })}</span>
@@ -190,7 +214,16 @@ export default async function Home() {
 
                     <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
                       <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
-                        {post.author.profileImage && <img src={post.author.profileImage} alt={post.author.name} className="w-6 h-6 rounded-full object-cover" />}
+                        {post.author.profileImage ? (
+                          <Image
+                            src={post.author.profileImage}
+                            alt={`Profilbillede af forfatter ${post.author.name}`}
+                            width={24} height={24}
+                            className="rounded-full object-cover w-6 h-6"
+                          />
+                        ) : (
+                          <User className="w-4 h-4 text-muted-foreground mr-1" />
+                        )}
                         Af {post.author.name}
                       </span>
                     </div>
