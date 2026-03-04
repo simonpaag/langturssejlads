@@ -5,13 +5,21 @@ export default function AnnoncorPage() {
     return (
         <div className="min-h-screen bg-background flex flex-col font-inter">
             {/* Hero Section */}
-            <div className="relative w-full py-24 lg:py-32 overflow-hidden border-b border-border/40 bg-muted/30">
+            <div className="relative w-full py-32 lg:py-48 overflow-hidden bg-muted/30">
+                <div
+                    className="absolute inset-0 z-0 bg-cover bg-center"
+                    style={{ backgroundImage: "url('/annoncor-hero.jpg')" }}
+                >
+                    <div className="absolute inset-0 bg-foreground/70 mix-blend-multiply" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                </div>
+
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary uppercase tracking-widest text-xs font-bold mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-background/20 text-white border border-white/20 uppercase tracking-widest text-xs font-bold mb-6 backdrop-blur-sm shadow-sm">
                         <Megaphone className="w-4 h-4" />
                         Kommercielt Samarbejde
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-merriweather font-black text-foreground drop-shadow-sm leading-[1.1]">
+                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-merriweather font-black text-white drop-shadow-xl leading-[1.1]">
                         Bliv Annoncør
                     </h1>
                 </div>
