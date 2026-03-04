@@ -16,14 +16,14 @@ app.get('/', (req: Request, res: Response) => {
 import authRoutes from './routes/authRoutes';
 import boatRoutes from './routes/boatRoutes';
 import crewRoutes from './routes/crewRoutes';
-import articleRoutes from './routes/articleRoutes';
+import postRoutes from './routes/postRoutes';
 import voyageRoutes from './routes/voyageRoutes';
 
 // We will import and mount routes here later
 app.use('/api/auth', authRoutes);
 app.use('/api/boats', boatRoutes);
 app.use('/api/crew', crewRoutes);
-app.use('/api/posts', articleRoutes);
+app.use('/api/posts', postRoutes);
 app.use('/api/voyages', voyageRoutes);
 
 app.listen(port, () => {
