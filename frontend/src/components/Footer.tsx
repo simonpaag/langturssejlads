@@ -30,6 +30,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm font-medium text-muted-foreground">
                             <li><Link href="/om" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Projektet / Om os</Link></li>
                             <li><Link href="/annoncor" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Bliv annoncør</Link></li>
+                            <li><Link href="/rettigheder" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Rettigheder & Vilkår</Link></li>
                             <li><Link href="/moderation" className="hover:text-primary hover:translate-x-1 inline-block transition-transform text-destructive/80 font-bold">Retningslinjer</Link></li>
                         </ul>
                     </div>
