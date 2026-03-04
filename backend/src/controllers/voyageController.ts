@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
+import slugify from 'slugify';
 
 export const createVoyage = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -10,9 +11,12 @@ export const createVoyage = async (req: Request, res: Response): Promise<void> =
             return;
         }
 
+        const slug = `${slugify(title, { lower: true, strict: true })}-${boatId}`;
+
         const newVoyage = await prisma.voyage.create({
             data: {
                 title,
+                slug,
                 description,
                 fromLocation,
                 toLocation,
@@ -33,8 +37,11 @@ export const createVoyage = async (req: Request, res: Response): Promise<void> =
 
 export const getVoyage = async (req: Request, res: Response): Promise<void> => {
     try {
-        const voyage = await prisma.voyage.findUnique({
-            where: { id: Number(req.params.id) },
+        const param = req.params.id as string;
+        const parsedId = Number(param);
+
+        const voyage = await prisma.voyage.findFirst({
+            where: isNaN(parsedId) ? { slug: param } : { id: parsedId },
             include: {
                 boat: {
                     include: {

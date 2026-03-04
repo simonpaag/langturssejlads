@@ -123,6 +123,7 @@ async function main() {
         const pastVoyage = await prisma.voyage.create({
             data: {
                 title: `Sommertogt ${pastDate.getFullYear()}`,
+                slug: `sommertogt-${pastDate.getFullYear()}-${boat.id}`,
                 description: 'En lang rejse venter forude. Følg med her på ruten.',
                 startDate: pastDate,
                 fromLocation: 'København',
@@ -136,6 +137,7 @@ async function main() {
         const futureFullVoyage = await prisma.voyage.create({
             data: {
                 title: `Atlantkryds ${futureDate1.getFullYear()}`,
+                slug: `atlantkryds-${futureDate1.getFullYear()}-${boat.id}`,
                 description: 'Vi krydser atlanten. Holdet er sat, og vi glæder os!',
                 startDate: futureDate1,
                 fromLocation: 'Las Palmas',
@@ -149,6 +151,7 @@ async function main() {
         const futureOpenVoyage = await prisma.voyage.create({
             data: {
                 title: `Caribien Øhop ${futureDate2.getFullYear()}`,
+                slug: `caribien-oehop-${futureDate2.getFullYear()}-${boat.id}`,
                 description: 'Drømmer du om hvide strande og palmer? Vi har 2 ledige pladser på vores tur ned gennem Antillerne. Skriv til os!',
                 startDate: futureDate2,
                 fromLocation: 'St. Lucia',

@@ -15,6 +15,7 @@ interface Boat {
 
 interface Voyage {
     id: number;
+    slug: string;
     title: string;
     description: string;
     startDate: string;
@@ -55,7 +56,7 @@ export default function VoyagesOverviewPage() {
     const pastOngoingVoyages = voyages.filter(v => new Date(v.startDate) <= now);
 
     const VoyageCard = ({ voyage, showSeats = false }: { voyage: Voyage, showSeats?: boolean }) => (
-        <Link href={`/boats/${voyage.boat.slug}/voyages/${voyage.id}`} className="group block h-full">
+        <Link href={`/boats/${voyage.boat.slug}/voyages/${voyage.slug}`} className="group block h-full">
             <div className="bg-card border border-border rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
                 <div className="relative h-64 overflow-hidden">
                     <img

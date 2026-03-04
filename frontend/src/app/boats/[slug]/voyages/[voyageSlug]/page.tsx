@@ -6,15 +6,15 @@ import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-async function getVoyage(voyageId: string) {
+async function getVoyage(voyageSlug: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-    const res = await fetch(`${apiUrl}/api/voyages/${voyageId}`, { next: { revalidate: 10 } });
+    const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { next: { revalidate: 10 } });
     if (!res.ok) return null;
     return res.json();
 }
 
-export default async function VoyagePage({ params }: { params: { slug: string; voyageId: string } }) {
-    const voyage = await getVoyage(params.voyageId);
+export default async function VoyagePage({ params }: { params: { slug: string; voyageSlug: string } }) {
+    const voyage = await getVoyage(params.voyageSlug);
 
     if (!voyage) {
         notFound();

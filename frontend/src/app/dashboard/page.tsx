@@ -409,7 +409,7 @@ export default function Dashboard() {
                                                         {v.endDate && <span>- {new Date(v.endDate).toLocaleDateString('da-DK')}</span>}
                                                     </div>
                                                 </div>
-                                                <Link href={`/boats/${currentBoat?.slug}/voyages/${v.id}`} className="px-4 py-2 border-2 border-primary/20 rounded-lg text-sm font-bold text-primary hover:bg-primary/5 transition-colors whitespace-nowrap">
+                                                <Link href={`/boats/${currentBoat?.slug}/voyages/${v.slug}`} className="px-4 py-2 border-2 border-primary/20 rounded-lg text-sm font-bold text-primary hover:bg-primary/5 transition-colors whitespace-nowrap">
                                                     Vis Invitation
                                                 </Link>
                                             </div>
