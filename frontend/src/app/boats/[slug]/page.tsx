@@ -15,6 +15,7 @@ export interface Post {
     createdAt: string;
     author: { name: string; profileImage: string | null; };
     voyage: { title: string } | null;
+    votes?: { type: 'UPVOTE' | 'DOWNVOTE'; userId: number }[];
 }
 
 interface Boat {
@@ -41,6 +42,7 @@ interface Boat {
 }
 
 import { unstable_noStore as noStore } from 'next/cache';
+import PostVotes from '@/components/PostVotes';
 
 export const dynamic = 'force-dynamic';
 
@@ -274,8 +276,9 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                         )}
                                     </div>
 
-                                    {/* Moderation Link */}
-                                    <div className="bg-muted/10 px-6 py-3 border-t border-border/30 flex justify-end">
+                                    {/* Action Footer (Votes & Moderation) */}
+                                    <div className="bg-muted/10 px-6 py-3 border-t border-border/30 flex justify-between items-center">
+                                        <PostVotes postId={post.id} initialVotes={post.votes || []} />
                                         <Link href="/moderation" className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors opacity-60 hover:opacity-100">
                                             <ShieldAlert className="w-3.5 h-3.5" />
                                             Rapportér Indhold

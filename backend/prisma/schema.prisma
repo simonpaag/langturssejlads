@@ -19,6 +19,7 @@ model User {
   
   crewMemberships CrewMember[]
   posts           Post[]
+  votes           Vote[]
 }
 
 model Boat {
@@ -74,6 +75,27 @@ model Post {
 
   voyage      Voyage?       @relation(fields: [voyageId], references: [id])
   voyageId    Int?
+
+  votes       Vote[]
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+model Vote {
+  id        Int      @id @default(autoincrement())
+  type      VoteType
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+
+  @@unique([userId, postId])
 }
 
 model Voyage {

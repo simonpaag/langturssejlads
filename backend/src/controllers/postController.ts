@@ -84,7 +84,8 @@ export const getPublicPosts = async (req: AuthRequest, res: Response): Promise<v
             include: {
                 author: { select: { id: true, name: true, profileImage: true } },
                 boat: { select: { id: true, slug: true, name: true, profileImage: true } },
-                voyage: { select: { id: true, title: true } }
+                voyage: { select: { id: true, title: true } },
+                votes: { select: { type: true, userId: true } }
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -103,7 +104,8 @@ export const getPostBySlug = async (req: AuthRequest, res: Response): Promise<vo
             include: {
                 author: { select: { id: true, name: true, profileImage: true } },
                 boat: { select: { id: true, slug: true, name: true, profileImage: true } },
-                voyage: { select: { id: true, title: true } }
+                voyage: { select: { id: true, title: true } },
+                votes: { select: { type: true, userId: true } }
             },
         });
 
@@ -223,9 +225,60 @@ export const togglePostStatus = async (req: AuthRequest, res: Response): Promise
             data: { status: newStatus },
         });
 
-        res.json({ message: 'Post status toggled', post: updatedPost });
+        res.json({ message: `Post status updated to ${newStatus}`, post: updatedPost });
     } catch (error) {
         console.error('Toggle post status error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const toggleVote = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params; // postId
+        const { type } = req.body; // 'UPVOTE' or 'DOWNVOTE'
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const postId = Number(id);
+
+        if (!['UPVOTE', 'DOWNVOTE'].includes(type)) {
+            res.status(400).json({ error: 'Invalid vote type' });
+            return;
+        }
+
+        const existingVote = await prisma.vote.findUnique({
+            where: {
+                userId_postId: { userId, postId }
+            }
+        });
+
+        if (existingVote) {
+            if (existingVote.type === type) {
+                await prisma.vote.delete({ where: { id: existingVote.id } });
+                res.json({ message: 'Vote removed' });
+                return;
+            } else {
+                const updatedVote = await prisma.vote.update({
+                    where: { id: existingVote.id },
+                    data: { type }
+                });
+                res.json({ message: 'Vote updated', vote: updatedVote });
+                return;
+            }
+        } else {
+            const newVote = await prisma.vote.create({
+                data: { type, userId, postId }
+            });
+            res.json({ message: 'Vote added', vote: newVote });
+            return;
+        }
+
+    } catch (error) {
+        console.error('Toggle vote error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
