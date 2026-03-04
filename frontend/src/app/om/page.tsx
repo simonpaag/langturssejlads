@@ -56,6 +56,33 @@ export default function OmPage() {
                         </div>
                     </section>
 
+                    {/* Hvordan støtter jeg op */}
+                    <section className="bg-primary/5 rounded-3xl p-8 sm:p-12 border border-primary/20">
+                        <div className="flex items-center gap-4 mb-6">
+                            <Anchor className="w-10 h-10 text-primary p-2 bg-primary/10 rounded-full" />
+                            <h2 className="text-3xl font-merriweather font-black text-foreground m-0">Hvordan støtter jeg op?</h2>
+                        </div>
+                        <div className="prose prose-lg dark:prose-invert max-w-none text-foreground/80 leading-relaxed font-medium">
+                            <p>
+                                Det er det fantastiske ved et projekt <em>af sejlere, for sejlere</em>: Din støtte betyder alt. Du kan støtte op om Langturssejlads på flere måder:
+                            </p>
+                            <ul className="space-y-4 mt-6">
+                                <li className="pl-2">
+                                    <strong className="text-foreground text-lg block mb-1">Skab indhold på platformen</strong>
+                                    Opret din båd, skriv jeres rigtige logbøger herinde, og del de spændende togter og sejladser, I tager på. Jo flere historier, jo mere levende og uundværlig bliver Danmarks største logbog for andre sejlere.
+                                </li>
+                                <li className="pl-2">
+                                    <strong className="text-foreground text-lg block mb-1">Bidrag i fællesskabet</strong>
+                                    Vær aktiv i vores <a href="https://www.facebook.com/groups/Langturssejlads/" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors font-bold underline decoration-2 underline-offset-4">Facebook-gruppe</a>. Svar fyldestgørende og sagligt på andres spørgsmål, start gode diskussioner, og del meget gerne links til eksterne ressourcer eller erfarne guides, der har hjulpet dig.
+                                </li>
+                                <li className="pl-2">
+                                    <strong className="text-foreground text-lg block mb-1">Bliv Annoncør eller Sponsor</strong>
+                                    Kender du en virksomhed, en udstyrsleverandør eller et maritimt brand, der kunne have interesse i at støtte udviklingen af vores non-profit platform? Så peg dem endelig i retning af <a href="/om" className="text-primary hover:text-primary/80 transition-colors font-bold underline decoration-2 underline-offset-4">Bliv Annoncør / Sponsor</a> muligheden (eller kontakt os direkte). Deres støtte er drivmidlet til platformens overlevelse og udvikling.
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+
                     {/* Fremtiden & Idé-formular */}
                     <section>
                         <div className="flex items-center gap-3 mb-6">
