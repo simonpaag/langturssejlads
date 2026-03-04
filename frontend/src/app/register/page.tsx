@@ -38,8 +38,8 @@ export default function RegisterPage() {
             } else {
                 router.push('/login');
             }
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Registration failed');
         } finally {
             setIsLoading(false);
         }

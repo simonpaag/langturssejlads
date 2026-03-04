@@ -3,14 +3,17 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
-import { FileText, Eye, EyeOff, FileEdit, Trash2, ShieldAlert } from 'lucide-react';
+import { FileText, Eye, EyeOff, FileEdit, Trash2 } from 'lucide-react';
 
 interface PostManagerProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     boat: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onEditPost?: (post: any) => void;
 }
 
 export default function PostManager({ boat, onEditPost }: PostManagerProps) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');

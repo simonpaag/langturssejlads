@@ -80,9 +80,9 @@ export default function ImageUpload({ onUploadSuccess, currentImage, label = "Up
             setPreview(publicUrl);
             setIsUploading(false);
 
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
-            setError(err.message || 'Der opstod en uventet fejl under upload.');
+            setError(err instanceof Error ? err.message : 'Der opstod en uventet fejl under upload.');
             setIsUploading(false);
             setPreview(currentImage || null); // Revert
         }

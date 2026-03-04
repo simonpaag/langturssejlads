@@ -177,7 +177,7 @@ export default function Navbar() {
                         </Link>
                         {(isLoggedIn || isAdmin) && (
                             <Link href="/dashboard" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                                "Under dæk"
+                                &quot;Under dæk&quot;
                             </Link>
                         )}
                     </div>

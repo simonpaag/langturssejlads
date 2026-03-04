@@ -70,7 +70,7 @@ export default function PostVotes({ postId, initialVotes }: PostVotesProps) {
                 const data = await res.json();
 
                 // Optimistic UI update
-                let newVotes = [...votes];
+                const newVotes = [...votes];
                 const existingVoteIndex = newVotes.findIndex(v => v.userId === currentUserId);
 
                 if (data.message === 'Vote removed') {
