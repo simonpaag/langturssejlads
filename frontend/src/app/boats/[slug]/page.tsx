@@ -41,14 +41,16 @@ import { unstable_noStore as noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
-export default async function BoatProfile({ params }: { params: { slug: string } }) {
+export default async function BoatProfile({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+    const resolvedParams = await Promise.resolve(params);
+    const slug = resolvedParams.slug;
     noStore();
     let boat: Boat | null = null;
     let debugError = '';
     let fetchUrl = '';
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        fetchUrl = `${apiUrl}/api/boats/${params.slug}`;
+        fetchUrl = `${apiUrl}/api/boats/${slug}`;
         const res = await fetch(fetchUrl, { cache: 'no-store' });
         if (res.ok) {
             boat = await res.json();
@@ -67,7 +69,7 @@ export default async function BoatProfile({ params }: { params: { slug: string }
         const res = await fetch(`${apiUrl}/api/posts`, { cache: 'no-store' });
         if (res.ok) {
             const allPosts: Post[] = await res.json();
-            posts = allPosts.filter((p: any) => p.boat?.slug === params.slug);
+            posts = allPosts.filter((p: any) => p.boat?.slug === slug);
         }
     } catch (error) {
         console.error('Failed to fetch boat posts');
