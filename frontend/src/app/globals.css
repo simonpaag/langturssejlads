@@ -25,17 +25,15 @@
   --color-border: var(--border);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
-    --primary: #60a5fa;
-    --primary-light: #93c5fd;
-    --accent: #fbbf24;
-    --muted: #18181b;
-    --muted-foreground: #a1a1aa;
-    --border: #27272a;
-  }
+.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  --primary: #60a5fa;
+  --primary-light: #93c5fd;
+  --accent: #fbbf24;
+  --muted: #18181b;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
 }
 
 body {
