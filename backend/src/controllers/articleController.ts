@@ -84,3 +84,26 @@ export const getPublicArticles = async (req: AuthRequest, res: Response): Promis
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const getAllArticlesForAdmin = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const isSystemAdmin = req.user?.isSystemAdmin;
+
+        if (!isSystemAdmin) {
+            res.status(403).json({ error: 'Forbidden. System Admins only.' });
+            return;
+        }
+
+        const articles = await prisma.article.findMany({
+            include: {
+                author: { select: { id: true, name: true } },
+                boat: { select: { id: true, name: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+        res.json(articles);
+    } catch (error) {
+        console.error('Get all articles error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
