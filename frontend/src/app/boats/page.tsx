@@ -7,6 +7,7 @@ interface Boat {
     name: string;
     description: string;
     coverImage: string | null;
+    profileImage: string | null;
     crewMemberships: {
         user: { id: number; name: string };
         role: string;
@@ -49,9 +50,9 @@ export default async function BoatsPage() {
                     <Link href={`/boats/${boat.slug}`} key={boat.id} className="block group">
                         <div className="flex flex-col h-full hover-lift">
                             <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
-                                {/* Simulated beautiful cover placeholder */}
+                                {/* Visuel prioritet: Cover -> Profilbillede -> Placeholder */}
                                 <img
-                                    src={`https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=800&auto=format&fit=crop&sig=${boat.id * 10}`}
+                                    src={boat.coverImage || boat.profileImage || `https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=800&auto=format&fit=crop&sig=${boat.id * 10}`}
                                     alt={boat.name}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
                                 />
