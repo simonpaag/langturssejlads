@@ -1,7 +1,15 @@
+'use client';
+
 import { ShieldAlert, AlertTriangle, Scale, UserX } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ModerationPage() {
+    const handleModerationSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        alert('Tak for din advarsel! Vi undersøger sagen og skrider ind hurtigst muligt.');
+        (e.target as HTMLFormElement).reset();
+    };
+
     return (
         <div className="min-h-screen bg-background flex flex-col font-inter">
             {/* Hero Section */}
@@ -90,20 +98,50 @@ export default function ModerationPage() {
                     </div>
                 </section>
 
-                {/* Footer Raport section */}
-                <section className="flex flex-col sm:flex-row items-center justify-between gap-6 p-8 bg-card border border-border rounded-xl shadow-sm">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-primary/10 rounded-full">
-                            <UserX className="w-6 h-6 text-primary" />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-lg mb-1">Har du set noget upassende?</h3>
-                            <p className="text-sm text-muted-foreground">Ser du et brud på vores guidelines, håber vi meget at du rækker ud, så vi kan vurdere det.</p>
-                        </div>
+                {/* Moderation Formular */}
+                <section className="bg-secondary/5 border border-border rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-destructive/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+
+                    <div className="flex items-center gap-3 mb-6 relative">
+                        <ShieldAlert className="w-8 h-8 text-destructive" />
+                        <h2 className="text-3xl font-merriweather font-black text-foreground">Rapportér anstødeligt indhold</h2>
                     </div>
-                    <Link href="/om" className="whitespace-nowrap bg-primary text-primary-foreground font-bold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors">
-                        Kontakt Administrationen
-                    </Link>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start relative">
+                        <div className="text-foreground/80 leading-relaxed space-y-4">
+                            <p>
+                                Vi har heldigvis erfaring for, at hvis vi holder sitet udelukkende på dansk og nært knyttet til sejlerfællesskabet, så undgår vi langt den største mængde spam og ondsindede angreb.
+                            </p>
+                            <p>
+                                Er der alligevel noget, der er sluppet igennem nettet? Vi kan lynhurtigt fjerne indhold, hvis det måtte være nødvendigt!
+                            </p>
+                            <p className="font-bold text-foreground">
+                                Hvis du falder over en post, logbog, et billede eller en profil, der overtræder retningslinjerne, så udfyld formularen her. Vi vurderer sagen prompte.
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleModerationSubmit} className="bg-card border border-border shadow-xl rounded-2xl p-6 sm:p-8">
+                            <h3 className="text-xl font-bold mb-6 font-merriweather text-destructive">Indsend Rapport</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="mod-name" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Dit navn</label>
+                                    <input id="mod-name" required type="text" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-destructive focus:ring-1 focus:ring-destructive transition-all outline-none" placeholder="F.eks. Maja" />
+                                </div>
+                                <div>
+                                    <label htmlFor="mod-email" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Din E-mail</label>
+                                    <input id="mod-email" required type="email" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-destructive focus:ring-1 focus:ring-destructive transition-all outline-none" placeholder="maja@oceansejleren.dk" />
+                                </div>
+                                <div>
+                                    <label htmlFor="mod-text" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Link / Hvor er fejlen, og hvad er det?</label>
+                                    <textarea id="mod-text" required rows={3} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-destructive focus:ring-1 focus:ring-destructive transition-all outline-none resize-none" placeholder="Jeg fandt vulgært spam på thet link i en logbog.."></textarea>
+                                </div>
+                                <button type="submit" className="w-full flex items-center justify-center gap-2 bg-destructive/90 hover:bg-destructive text-destructive-foreground font-bold py-3.5 px-6 rounded-xl transition-all shadow-md mt-2">
+                                    <ShieldAlert className="w-4 h-4" />
+                                    Indsend Rapport
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </section>
 
             </main>

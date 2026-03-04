@@ -1,16 +1,11 @@
 'use client';
 
-import { Send, Lightbulb, ShieldAlert, Anchor } from 'lucide-react';
+import { Send, Lightbulb, Anchor } from 'lucide-react';
 
 export default function OmPage() {
     const handleIdeaSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         alert('Tak for din idé! \n\nHUSK (Simon): Du skal lige sætte servicen op, der sender denne kontaktformular til simon@paag.dk!');
-    };
-
-    const handleModerationSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        alert('Tak for din henvendelse omkring moderation! \n\nHUSK (Simon): Opsæt servicen til simon@paag.dk senere.');
     };
 
     return (
@@ -126,51 +121,7 @@ export default function OmPage() {
                         </div>
                     </section>
 
-                    {/* Moderation Formular */}
-                    <section className="bg-secondary/5 border border-border rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
 
-                        <div className="flex items-center gap-3 mb-6 relative">
-                            <ShieldAlert className="w-8 h-8 text-primary" />
-                            <h2 className="text-3xl font-merriweather font-black text-foreground">Hvordan modererer vi sitet?</h2>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start relative">
-                            <div className="text-foreground/80 leading-relaxed space-y-4">
-                                <p>
-                                    Lige nu har vi kun begrænsede ressourcer til at læse med overalt, men vi har heldigvis erfaring for, at hvis vi holder sitet udelukkende på dansk, så undgår vi langt den største mængde spam og ondsindede angreb.
-                                </p>
-                                <p>
-                                    Er der alligevel noget, der er sluppet igennem nettet? Vi kan hurtigt fjerne indhold, hvis det måtte være nødvendigt!
-                                </p>
-                                <p className="font-bold text-foreground">
-                                    Hvis du falder over en artikel eller en profil, der overtræder retningslinjerne eller åbenlyst er spam, så udfyld formularen her. Vi forsøger at reagere hurtigst muligt.
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleModerationSubmit} className="bg-card border border-border shadow-xl rounded-2xl p-6 sm:p-8">
-                                <h3 className="text-xl font-bold mb-6 font-merriweather text-primary">Rapportér Indhold</h3>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="mod-name" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Dit navn</label>
-                                        <input id="mod-name" required type="text" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-destructive focus:ring-1 focus:ring-destructive transition-all outline-none" placeholder="F.eks. Maja" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="mod-email" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Din E-mail</label>
-                                        <input id="mod-email" required type="email" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-destructive focus:ring-1 focus:ring-destructive transition-all outline-none" placeholder="maja@oceansejleren.dk" />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="mod-text" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Hvor er fejlen, og hvad er det?</label>
-                                        <textarea id="mod-text" required rows={3} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-destructive focus:ring-1 focus:ring-destructive transition-all outline-none resize-none" placeholder="Jeg fandt i spam på linket..."></textarea>
-                                    </div>
-                                    <button type="submit" className="w-full flex items-center justify-center gap-2 bg-destructive/90 hover:bg-destructive text-destructive-foreground font-bold py-3.5 px-6 rounded-xl transition-all shadow-md mt-2">
-                                        <ShieldAlert className="w-4 h-4" />
-                                        Insend Rapport
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
 
                 </div>
             </main>
