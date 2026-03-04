@@ -20,6 +20,7 @@ export default function Dashboard() {
     const [imageUrl, setImageUrl] = useState('');
     const [youtubeUrl, setYoutubeUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [editingPostId, setEditingPostId] = useState<number | null>(null);
 
     // Voyage states
     const [voyages, setVoyages] = useState<any[]>([]);
@@ -124,8 +125,12 @@ export default function Dashboard() {
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-            const res = await fetch(`${apiUrl}/api/posts`, {
-                method: 'POST',
+
+            const method = editingPostId ? 'PUT' : 'POST';
+            const endpoint = editingPostId ? `${apiUrl}/api/posts/${editingPostId}` : `${apiUrl}/api/posts`;
+
+            const res = await fetch(endpoint, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -145,11 +150,17 @@ export default function Dashboard() {
                 throw new Error(err.error || 'Failed to publish post');
             }
 
-            alert("Historien er publiceret på bådens logbog!");
+            alert(editingPostId ? "Logbogen er succesfuldt opdateret!" : "Historien er publiceret på bådens logbog!");
             setTitle('');
             setContent('');
             setImageUrl('');
             setYoutubeUrl('');
+            setEditingPostId(null);
+
+            // Hvis vi redigerede, pop tilbage til liste-visningen for et federe flow
+            if (editingPostId) {
+                setActiveTab('posts');
+            }
         } catch (error: any) {
             alert(`Fejl: ${error.message}`);
         } finally {
@@ -357,8 +368,8 @@ export default function Dashboard() {
                     {activeTab === 'write' ? (
                         <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
                             <div className="p-6 border-b border-border bg-muted/30">
-                                <h1 className="text-2xl font-bold font-merriweather">Offentliggør på Logbogen</h1>
-                                <p className="text-muted-foreground mt-1">Hvad har {currentBoat?.name || 'I'} oplevet for nylig?</p>
+                                <h1 className="text-2xl font-bold font-merriweather">{editingPostId ? 'Rediger Logbog' : 'Offentliggør på Logbogen'}</h1>
+                                <p className="text-muted-foreground mt-1">{editingPostId ? 'Ret i din udgivelse herunder' : `Hvad har ${currentBoat?.name || 'I'} oplevet for nylig?`}</p>
                             </div>
 
                             <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-6">
@@ -442,8 +453,25 @@ export default function Dashboard() {
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-4 border-t border-border mt-2">
+                                    {editingPostId && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setEditingPostId(null);
+                                                setTitle('');
+                                                setContent('');
+                                                setImageUrl('');
+                                                setYoutubeUrl('');
+                                                setPostType('QUICK_TEXT');
+                                                setActiveTab('posts');
+                                            }}
+                                            className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors shadow-sm"
+                                        >
+                                            Annuller
+                                        </button>
+                                    )}
                                     <button type="submit" disabled={isSubmitting} className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50">
-                                        {isSubmitting ? 'Sender til skyen...' : 'Udgiv på Logbogen'}
+                                        {isSubmitting ? 'Sender til skyen...' : (editingPostId ? 'Opdater Logbog' : 'Udgiv på Logbogen')}
                                     </button>
                                 </div>
                             </form>
@@ -692,7 +720,16 @@ export default function Dashboard() {
                     ) : activeTab === 'posts' ? (
                         <PostManager
                             boat={currentBoat}
-                            onEditPost={(post) => alert('Redigerings-vinduet åbner snart, i øjeblikket kan du kun udgive og gemme som kladde!')}
+                            onEditPost={(post) => {
+                                setEditingPostId(post.id);
+                                setPostType(post.postType || 'QUICK_TEXT');
+                                setTitle(post.title || '');
+                                setContent(post.content || '');
+                                setImageUrl(post.imageUrl || '');
+                                setYoutubeUrl(post.youtubeUrl || '');
+                                setActiveTab('write');
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
                         />
                     ) : null}
                 </div>

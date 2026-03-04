@@ -282,3 +282,63 @@ export const toggleVote = async (req: AuthRequest, res: Response): Promise<void>
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const updatePost = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { title, content, youtubeUrl, imageUrl, postType } = req.body;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const post = await prisma.post.findUnique({
+            where: { id: Number(id) }
+        });
+
+        if (!post) {
+            res.status(404).json({ error: 'Post not found' });
+            return;
+        }
+
+        // Vurder om bruger er forfatter, eller admin på båden
+        const isAuthor = post.authorId === userId;
+        const membership = await prisma.crewMember.findUnique({
+            where: {
+                userId_boatId: {
+                    userId,
+                    boatId: post.boatId,
+                },
+            },
+        });
+
+        if (!isAuthor && !membership) {
+            res.status(403).json({ error: 'Forbidden. Du har ikke rettigheder til at redigere dette indlæg.' });
+            return;
+        }
+
+        let newSlug = post.slug;
+        if (title && title !== post.title) {
+            newSlug = slugify(`${title}-${Date.now()}`, { lower: true, strict: true });
+        }
+
+        const updatedPost = await prisma.post.update({
+            where: { id: Number(id) },
+            data: {
+                title: title !== undefined ? title : undefined,
+                content: content !== undefined ? content : undefined,
+                youtubeUrl: youtubeUrl !== undefined ? youtubeUrl : undefined,
+                imageUrl: imageUrl !== undefined ? imageUrl : undefined,
+                postType: postType !== undefined ? postType : undefined,
+                slug: newSlug,
+            },
+        });
+
+        res.json({ message: 'Post updated successfully', post: updatedPost });
+    } catch (error) {
+        console.error('Update post error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
