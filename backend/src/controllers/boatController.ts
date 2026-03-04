@@ -1,0 +1,61 @@
+import { Response } from 'express';
+import { prisma } from '../server';
+import { AuthRequest } from '../middlewares/authMiddleware';
+
+export const createBoat = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { name, description, coverImage } = req.body;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        // Create the boat and assign the creator as BOAT_ADMIN safely in a transaction
+        const newBoat = await prisma.$transaction(async (tx) => {
+            const boat = await tx.boat.create({
+                data: {
+                    name,
+                    description,
+                    coverImage,
+                },
+            });
+
+            await tx.crewMember.create({
+                data: {
+                    userId,
+                    boatId: boat.id,
+                    role: 'BOAT_ADMIN',
+                },
+            });
+
+            return boat;
+        });
+
+        res.status(201).json({ message: 'Boat created successfully', boat: newBoat });
+    } catch (error) {
+        console.error('Create boat error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const getBoats = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const boats = await prisma.boat.findMany({
+            include: {
+                crewMemberships: {
+                    include: {
+                        user: {
+                            select: { id: true, name: true, email: true }
+                        }
+                    }
+                }
+            }
+        });
+        res.json(boats);
+    } catch (error) {
+        console.error('Get boats error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

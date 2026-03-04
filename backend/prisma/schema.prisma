@@ -1,0 +1,57 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  passwordHash   String
+  name           String
+  isSystemAdmin  Boolean   @default(false)
+  
+  crewMemberships CrewMember[]
+  articles        Article[]
+}
+
+model Boat {
+  id           Int       @id @default(autoincrement())
+  name         String
+  description  String?
+  coverImage   String?
+  
+  crewMemberships CrewMember[]
+  articles        Article[]
+}
+
+model CrewMember {
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  boat     Boat     @relation(fields: [boatId], references: [id])
+  boatId   Int
+  role     String   // 'BOAT_ADMIN' | 'BOAT_AUTHOR'
+
+  @@id([userId, boatId])
+}
+
+model Article {
+  id          Int           @id @default(autoincrement())
+  title       String
+  content     String
+  youtubeUrl  String?
+  status      String        @default("DRAFT") // 'DRAFT' | 'APPROVED' | 'PUBLISHED' | 'REJECTED'
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  author      User          @relation(fields: [authorId], references: [id])
+  authorId    Int
+  
+  boat        Boat          @relation(fields: [boatId], references: [id])
+  boatId      Int
+}
