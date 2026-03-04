@@ -165,9 +165,15 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
 
                 {/* Main Feed */}
                 <main className="lg:col-span-2">
-                    <h2 className="text-2xl font-bold uppercase tracking-widest border-b border-foreground pb-4 mb-8">
-                        Bådens Logbog ({posts.length})
-                    </h2>
+                    <div className="border-b border-foreground pb-4 mb-8 flex flex-col items-start gap-1">
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-2xl font-bold uppercase tracking-widest">
+                                Logs
+                            </h2>
+                            <span className="bg-primary/10 text-primary text-xs font-bold px-2 py-0.5 rounded-full">{posts.length}</span>
+                        </div>
+                        <p className="text-muted-foreground">Opdateringer fra {boat.name}</p>
+                    </div>
 
                     <div className="space-y-16">
                         {posts.length > 0 ? (
