@@ -1,7 +1,37 @@
+'use client';
+
 import Link from 'next/link';
-import { Menu, Search, User } from 'lucide-react';
+import { Menu, Search, User, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
+    const router = useRouter();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const userToken = localStorage.getItem('user_token');
+            const adminToken = localStorage.getItem('admin_token');
+            setIsLoggedIn(!!userToken);
+            setIsAdmin(!!adminToken);
+        };
+
+        checkAuth();
+        window.addEventListener('auth-change', checkAuth);
+        return () => window.removeEventListener('auth-change', checkAuth);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('user_token');
+        localStorage.removeItem('admin_token');
+        setIsLoggedIn(false);
+        setIsAdmin(false);
+        window.dispatchEvent(new Event('auth-change'));
+        router.push('/');
+    };
+
     return (
         <nav className="bg-background">
             {/* Top utility bar */}
@@ -9,9 +39,20 @@ export default function Navbar() {
                 <div>Langturssejlads &middot; Historier</div>
                 <div className="flex items-center gap-4">
                     <button className="hover:text-foreground transition-colors"><Search className="h-4 w-4" /></button>
-                    <Link href="/login" className="flex items-center gap-1 hover:text-foreground transition-colors">
-                        <User className="h-4 w-4" /> Log ind
-                    </Link>
+                    {(isLoggedIn || isAdmin) ? (
+                        <button onClick={handleLogout} className="flex items-center gap-1 hover:text-red-600 transition-colors">
+                            <LogOut className="h-4 w-4" /> Log ud
+                        </button>
+                    ) : (
+                        <>
+                            <Link href="/register" className="flex items-center gap-1 hover:text-foreground transition-colors">
+                                Opret konto
+                            </Link>
+                            <Link href="/login" className="flex items-center gap-1 hover:text-foreground transition-colors">
+                                <User className="h-4 w-4" /> Log ind
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
 
