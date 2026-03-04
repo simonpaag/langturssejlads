@@ -6,7 +6,7 @@ export default function Footer() {
     return (
         <footer className="bg-muted/30 border-t border-border mt-auto pt-16 pb-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
                     <div className="md:col-span-2 pr-4">
                         <Link href="/" className="flex items-center gap-3 group mb-6">
                             <Anchor className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
@@ -18,11 +18,19 @@ export default function Footer() {
                         </p>
                     </div>
                     <div>
-                        <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Information</h3>
+                        <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Ombord</h3>
                         <ul className="space-y-4 text-sm font-medium text-muted-foreground">
                             <li><Link href="/boats" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Både til søs</Link></li>
-                            <li><Link href="/togter" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Togter</Link></li>
-                            <li><Link href="/dashboard" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">&quot;Under dæk&quot;</Link></li>
+                            <li><Link href="/togter" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Kommende togter</Link></li>
+                            <li><Link href="/dashboard" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">&quot;Under dæk&quot; (Log ind)</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Platformen</h3>
+                        <ul className="space-y-4 text-sm font-medium text-muted-foreground">
+                            <li><Link href="/om" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Projektet / Om os</Link></li>
+                            <li><Link href="/annoncor" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Bliv annoncør</Link></li>
+                            <li><Link href="/moderation" className="hover:text-primary hover:translate-x-1 inline-block transition-transform text-destructive/80 font-bold">Retningslinjer</Link></li>
                         </ul>
                     </div>
                     <div>
