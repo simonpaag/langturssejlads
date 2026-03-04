@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 interface Article {
     id: number;
+    slug: string;
     title: string;
     content: string;
     youtubeUrl: string | null;
@@ -15,6 +16,7 @@ interface Article {
 
 interface Boat {
     id: number;
+    slug: string;
     name: string;
     description: string;
     crewMemberships: {
@@ -24,15 +26,13 @@ interface Boat {
     articles: Article[];
 }
 
-export default async function BoatProfile({ params }: { params: { id: string } }) {
+export default async function BoatProfile({ params }: { params: { slug: string } }) {
     let boat: Boat | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/boats`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/boats/${params.slug}`, { cache: 'no-store' });
         if (res.ok) {
-            // Find specific boat. Ideally we'd have a backend GET /api/boats/:id endpoint but this works for now.
-            const allBoats: Boat[] = await res.json();
-            boat = allBoats.find(b => b.id === Number(params.id)) || null;
+            boat = await res.json();
         }
     } catch (error) {
         console.error('Failed to fetch boat profile:', error);
@@ -46,7 +46,7 @@ export default async function BoatProfile({ params }: { params: { id: string } }
         if (res.ok) {
             const allArticles: Article[] = await res.json();
             // Filter to only this boat's articles
-            articles = allArticles.filter((a: any) => a.boat?.id === Number(params.id));
+            articles = allArticles.filter((a: any) => a.boat?.slug === params.slug);
         }
     } catch (error) {
         console.error('Failed to fetch boat articles');
@@ -119,7 +119,7 @@ export default async function BoatProfile({ params }: { params: { id: string } }
                                 </time>
                             </div>
 
-                            <Link href={`/articles/${article.id}`}>
+                            <Link href={`/articles/${article.slug}`}>
                                 <h3 className="text-3xl font-merriweather font-bold mb-4 leading-snug group-hover:text-primary transition-colors">
                                     {article.title}
                                 </h3>
@@ -131,7 +131,7 @@ export default async function BoatProfile({ params }: { params: { id: string } }
 
                             <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between">
                                 <span className="text-xs font-semibold text-muted-foreground">Af {article.author.name}</span>
-                                <Link href={`/articles/${article.id}`} className="text-xs font-bold uppercase tracking-widest text-primary group-hover:underline underline-offset-4">Læs Fortælling</Link>
+                                <Link href={`/articles/${article.slug}`} className="text-xs font-bold uppercase tracking-widest text-primary group-hover:underline underline-offset-4">Læs Fortælling</Link>
                             </div>
                         </article>
                     ))

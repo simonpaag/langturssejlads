@@ -3,6 +3,7 @@ import { Ship } from 'lucide-react';
 
 interface Boat {
     id: number;
+    slug: string;
     name: string;
     description: string;
     coverImage: string | null;
@@ -40,7 +41,7 @@ export default async function BoatsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                 {boats.map((boat) => (
-                    <Link href={`/boats/${boat.id}`} key={boat.id} className="block group">
+                    <Link href={`/boats/${boat.slug}`} key={boat.id} className="block group">
                         <div className="flex flex-col h-full hover-lift">
                             <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
                                 {/* Simulated beautiful cover placeholder */}

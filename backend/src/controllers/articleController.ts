@@ -74,7 +74,7 @@ export const getPublicArticles = async (req: AuthRequest, res: Response): Promis
             where: { status: 'PUBLISHED' },
             include: {
                 author: { select: { id: true, name: true } },
-                boat: { select: { id: true, name: true } },
+                boat: { select: { id: true, slug: true, name: true } },
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -92,7 +92,7 @@ export const getArticleBySlug = async (req: AuthRequest, res: Response): Promise
             where: { slug: slug },
             include: {
                 author: { select: { id: true, name: true } },
-                boat: { select: { id: true, name: true } },
+                boat: { select: { id: true, slug: true, name: true } },
             },
         });
 
@@ -120,7 +120,7 @@ export const getAllArticlesForAdmin = async (req: AuthRequest, res: Response): P
         const articles = await prisma.article.findMany({
             include: {
                 author: { select: { id: true, name: true } },
-                boat: { select: { id: true, name: true } },
+                boat: { select: { id: true, slug: true, name: true } },
             },
             orderBy: { createdAt: 'desc' },
         });

@@ -10,11 +10,13 @@ interface Author {
 
 interface Boat {
   id: number;
+  slug: string;
   name: string;
 }
 
 export interface Article {
   id: number;
+  slug: string;
   title: string;
   content: string;
   youtubeUrl: string | null;
@@ -47,7 +49,7 @@ export default async function Home() {
       {/* Featured Story */}
       {featured ? (
         <article className="mb-16 md:mb-20 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center border-b-[2px] border-foreground pb-12">
-          <Link href={`/articles/${featured.id}`} className="lg:col-span-8 group hover-lift cursor-pointer block">
+          <Link href={`/articles/${featured.slug}`} className="lg:col-span-8 group hover-lift cursor-pointer block">
             <div className="relative w-full aspect-[16/9] lg:aspect-[2/1] bg-muted overflow-hidden border border-border">
               {/* Beautiful Unsplash Placeholder image to make it look premium */}
               <img
@@ -67,7 +69,7 @@ export default async function Home() {
 
           <div className="lg:col-span-4 flex flex-col justify-center h-full">
             <div className="flex items-center gap-3 mb-4 text-xs font-bold uppercase tracking-widest text-primary">
-              <Link href={`/boats/${featured.boat.id}`} className="hover:underline underline-offset-4">{featured.boat.name}</Link>
+              <Link href={`/boats/${featured.boat.slug}`} className="hover:underline underline-offset-4">{featured.boat.name}</Link>
               <span className="text-muted-foreground font-normal">&bull;</span>
               <time className="text-muted-foreground font-normal" dateTime={featured.createdAt}>
                 {format(new Date(featured.createdAt), 'd. MMMM yyyy', { locale: da })}
@@ -86,7 +88,7 @@ export default async function Home() {
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
               <span className="font-semibold text-sm">Af {featured.author.name}</span>
-              <Link href={`/articles/${featured.id}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
+              <Link href={`/articles/${featured.slug}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
                 Læs hele historien
               </Link>
             </div>
@@ -109,7 +111,7 @@ export default async function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
               {restOfArticles.map((article, idx) => (
                 <article key={article.id} className="group flex flex-col h-full hover-lift">
-                  <Link href={`/articles/${article.id}`} className="block relative w-full aspect-[4/3] bg-muted mb-4 overflow-hidden border border-border">
+                  <Link href={`/articles/${article.slug}`} className="block relative w-full aspect-[4/3] bg-muted mb-4 overflow-hidden border border-border">
                     <img
                       src={`https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${article.id}`}
                       alt="Sailing grid image"
@@ -123,11 +125,11 @@ export default async function Home() {
                   </Link>
 
                   <div className="flex items-center gap-2 mb-2 text-[11px] font-bold uppercase tracking-widest text-primary">
-                    <Link href={`/boats/${article.boat.id}`} className="hover:underline underline-offset-4">{article.boat.name}</Link>
+                    <Link href={`/boats/${article.boat.slug}`} className="hover:underline underline-offset-4">{article.boat.name}</Link>
                     <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(article.createdAt), 'd. MMM yyyy', { locale: da })}</span>
                   </div>
 
-                  <Link href={`/articles/${article.id}`}>
+                  <Link href={`/articles/${article.slug}`}>
                     <h3 className="text-2xl font-merriweather font-bold mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-3">
                       {article.title}
                     </h3>

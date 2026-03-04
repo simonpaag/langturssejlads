@@ -10,14 +10,14 @@ interface Article {
     status: string;
     createdAt: string;
     author: { id: number; name: string };
-    boat: { id: number; name: string };
+    boat: { id: number; slug: string; name: string };
 }
 
-export default async function ArticlePage({ params }: { params: { id: string } }) {
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
     let article: Article | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/articles/${params.id}`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/articles/${params.slug}`, { cache: 'no-store' });
         if (res.ok) {
             article = await res.json();
         }
@@ -43,7 +43,7 @@ export default async function ArticlePage({ params }: { params: { id: string } }
             {/* Header / Meta */}
             <div className="text-center mb-12 md:mb-16">
                 <div className="inline-flex items-center justify-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-primary">
-                    <Link href={`/boats/${article.boat.id}`} className="hover:underline underline-offset-4">
+                    <Link href={`/boats/${article.boat.slug}`} className="hover:underline underline-offset-4">
                         {article.boat.name}
                     </Link>
                     <span className="text-muted-foreground">&bull;</span>
@@ -88,7 +88,7 @@ export default async function ArticlePage({ params }: { params: { id: string } }
 
             <div className="flex justify-between items-center text-sm font-bold uppercase tracking-wide">
                 <Link href="/" className="text-primary hover:underline underline-offset-4">&larr; Tilbage til forsiden</Link>
-                <Link href={`/boats/${article.boat.id}`} className="text-primary hover:underline underline-offset-4">Flere beretninger fra {article.boat.name} &rarr;</Link>
+                <Link href={`/boats/${article.boat.slug}`} className="text-primary hover:underline underline-offset-4">Flere beretninger fra {article.boat.name} &rarr;</Link>
             </div>
 
         </article>
