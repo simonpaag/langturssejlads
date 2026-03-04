@@ -248,7 +248,19 @@ export default function Dashboard() {
             <aside className="w-64 bg-card border-r border-border flex flex-col hidden md:flex">
                 <div className="p-6 border-b border-border">
                     <h2 className="font-bold text-lg mb-1">Kaptajnens Kahyt</h2>
-                    <p className="text-sm text-muted-foreground">{currentBoat?.name || 'Ingen båd'}</p>
+                    <p className="text-sm font-merriweather text-foreground mb-3">{currentBoat?.name || 'Ingen båd'}</p>
+                    {currentBoat && (
+                        <Link
+                            href={`/boats/${currentBoat.slug}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg w-fit"
+                        >
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                            </span>
+                            Offentlig Profil
+                        </Link>
+                    )}
                 </div>
 
                 <nav className="flex-1 p-4 flex flex-col gap-2">
