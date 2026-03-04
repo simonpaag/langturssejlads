@@ -59,11 +59,11 @@ export const getBoats = async (req: AuthRequest, res: Response): Promise<void> =
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-export const getBoatById = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const { slug } = req.params;
         const boat = await prisma.boat.findUnique({
-            where: { id: Number(id) },
+            where: { slug: slug },
             include: {
                 crewMemberships: {
                     include: {

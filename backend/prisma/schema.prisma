@@ -22,6 +22,7 @@ model User {
 
 model Boat {
   id           Int       @id @default(autoincrement())
+  slug         String    @unique
   name         String
   description  String?
   coverImage   String?
@@ -42,6 +43,7 @@ model CrewMember {
 
 model Article {
   id          Int           @id @default(autoincrement())
+  slug        String        @unique
   title       String
   content     String
   youtubeUrl  String?

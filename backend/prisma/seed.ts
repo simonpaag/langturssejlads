@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import slugify from 'slugify';
 
 const prisma = new PrismaClient();
 
@@ -82,6 +83,7 @@ async function main() {
         const boat = await prisma.boat.create({
             data: {
                 name: boatsData[i].name,
+                slug: slugify(boatsData[i].name, { lower: true, strict: true }),
                 description: boatsData[i].description,
                 coverImage: boatsData[i].coverImage
             }
@@ -111,6 +113,7 @@ async function main() {
             await prisma.article.create({
                 data: {
                     title: articleTitles[articleIndex],
+                    slug: slugify(`${articleTitles[articleIndex]}-${i}-${j}`, { lower: true, strict: true }),
                     content: articleContents[contentIndex],
                     youtubeUrl: youtubeVideos[videoIndex],
                     status: 'PUBLISHED',

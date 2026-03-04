@@ -85,11 +85,11 @@ export const getPublicArticles = async (req: AuthRequest, res: Response): Promis
     }
 };
 
-export const getArticleById = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getArticleBySlug = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+        const { slug } = req.params;
         const article = await prisma.article.findUnique({
-            where: { id: Number(id) },
+            where: { slug: slug },
             include: {
                 author: { select: { id: true, name: true } },
                 boat: { select: { id: true, name: true } },
