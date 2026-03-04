@@ -19,8 +19,8 @@ export default function OmPage() {
                 {/* Hero Section */}
                 <div className="relative w-full h-[50vh] min-h-[400px] mb-16 overflow-hidden border-b border-border/40">
                     <img
-                        src="https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop"
-                        alt="Båd på havet i solnedgang"
+                        src="/images/om-hero.jpg"
+                        alt="View ud over havet fra cockpittet"
                         className="absolute inset-0 w-full h-full object-cover opacity-90"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
