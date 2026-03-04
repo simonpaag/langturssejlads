@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 
 async function getVoyage(voyageSlug: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-    const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { next: { revalidate: 10 } });
+    const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { cache: 'no-store' });
     if (!res.ok) return null;
     return res.json();
 }
