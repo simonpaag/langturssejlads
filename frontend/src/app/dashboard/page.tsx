@@ -31,6 +31,13 @@ export default function Dashboard() {
     const [voyageSeats, setVoyageSeats] = useState('0');
     const [isSubmittingVoyage, setIsSubmittingVoyage] = useState(false);
 
+    // Boat Profile states
+    const [boatName, setBoatName] = useState('');
+    const [boatDescription, setBoatDescription] = useState('');
+    const [boatCoverImage, setBoatCoverImage] = useState('');
+    const [boatProfileImage, setBoatProfileImage] = useState('');
+    const [isSubmittingBoat, setIsSubmittingBoat] = useState(false);
+
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem('user_token');
@@ -80,6 +87,18 @@ export default function Dashboard() {
         };
         fetchVoyages();
     }, [user]);
+
+    const currentBoat = user?.crewMemberships[0]?.boat;
+
+    // Load initial boat data into state when boat loads
+    useEffect(() => {
+        if (currentBoat) {
+            setBoatName(currentBoat.name || '');
+            setBoatDescription(currentBoat.description || '');
+            setBoatCoverImage(currentBoat.coverImage || '');
+            setBoatProfileImage(currentBoat.profileImage || '');
+        }
+    }, [currentBoat]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -171,11 +190,56 @@ export default function Dashboard() {
         }
     };
 
+    const handleUpdateBoat = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!currentBoat) return;
+
+        setIsSubmittingBoat(true);
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/boats/${currentBoat.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: boatName,
+                    description: boatDescription,
+                    coverImage: boatCoverImage,
+                    profileImage: boatProfileImage
+                })
+            });
+
+            if (!res.ok) throw new Error('Kunne ikke opdatere båden');
+
+            alert('Bådens profil er opdateret!');
+
+            // Reload user data to get updated boat info
+            const meRes = await fetch(`${apiUrl}/api/auth/me`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (meRes.ok) {
+                const data = await meRes.json();
+                setUser(data.user);
+            }
+
+        } catch (error: any) {
+            alert(`Fejl: ${error.message}`);
+        } finally {
+            setIsSubmittingBoat(false);
+        }
+    };
+
     if (isLoadingUser) {
         return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
     }
 
-    const currentBoat = user?.crewMemberships[0]?.boat;
+    if (isLoadingUser) {
+        return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
+    }
 
     return (
         <div className="flex min-h-[calc(100vh-4rem)] bg-muted/30">
@@ -419,11 +483,70 @@ export default function Dashboard() {
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden p-8 text-center">
-                            <Ship className="h-16 w-16 text-primary/30 mx-auto mb-4" />
-                            <h2 className="text-xl font-bold mb-2">Båd Profil Indstillinger</h2>
-                            <p className="text-muted-foreground mb-6">Her kan du redigere {currentBoat?.name}'s profilbillede, beskrivelse og administrere mandskabet.</p>
-                            <p className="text-xs uppercase tracking-widest font-bold text-primary bg-primary/5 py-2 px-4 rounded-lg inline-block">(Kommer snart i fremtidig fase)</p>
+                        <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                            <div className="p-6 border-b border-border bg-muted/30">
+                                <h1 className="text-2xl font-bold font-merriweather">Rediger Bådens Profil</h1>
+                                <p className="text-muted-foreground mt-1">Opdater hvordan {currentBoat?.name} præsenteres på hjemmesiden.</p>
+                            </div>
+
+                            <form onSubmit={handleUpdateBoat} className="p-6 flex flex-col gap-6">
+                                <div>
+                                    <label htmlFor="boatName" className="block text-sm font-semibold mb-2">Bådens Navn</label>
+                                    <input
+                                        type="text"
+                                        id="boatName"
+                                        value={boatName}
+                                        onChange={(e) => setBoatName(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg font-medium"
+                                        required
+                                    />
+                                    <p className="text-xs text-muted-foreground mt-1">Ændres navnet, opdateres URL'en automatisk.</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-6">
+                                    <div>
+                                        <label htmlFor="boatCoverImage" className="block text-sm font-semibold mb-2">Coverbillede (URL til topbillede)</label>
+                                        <input
+                                            type="url"
+                                            id="boatCoverImage"
+                                            value={boatCoverImage}
+                                            onChange={(e) => setBoatCoverImage(e.target.value)}
+                                            placeholder="https://..."
+                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="boatProfileImage" className="block text-sm font-semibold mb-2">Profilbillede (F.eks logo - URL)</label>
+                                        <input
+                                            type="url"
+                                            id="boatProfileImage"
+                                            value={boatProfileImage}
+                                            onChange={(e) => setBoatProfileImage(e.target.value)}
+                                            placeholder="https://..."
+                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="boatDescription" className="block text-sm font-semibold mb-2">Beskrivelse af Båden</label>
+                                    <textarea
+                                        id="boatDescription"
+                                        value={boatDescription}
+                                        onChange={(e) => setBoatDescription(e.target.value)}
+                                        rows={6}
+                                        placeholder="Hvad er det for en båd? Hvor lang er den, hvad er jeres sejladsfilosofi?"
+                                        className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="flex justify-end pt-4 border-t border-border mt-2">
+                                    <button type="submit" disabled={isSubmittingBoat} className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50">
+                                        {isSubmittingBoat ? 'Gemmer ændringer...' : 'Gem Profil'}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     )}
                 </div>

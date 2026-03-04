@@ -90,3 +90,58 @@ export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<vo
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+export const updateBoat = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const boatId = parseInt(req.params.id as string);
+        const { name, description, coverImage, profileImage } = req.body;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        if (isNaN(boatId)) {
+            res.status(400).json({ error: 'Invalid boat ID' });
+            return;
+        }
+
+        // Verify that the user is an admin for this boat
+        const crewMembership = await prisma.crewMember.findFirst({
+            where: {
+                boatId: boatId,
+                userId: userId,
+                role: 'BOAT_ADMIN'
+            }
+        });
+
+        if (!crewMembership) {
+            res.status(403).json({ error: 'Forbidden: You are not an admin of this boat' });
+            return;
+        }
+
+        // Update the boat
+        const updateData: any = {
+            description,
+            coverImage,
+            profileImage
+        };
+
+        // Only update name and slug if the name is provided and changed
+        if (name) {
+            updateData.name = name;
+            updateData.slug = slugify(name, { lower: true, strict: true });
+        }
+
+        const updatedBoat = await prisma.boat.update({
+            where: { id: boatId },
+            data: updateData
+        });
+
+        res.json({ message: 'Boat updated successfully', boat: updatedBoat });
+    } catch (error) {
+        console.error('Update boat error:', error);
+        res.status(500).json({ error: 'Internal server error while updating boat' });
+    }
+};
