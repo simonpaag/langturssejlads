@@ -46,20 +46,14 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     const slug = resolvedParams.slug;
     noStore();
     let boat: Boat | null = null;
-    let debugError = '';
-    let fetchUrl = '';
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        fetchUrl = `${apiUrl}/api/boats/${slug}`;
-        const res = await fetch(fetchUrl, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/boats/${slug}`, { cache: 'no-store' });
         if (res.ok) {
             boat = await res.json();
-        } else {
-            debugError = `Res not ok: ${res.status} ${res.statusText}`;
         }
     } catch (error: any) {
         console.error('Failed to fetch boat profile:', error);
-        debugError = `Fetch catch error: ${error?.message || String(error)}`;
     }
 
     // Fetch posts specifically for this boat
@@ -80,10 +74,6 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
             <div className="max-w-4xl mx-auto px-4 py-32 text-center border-b-[2px] border-foreground">
                 <h1 className="text-3xl font-merriweather font-bold text-muted-foreground">Logbogen er tom.</h1>
                 <p className="text-muted-foreground mt-4">Denne profil eksisterer ikke eller er blevet slettet.</p>
-                <code className="block mt-8 p-4 bg-muted text-xs text-left max-w-lg mx-auto overflow-x-auto text-red-500 rounded">
-                    DEBUG: {debugError || 'No error caught, boat simply returned null'}<br />
-                    URL ATTEMPTED: {fetchUrl}
-                </code>
             </div>
         );
     }

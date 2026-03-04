@@ -17,11 +17,13 @@ interface Post {
 
 export const dynamic = 'force-dynamic';
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+    const resolvedParams = await Promise.resolve(params);
+    const slug = resolvedParams.slug;
     let post: Post | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/posts/${params.slug}`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/posts/${slug}`, { cache: 'no-store' });
         if (res.ok) {
             post = await res.json();
         }
