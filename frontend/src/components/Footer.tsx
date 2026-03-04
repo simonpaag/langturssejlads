@@ -28,9 +28,10 @@ export default function Footer() {
                     <div>
                         <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Kontakt</h3>
                         <address className="not-italic text-sm font-medium text-muted-foreground space-y-3">
-                            <p>Langturssejlads ApS</p>
-                            <p>Havnevej 12</p>
-                            <p>2100 København Ø</p>
+                            <p>Langturssejlads.dk</p>
+                            <p>Overgaden Oven Vandet 8</p>
+                            <p>1415 København K.</p>
+                            <p>Danmark</p>
                             <p className="pt-2">
                                 <a href="mailto:kontakt@langturssejlads.dk" className="hover:text-primary transition-colors border-b border-primary/30 pb-1">kontakt@langturssejlads.dk</a>
                             </p>
