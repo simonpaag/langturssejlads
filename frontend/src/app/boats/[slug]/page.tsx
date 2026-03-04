@@ -26,9 +26,10 @@ interface Boat {
     coverImage: string | null;
     profileImage: string | null;
     websiteUrl: string | null;
+    isBoardPublic: boolean;
     socialLinks: { platform: string; url: string }[] | null;
     crewMemberships: {
-        user: { name: string; profileImage: string | null; };
+        user: { id: number; name: string; email: string; profileImage: string | null; };
         role: string;
     }[];
     voyages: {
@@ -43,6 +44,7 @@ interface Boat {
 
 import { unstable_noStore as noStore } from 'next/cache';
 import PostVotes from '@/components/PostVotes';
+import Noticeboard from '@/components/Noticeboard';
 
 export const dynamic = 'force-dynamic';
 
@@ -295,6 +297,15 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                 <p className="text-muted-foreground mt-2">Denne båd har endnu ikke publiceret logbogs-optegnelser.</p>
                             </div>
                         )}
+                    </div>
+
+                    {/* Opslagstavle / Noticeboard */}
+                    <div id="opslagstavle">
+                        <Noticeboard
+                            boatId={boat.id}
+                            isPublic={boat.isBoardPublic}
+                            isAdmin={false} // isAdmin håndteres internt af komponentet eller passes fra auth context
+                        />
                     </div>
                 </main>
             </div>

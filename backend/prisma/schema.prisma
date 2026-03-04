@@ -20,6 +20,7 @@ model User {
   crewMemberships CrewMember[]
   posts           Post[]
   votes           Vote[]
+  boardMessages   BoardMessage[]
 }
 
 model Boat {
@@ -31,10 +32,12 @@ model Boat {
   profileImage String?
   websiteUrl   String?
   socialLinks  Json?     // [{ platform: 'Instagram', url: '...' }]
+  isBoardPublic Boolean  @default(true)
   
   crewMemberships CrewMember[]
   posts           Post[]
   voyages         Voyage[]
+  boardMessages   BoardMessage[]
 }
 
 model CrewMember {
@@ -96,6 +99,18 @@ model Vote {
   postId    Int
 
   @@unique([userId, postId])
+}
+
+model BoardMessage {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  
+  boatId    Int
+  boat      Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
 }
 
 model Voyage {

@@ -28,3 +28,20 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
         res.status(403).json({ error: 'Invalid or expired token.' });
     }
 };
+
+export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction): void => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return next();
+    }
+
+    try {
+        const verified = jwt.verify(token, JWT_SECRET) as { userId: number; isSystemAdmin: boolean };
+        req.user = verified;
+    } catch (err) {
+        // Ignorer fejl - brugeren optræder blot som logget ud
+    }
+    next();
+};

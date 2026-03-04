@@ -41,6 +41,9 @@ export default function Dashboard() {
     const [boatSocialLinks, setBoatSocialLinks] = useState<{ platform: string, url: string }[]>([]);
     const [isSubmittingBoat, setIsSubmittingBoat] = useState(false);
 
+    const [isBoardPublic, setIsBoardPublic] = useState(true);
+    const [isTogglingBoard, setIsTogglingBoard] = useState(false);
+
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem('user_token');
@@ -102,6 +105,7 @@ export default function Dashboard() {
             setBoatProfileImage(currentBoat.profileImage || '');
             setBoatWebsiteUrl(currentBoat.websiteUrl || '');
             setBoatSocialLinks(Array.isArray(currentBoat.socialLinks) ? currentBoat.socialLinks : []);
+            setIsBoardPublic(currentBoat.isBoardPublic ?? true);
         }
     }, [currentBoat]);
 
@@ -237,6 +241,43 @@ export default function Dashboard() {
             alert(`Fejl: ${error.message}`);
         } finally {
             setIsSubmittingBoat(false);
+        }
+    };
+
+    const handleToggleBoard = async () => {
+        if (!currentBoat) return;
+
+        setIsTogglingBoard(true);
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/boats/${currentBoat.id}/board-status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ isBoardPublic: !isBoardPublic })
+            });
+
+            if (res.ok) {
+                setIsBoardPublic(!isBoardPublic);
+                // Also update the local user object so it persists across tab switches
+                setUser((prev: any) => {
+                    const newUser = { ...prev };
+                    if (newUser.crewMemberships && newUser.crewMemberships[0]) {
+                        newUser.crewMemberships[0].boat.isBoardPublic = !isBoardPublic;
+                    }
+                    return newUser;
+                });
+            } else {
+                alert('Kunne ikke ændre indstillingen');
+            }
+        } catch (error) {
+            alert('Netværksfejl');
+        } finally {
+            setIsTogglingBoard(false);
         }
     };
 
@@ -633,6 +674,21 @@ export default function Dashboard() {
                                         className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed"
                                         required
                                     />
+                                </div>
+
+                                <div className="p-5 border border-border rounded-2xl bg-muted/10 flex items-center justify-between gap-4">
+                                    <div>
+                                        <h3 className="block text-sm font-semibold">Gæstebog / Opslagstavle</h3>
+                                        <p className="text-xs text-muted-foreground mt-1">Tillad gæster på sitet og andre sejlere at lægge beskeder og hilsner på bådens offentlige profilside.</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleToggleBoard}
+                                        disabled={isTogglingBoard}
+                                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${isBoardPublic ? 'bg-primary' : 'bg-muted-foreground/30'} flex-shrink-0 disabled:opacity-50`}
+                                    >
+                                        <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isBoardPublic ? 'translate-x-5' : 'translate-x-0'}`} />
+                                    </button>
                                 </div>
 
                                 <div className="flex justify-end pt-4 border-t border-border mt-2">

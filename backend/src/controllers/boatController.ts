@@ -147,3 +147,39 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
         res.status(500).json({ error: 'Internal server error while updating boat' });
     }
 };
+
+export const updateBoardStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const boatId = parseInt(req.params.id as string);
+        const userId = req.user?.userId;
+        const { isBoardPublic } = req.body;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Uautoriseret' });
+            return;
+        }
+
+        const crewMember = await prisma.crewMember.findFirst({
+            where: {
+                userId,
+                boatId,
+                role: 'BOAT_ADMIN'
+            }
+        });
+
+        if (!crewMember && !req.user?.isSystemAdmin) {
+            res.status(403).json({ error: 'Du har ikke rettigheder til at ændre opslagstavlens synlighed' });
+            return;
+        }
+
+        const updatedBoat = await prisma.boat.update({
+            where: { id: boatId },
+            data: { isBoardPublic: Boolean(isBoardPublic) }
+        });
+
+        res.json({ message: 'Opslagstavlens status opdateret', isBoardPublic: updatedBoat.isBoardPublic });
+    } catch (error) {
+        console.error('Update board status error:', error);
+        res.status(500).json({ error: 'Der opstod en fejl' });
+    }
+};
