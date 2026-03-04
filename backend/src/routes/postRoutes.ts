@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPost, getPublicPosts, getPostBySlug, updatePostStatus, getAllPostsForAdmin } from '../controllers/postController';
+import { createPost, getPublicPosts, getPostBySlug, updatePostStatus, getAllPostsForAdmin, getPostsByBoatId, togglePostStatus } from '../controllers/postController';
 import { authenticateToken } from '../middlewares/authMiddleware';
 
 const router = Router();
@@ -10,5 +10,9 @@ router.get('/', getPublicPosts); // Public newsfeed
 router.get('/:slug', getPostBySlug); // Single public post
 router.get('/admin', authenticateToken, getAllPostsForAdmin); // Admin newsfeed
 router.put('/:id/status', authenticateToken, updatePostStatus);
+
+// Crew endpoints
+router.get('/boat/:boatId', authenticateToken, getPostsByBoatId); // Get all posts (incl DRAFT) for a specific boat
+router.put('/:id/toggle-status', authenticateToken, togglePostStatus); // Toggle DRAFT / PUBLISHED
 
 export default router;

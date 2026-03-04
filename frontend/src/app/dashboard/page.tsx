@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import PostManager from '@/components/dashboard/PostManager';
 
 export default function Dashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages'>('write');
+    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts'>('write');
     const [user, setUser] = useState<any>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
 
@@ -276,13 +277,13 @@ export default function Dashboard() {
                     </button>
 
                     {currentBoat && (
-                        <Link
-                            href={`/boats/${currentBoat.slug}`}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors hover:bg-muted text-foreground`}
+                        <button
+                            onClick={() => setActiveTab('posts')}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'posts' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
                         >
                             <FileText className="h-5 w-5" />
-                            <span className="font-medium">Se Publiceret Logbog</span>
-                        </Link>
+                            <span className="font-medium">Administrer Logbøger</span>
+                        </button>
                     )}
                 </nav>
 
@@ -482,7 +483,7 @@ export default function Dashboard() {
                                 )}
                             </div>
                         </div>
-                    ) : (
+                    ) : activeTab === 'profile' ? (
                         <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
                             <div className="p-6 border-b border-border bg-muted/30">
                                 <h1 className="text-2xl font-bold font-merriweather">Rediger Bådens Profil</h1>
@@ -548,7 +549,12 @@ export default function Dashboard() {
                                 </div>
                             </form>
                         </div>
-                    )}
+                    ) : activeTab === 'posts' ? (
+                        <PostManager
+                            boat={currentBoat}
+                            onEditPost={(post) => alert('Redigerings-vinduet åbner snart, i øjeblikket kan du kun udgive og gemme som kladde!')}
+                        />
+                    ) : null}
                 </div>
             </main>
         </div>
