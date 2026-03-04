@@ -65,7 +65,7 @@ export default function Navbar() {
                         </h1>
                     </Link>
                     <p className="mt-4 text-sm md:text-base font-medium text-muted-foreground uppercase tracking-[0.2em]">
-                        Uafhængigt medie for danske sejlere på verdenshavene
+                        Følg de danske sejlere på langfart på de syv verdenshave.
                     </p>
                 </div>
             </div>
