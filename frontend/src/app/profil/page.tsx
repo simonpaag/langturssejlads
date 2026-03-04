@@ -146,7 +146,7 @@ export default function ProfilePage() {
                         <p className="text-sm text-muted-foreground font-medium">Brug for at forlade skuden for en stund?</p>
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2 px-6 py-3 bg-white text-destructive border border-destructive/20 hover:bg-destructive hover:text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all shadow-sm w-full sm:w-auto justify-center"
+                            className="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-600 border border-red-100 dark:bg-red-500/10 dark:text-red-500 dark:border-red-500/20 hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all shadow-sm w-full sm:w-auto justify-center"
                         >
                             <LogOut className="w-4 h-4" />
                             Log Ud
