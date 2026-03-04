@@ -79,19 +79,21 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
 
             {/* Editorial Header / Cover */}
-            <div className="mb-16 border-b-[2px] border-foreground pb-12">
-                <div className="relative w-full h-64 md:h-96 bg-muted mb-16 overflow-hidden border border-border">
+            <div className="mb-20 pb-12 border-b-[2px] border-border/50">
+                <div className="relative w-full h-64 md:h-[500px] bg-muted mb-20 md:mb-24 rounded-[2rem] shadow-2xl overflow-visible border border-border/40">
                     <img
                         src={boat.coverImage || `https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop`}
                         alt={`Coverbillede af ${boat.name}`}
-                        className="w-full h-full object-cover grayscale-[20%]"
+                        className="w-full h-full object-cover rounded-[2rem]"
                     />
+                    {/* Subtle inner overlay for depth */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/10 rounded-[2rem] pointer-events-none"></div>
 
                     {/* Profile Image overlapping the cover */}
-                    <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0 w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-background overflow-hidden bg-muted shadow-xl">
+                    <div className="absolute -bottom-16 md:-bottom-20 left-1/2 -translate-x-1/2 md:left-16 md:translate-x-0 w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] border-background overflow-hidden bg-muted shadow-2xl z-10 transition-transform hover:scale-105 duration-300">
                         {boat.profileImage ? (
                             <img src={boat.profileImage} alt={boat.name} className="w-full h-full object-cover" />
                         ) : (
@@ -100,11 +102,11 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                     </div>
                 </div>
 
-                <div className="md:ml-64 text-center md:text-left">
-                    <h1 className="text-5xl md:text-6xl font-merriweather font-black text-foreground mb-4 tracking-tight">
+                <div className="md:ml-[17rem] text-center md:text-left">
+                    <h1 className="text-5xl md:text-7xl font-merriweather font-black text-foreground mb-6 tracking-tighter drop-shadow-sm">
                         {boat.name}
                     </h1>
-                    <p className="text-xl text-muted-foreground font-merriweather italic leading-relaxed max-w-3xl">
+                    <p className="text-xl md:text-2xl text-muted-foreground font-merriweather italic leading-relaxed max-w-3xl">
                         "{boat.description || 'En fantastisk rejse ud i det ukendte. Følg med i vores eventyr her på siden.'}"
                     </p>
                 </div>
@@ -169,10 +171,10 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                     <div className="space-y-16">
                         {posts.length > 0 ? (
                             posts.map((post) => (
-                                <article key={post.id} className="group border border-border bg-card shadow-sm hover:shadow-md transition-shadow">
+                                <article key={post.id} className="group bg-background rounded-[1.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden mb-12">
                                     {/* Post Header */}
                                     <div className="p-6 pb-4 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full overflow-hidden bg-muted">
+                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-muted border border-border/50">
                                             {post.author.profileImage ? (
                                                 <img src={post.author.profileImage} alt={post.author.name} className="w-full h-full object-cover" />
                                             ) : (
@@ -180,8 +182,8 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                             )}
                                         </div>
                                         <div>
-                                            <p className="font-bold text-sm tracking-wide">{post.author.name}</p>
-                                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase tracking-widest">
+                                            <p className="font-bold text-sm tracking-wide text-foreground">{post.author.name}</p>
+                                            <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mt-0.5">
                                                 <time dateTime={post.createdAt}>{format(new Date(post.createdAt), "d. MMM yyyy 'kl.' HH:mm", { locale: da })}</time>
                                                 {post.voyage && <span>&bull; {post.voyage.title}</span>}
                                             </div>
@@ -189,19 +191,19 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                     </div>
 
                                     {/* Post Content based on postType */}
-                                    <div className="px-6 pb-6 border-b border-border/50">
+                                    <div className="px-6 pb-6 pt-2">
                                         {post.postType === 'QUICK_TEXT' && (
-                                            <h3 className="text-xl md:text-2xl font-merriweather font-medium leading-relaxed italic text-foreground/90">
+                                            <h3 className="text-xl md:text-3xl font-merriweather font-medium leading-relaxed italic text-foreground/90 py-4">
                                                 "{post.content}"
                                             </h3>
                                         )}
 
                                         {post.postType === 'PHOTO' && (
                                             <div>
-                                                <div className="w-full aspect-[4/3] bg-muted mb-4 border border-border overflow-hidden">
-                                                    <img src={post.imageUrl || 'https://via.placeholder.com/800'} alt="Bådbillede" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                                                <div className="w-full aspect-[4/3] md:aspect-[16/9] bg-muted mb-6 border border-border/40 overflow-hidden rounded-2xl relative shadow-inner">
+                                                    <img src={post.imageUrl || 'https://via.placeholder.com/800'} alt="Bådbillede" className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out" />
                                                 </div>
-                                                <p className="text-base text-foreground leading-relaxed">
+                                                <p className="text-lg text-foreground leading-relaxed px-2">
                                                     {post.content}
                                                 </p>
                                             </div>
@@ -210,7 +212,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                         {post.postType === 'YOUTUBE' && (
                                             <div>
                                                 {post.youtubeUrl && (
-                                                    <div className="w-full aspect-video bg-black mb-4">
+                                                    <div className="w-full aspect-video bg-black mb-6 rounded-2xl overflow-hidden shadow-lg border border-border/40">
                                                         <iframe
                                                             src={post.youtubeUrl}
                                                             className="w-full h-full"
@@ -220,28 +222,28 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                                         </iframe>
                                                     </div>
                                                 )}
-                                                <p className="text-base text-foreground leading-relaxed">
+                                                <p className="text-lg text-foreground leading-relaxed px-2">
                                                     {post.content}
                                                 </p>
                                             </div>
                                         )}
 
                                         {post.postType === 'ARTICLE' && (
-                                            <div className="border border-border p-6 bg-muted/30 group-hover:bg-muted/50 transition-colors">
+                                            <div className="border border-border/50 rounded-2xl p-8 bg-muted/20 group-hover:bg-muted/40 transition-colors">
                                                 <Link href={`/posts/${post.slug}`} className="block">
-                                                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary mb-2 block">Dybdegående Artikel</span>
-                                                    <h3 className="text-3xl font-merriweather font-bold mb-4 leading-snug hover:text-primary transition-colors">
+                                                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary mb-3 block">Dybdegående Artikel</span>
+                                                    <h3 className="text-3xl md:text-4xl font-merriweather font-bold mb-4 leading-snug group-hover:text-primary transition-colors">
                                                         {post.title}
                                                     </h3>
-                                                    <p className="text-muted-foreground text-base leading-relaxed line-clamp-3">
+                                                    <p className="text-muted-foreground text-lg leading-relaxed line-clamp-3 mb-6">
                                                         {post.content}
                                                     </p>
-                                                    <span className="inline-block mt-4 text-xs font-bold uppercase tracking-widest hover:underline underline-offset-4 text-primary">Læs hele historien &rarr;</span>
+                                                    <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:translate-x-2 transition-transform text-primary">Læs hele historien &rarr;</span>
                                                 </Link>
                                             </div>
                                         )}
                                     </div>
-                                    <div className="px-6 py-3 bg-muted/10 text-xs font-bold uppercase tracking-widest text-muted-foreground/50 text-right">
+                                    <div className="px-6 py-3 bg-muted/30 border-t border-border/50 text-xs font-bold uppercase tracking-widest text-muted-foreground/50 text-right">
                                         {post.postType}
                                     </div>
                                 </article>

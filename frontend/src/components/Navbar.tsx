@@ -63,7 +63,7 @@ export default function Navbar() {
             </div>
 
             {/* Main Masthead */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 border-b-[3px] border-foreground">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
                 <div className="flex flex-col items-center justify-center text-center">
                     <Link href="/" className="group">
                         <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-foreground group-hover:text-primary transition-colors">
@@ -77,7 +77,7 @@ export default function Navbar() {
             </div>
 
             {/* Navigation Links */}
-            <div className="border-b border-border shadow-sm sticky top-0 bg-background/95 backdrop-blur-sm z-50">
+            <div className="border-y border-border/60 shadow-sm sticky top-0 bg-background/80 backdrop-blur-xl z-50 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex h-14 justify-center items-center space-x-8 md:space-x-12 overflow-x-auto no-scrollbar">
                         <Link href="/" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
