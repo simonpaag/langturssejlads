@@ -83,7 +83,7 @@ export const getPublicPosts = async (req: AuthRequest, res: Response): Promise<v
             where: { status: 'PUBLISHED' },
             include: {
                 author: { select: { id: true, name: true, profileImage: true } },
-                boat: { select: { id: true, slug: true, name: true, profileImage: true } },
+                boat: { select: { id: true, slug: true, name: true, profileImage: true, coverImage: true } },
                 voyage: { select: { id: true, title: true } },
                 votes: { select: { type: true, userId: true } }
             },
@@ -103,7 +103,7 @@ export const getPostBySlug = async (req: AuthRequest, res: Response): Promise<vo
             where: { slug: String(slug) },
             include: {
                 author: { select: { id: true, name: true, profileImage: true } },
-                boat: { select: { id: true, slug: true, name: true, profileImage: true } },
+                boat: { select: { id: true, slug: true, name: true, profileImage: true, coverImage: true } },
                 voyage: { select: { id: true, title: true } },
                 votes: { select: { type: true, userId: true } }
             },
@@ -133,7 +133,7 @@ export const getAllPostsForAdmin = async (req: AuthRequest, res: Response): Prom
         const posts = await prisma.post.findMany({
             include: {
                 author: { select: { id: true, name: true, profileImage: true } },
-                boat: { select: { id: true, slug: true, name: true, profileImage: true } },
+                boat: { select: { id: true, slug: true, name: true, profileImage: true, coverImage: true } },
                 voyage: { select: { id: true, title: true } }
             },
             orderBy: { createdAt: 'desc' },

@@ -14,6 +14,7 @@ interface Boat {
   slug: string;
   name: string;
   profileImage: string | null;
+  coverImage?: string | null;
 }
 
 export interface Post {
@@ -95,7 +96,7 @@ export default async function Home() {
           <Link href={`/posts/${featured.slug}`} className="relative h-64 md:h-full min-h-[400px] w-full lg:col-span-8 overflow-hidden rounded-3xl shadow-2xl group flex-shrink-0">
             <div className="absolute inset-0 relative w-full h-full">
               <Image
-                src={featured.imageUrl || `https://images.unsplash.com/photo-1544331046-ad6498b846bf?q=80&w=1200&auto=format&fit=crop`}
+                src={featured.imageUrl || featured.boat.coverImage || featured.boat.profileImage || `https://images.unsplash.com/photo-1544331046-ad6498b846bf?q=80&w=1200&auto=format&fit=crop`}
                 alt={`Opdatering fra ${featured.boat.name}: ${featured.title || 'Ingen titel'}`}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
@@ -171,7 +172,7 @@ export default async function Home() {
                 <article key={post.id} className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
                   <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
                     <Image
-                      src={post.imageUrl || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${post.id}`}
+                      src={post.imageUrl || post.boat.coverImage || post.boat.profileImage || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${post.id}`}
                       alt={`Glimt fra havet: ${post.title || post.boat.name}`}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
