@@ -8,6 +8,7 @@ import PostManager from '@/components/dashboard/PostManager';
 import ImageUpload from '@/components/ImageUpload';
 import MultiImageUpload from '@/components/MultiImageUpload';
 import Inbox from '@/components/dashboard/Inbox';
+import RichTextEditor from '@/components/RichTextEditor';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -24,6 +25,7 @@ export default function Dashboard() {
     const [youtubeUrl, setYoutubeUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [editingPostId, setEditingPostId] = useState<number | null>(null);
+    const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
     // Voyage states
     const [voyages, setVoyages] = useState<any[]>([]);
@@ -125,6 +127,29 @@ export default function Dashboard() {
         }
     }, [currentBoat]);
 
+    useEffect(() => {
+        if (postType === 'ARTICLE' && currentBoat?.id && !editingPostId) {
+            const savedContent = localStorage.getItem(`draft_article_${currentBoat.id}`);
+            const savedTitle = localStorage.getItem(`draft_article_title_${currentBoat.id}`);
+            if (savedContent && !content) setContent(savedContent);
+            if (savedTitle && !title) setTitle(savedTitle);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [postType, currentBoat?.id, editingPostId]);
+
+    useEffect(() => {
+        if (postType === 'ARTICLE' && currentBoat?.id && !editingPostId) {
+            if (!content && !title) return;
+            const timeoutId = setTimeout(() => {
+                localStorage.setItem(`draft_article_${currentBoat.id}`, content);
+                localStorage.setItem(`draft_article_title_${currentBoat.id}`, title);
+                setLastSaved(new Date());
+            }, 1500);
+            return () => clearTimeout(timeoutId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [content, title, postType, currentBoat?.id, editingPostId]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -166,6 +191,13 @@ export default function Dashboard() {
             }
 
             alert(editingPostId ? "Logbogen er succesfuldt opdateret!" : "Historien er publiceret på bådens logbog!");
+
+            if (postType === 'ARTICLE' && currentBoat?.id && !editingPostId) {
+                localStorage.removeItem(`draft_article_${currentBoat.id}`);
+                localStorage.removeItem(`draft_article_title_${currentBoat.id}`);
+                setLastSaved(null);
+            }
+
             setTitle('');
             setContent('');
             setImageUrl('');
@@ -482,16 +514,32 @@ export default function Dashboard() {
                                 )}
 
                                 <div>
-                                    <label htmlFor="content" className="block text-sm font-semibold mb-2">{postType === 'ARTICLE' ? 'Den fulde artikel' : 'Tekst til opslaget'}</label>
-                                    <textarea
-                                        id="content"
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        placeholder={postType === 'QUICK_TEXT' ? "Hvad sker der lige nu?" : "Beskriv oplevelsen..."}
-                                        rows={postType === 'ARTICLE' ? 14 : 4}
-                                        className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed"
-                                        required
-                                    />
+                                    <div className="flex justify-between items-end mb-2">
+                                        <label htmlFor="content" className="block text-sm font-semibold">{postType === 'ARTICLE' ? 'Den fulde artikel' : 'Tekst til opslaget'}</label>
+                                        {postType === 'ARTICLE' && lastSaved && !editingPostId && (
+                                            <span className="text-[10px] uppercase font-bold text-emerald-600 tracking-widest bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 flex items-center gap-1.5 shadow-sm">
+                                                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                                Gemt i kladde {lastSaved.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {postType === 'ARTICLE' ? (
+                                        <RichTextEditor
+                                            content={content}
+                                            onChange={(html) => setContent(html)}
+                                        />
+                                    ) : (
+                                        <textarea
+                                            id="content"
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value)}
+                                            placeholder={postType === 'QUICK_TEXT' ? "Hvad sker der lige nu?" : "Beskriv oplevelsen..."}
+                                            rows={4}
+                                            className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed"
+                                            required
+                                        />
+                                    )}
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-4 border-t border-border mt-2">

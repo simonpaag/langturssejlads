@@ -10,8 +10,8 @@ export const sendInviteEmail = async (toEmail: string) => {
 
         const resend = new Resend(apiKey);
 
-        const data = await resend.emails.send({
-            from: 'Langturssejlads.dk <info@langturssejlads.dk>', // Bemærk: Dette virker kun hvis domænet er verificeret på Resend
+        const { data, error } = await resend.emails.send({
+            from: 'Langturssejlads.dk <info@langturssejlads.dk>',
             to: [toEmail],
             subject: 'Du er blevet anbefalet til Langturssejlads.dk ⛵',
             html: `
@@ -49,9 +49,14 @@ export const sendInviteEmail = async (toEmail: string) => {
             `,
         });
 
+        if (error) {
+            console.error('Email sending returned an error from Resend:', error);
+            return { success: false, error };
+        }
+
         return { success: true, data };
     } catch (error) {
-        console.error('Email sending failed:', error);
+        console.error('Email sending failed in try-catch:', error);
         return { success: false, error };
     }
 };
