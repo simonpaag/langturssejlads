@@ -45,3 +45,11 @@ export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction
     }
     next();
 };
+
+export const authorizeSystemAdmin = (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (req.user && req.user.isSystemAdmin) {
+        next();
+    } else {
+        res.status(403).json({ error: 'Access denied. System Admin role required.' });
+    }
+};

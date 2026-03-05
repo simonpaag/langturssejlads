@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
+import FaqManager from '@/components/admin/FaqManager';
 
 interface Article {
     id: number;
@@ -20,6 +21,7 @@ export default function AdminPanel() {
     const [articles, setArticles] = useState<Article[]>([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [activeTab, setActiveTab] = useState<'articles' | 'faq'>('articles');
 
     useEffect(() => {
         const savedToken = localStorage.getItem('admin_token');
@@ -155,65 +157,78 @@ export default function AdminPanel() {
                 </button>
             </div>
 
+            <div className="flex gap-4 mb-8">
+                <button onClick={() => setActiveTab('articles')} className={`px-6 py-2.5 rounded-full font-bold transition-all ${activeTab === 'articles' ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-muted-foreground hover:border-primary'}`}>
+                    Logbøger & Artikler
+                </button>
+                <button onClick={() => setActiveTab('faq')} className={`px-6 py-2.5 rounded-full font-bold transition-all ${activeTab === 'faq' ? 'bg-primary text-white shadow-md' : 'bg-white border border-border text-muted-foreground hover:border-primary'}`}>
+                    Lær om Langturssejlads (FAQ)
+                </button>
+            </div>
+
             {error && <div className="mb-8 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100">{error}</div>}
 
-            <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-muted/50 border-b border-border">
-                            <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">ID</th>
-                            <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Historie</th>
-                            <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Båd / Forfatter</th>
-                            <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Dato</th>
-                            <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Status</th>
-                            <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground text-right">Handling</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                        {articles.map(article => (
-                            <tr key={article.id} className="hover:bg-muted/20 transition-colors">
-                                <td className="p-4 text-sm font-medium text-muted-foreground">#{article.id}</td>
-                                <td className="p-4 font-bold max-w-xs truncate">{article.title}</td>
-                                <td className="p-4 text-sm">
-                                    <span className="font-semibold text-primary block">{article.boat.name}</span>
-                                    <span className="text-muted-foreground">{article.author.name}</span>
-                                </td>
-                                <td className="p-4 text-sm text-muted-foreground">
-                                    {format(new Date(article.createdAt), 'd. MMM yyyy', { locale: da })}
-                                </td>
-                                <td className="p-4">
-                                    <span className={`inline-flex px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-md ${article.status === 'PUBLISHED' ? 'bg-green-100 text-green-800' :
-                                        article.status === 'APPROVED' ? 'bg-blue-100 text-blue-800' :
-                                            article.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                                                'bg-gray-100 text-gray-800'
-                                        }`}>
-                                        {article.status}
-                                    </span>
-                                </td>
-                                <td className="p-4 text-right">
-                                    <select
-                                        value={article.status}
-                                        onChange={(e) => updateStatus(article.id, e.target.value)}
-                                        className="text-sm bg-white border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                    >
-                                        <option value="DRAFT">Draft</option>
-                                        <option value="PUBLISHED">Published</option>
-                                        <option value="APPROVED">Approved (Kun Båd-profil)</option>
-                                        <option value="REJECTED">Rejected</option>
-                                    </select>
-                                </td>
+            {activeTab === 'articles' ? (
+                <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-sm">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-muted/50 border-b border-border">
+                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">ID</th>
+                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Historie</th>
+                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Båd / Forfatter</th>
+                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Dato</th>
+                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Status</th>
+                                <th className="p-4 text-xs font-bold uppercase tracking-widest text-muted-foreground text-right">Handling</th>
                             </tr>
-                        ))}
-                        {articles.length === 0 && (
-                            <tr>
-                                <td colSpan={6} className="p-8 text-center text-muted-foreground">
-                                    Ingen historier fundet i databasen.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody className="divide-y divide-border">
+                            {articles.map(article => (
+                                <tr key={article.id} className="hover:bg-muted/20 transition-colors">
+                                    <td className="p-4 text-sm font-medium text-muted-foreground">#{article.id}</td>
+                                    <td className="p-4 font-bold max-w-xs truncate">{article.title}</td>
+                                    <td className="p-4 text-sm">
+                                        <span className="font-semibold text-primary block">{article.boat.name}</span>
+                                        <span className="text-muted-foreground">{article.author.name}</span>
+                                    </td>
+                                    <td className="p-4 text-sm text-muted-foreground">
+                                        {format(new Date(article.createdAt), 'd. MMM yyyy', { locale: da })}
+                                    </td>
+                                    <td className="p-4">
+                                        <span className={`inline-flex px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-md ${article.status === 'PUBLISHED' ? 'bg-green-100 text-green-800' :
+                                            article.status === 'APPROVED' ? 'bg-blue-100 text-blue-800' :
+                                                article.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                                                    'bg-gray-100 text-gray-800'
+                                            }`}>
+                                            {article.status}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <select
+                                            value={article.status}
+                                            onChange={(e) => updateStatus(article.id, e.target.value)}
+                                            className="text-sm bg-white border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        >
+                                            <option value="DRAFT">Draft</option>
+                                            <option value="PUBLISHED">Published</option>
+                                            <option value="APPROVED">Approved (Kun Båd-profil)</option>
+                                            <option value="REJECTED">Rejected</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))}
+                            {articles.length === 0 && (
+                                <tr>
+                                    <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                                        Ingen historier fundet i databasen.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <FaqManager token={token} />
+            )}
         </div>
     );
 }

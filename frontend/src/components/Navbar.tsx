@@ -5,6 +5,7 @@ import { UserCircle, LogOut, Compass, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import SearchBar from '@/components/SearchBar';
 
 export default function Navbar() {
     const router = useRouter();
@@ -83,6 +84,9 @@ export default function Navbar() {
 
                 {/* Right: Auth */}
                 <div className="flex items-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                    <div className="hidden md:block">
+                        <SearchBar />
+                    </div>
                     {(isLoggedIn) ? (
                         <Link href="/profil" className="group flex items-center gap-2 hover:opacity-80 transition-opacity">
                             <div className="w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] overflow-hidden rounded-full border-2 border-primary/20 bg-muted flex items-center justify-center shadow-sm relative">
@@ -114,6 +118,9 @@ export default function Navbar() {
             {/* Mobile Dropdown Menu (Overlay) */}
             {isMenuOpen && (
                 <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border p-6 shadow-2xl z-40 flex flex-col gap-5 animate-in slide-in-from-top-4 fade-in duration-200">
+                    <div className="mb-2">
+                        <SearchBar />
+                    </div>
                     {pathname !== "/" && (
                         <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                             <Compass className="w-5 h-5 text-primary" /> Forside

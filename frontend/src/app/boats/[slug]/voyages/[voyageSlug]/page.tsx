@@ -3,8 +3,6 @@ import { format, differenceInDays } from 'date-fns';
 import { da } from 'date-fns/locale';
 import { MapPin, Navigation, CalendarDays, Users, Anchor, CheckCircle2, Navigation2, FileText, UserCircle2, Settings2, ShieldAlert, Ship, Compass, HelpCircle, Coins } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 
 export const revalidate = 60; // 60 sek. Cache
 
@@ -39,9 +37,7 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
     const captains = voyage.boat.crewMemberships.filter((cm: any) => cm.role === 'BOAT_ADMIN');
 
     return (
-        <div className="min-h-screen bg-background flex flex-col">
-            <Navbar />
-
+        <div className="flex flex-col bg-background">
             <main className="flex-1 pb-24">
                 {/* Hero Section */}
                 <div className="relative w-full h-[60vh] min-h-[500px] mb-12 overflow-hidden border-b border-border/40">
@@ -207,8 +203,6 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
                     </Link>
                 </div>
             </main>
-
-            <Footer />
         </div>
     );
 }
