@@ -29,6 +29,7 @@ export default function Footer() {
                         <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Platformen</h3>
                         <ul className="space-y-4 text-sm font-medium text-muted-foreground">
                             <li><Link href="/om" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Projektet / Om os</Link></li>
+                            <li><Link href="/laer-om-langturssejlads" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Lær om Langturssejlads (FAQ)</Link></li>
                             <li><Link href="/annoncor" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Bliv annoncør</Link></li>
                             <li><Link href="/rettigheder" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Rettigheder & Vilkår</Link></li>
                             <li><Link href="/moderation" className="hover:text-primary hover:translate-x-1 inline-block transition-transform text-destructive/80 font-bold">Retningslinjer</Link></li>

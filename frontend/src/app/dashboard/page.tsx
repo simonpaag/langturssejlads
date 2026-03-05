@@ -32,6 +32,7 @@ export default function Dashboard() {
     const [voyageStart, setVoyageStart] = useState('');
     const [voyageEnd, setVoyageEnd] = useState('');
     const [voyageSeats, setVoyageSeats] = useState('0');
+    const [voyageBunkFee, setVoyageBunkFee] = useState('');
     const [isSubmittingVoyage, setIsSubmittingVoyage] = useState(false);
 
     // Boat Profile states
@@ -203,7 +204,8 @@ export default function Dashboard() {
                     imageUrl: voyageImage,
                     startDate: voyageStart,
                     endDate: voyageEnd || undefined,
-                    availableSeats: Number(voyageSeats)
+                    availableSeats: Number(voyageSeats),
+                    bunkFee: voyageBunkFee || undefined
                 })
             });
 
@@ -213,7 +215,7 @@ export default function Dashboard() {
             setVoyages([newVoyage, ...voyages]);
 
             alert('Togtet er oprettet!');
-            setVoyageTitle(''); setVoyageDescription(''); setVoyageFrom(''); setVoyageTo(''); setVoyageImage(''); setVoyageStart(''); setVoyageEnd('');
+            setVoyageTitle(''); setVoyageDescription(''); setVoyageFrom(''); setVoyageTo(''); setVoyageImage(''); setVoyageStart(''); setVoyageEnd(''); setVoyageBunkFee('');
         } catch (error: any) {
             alert(`Fejl: ${error.message}`);
         } finally {
@@ -535,14 +537,21 @@ export default function Dashboard() {
                                         <input type="number" min="0" id="voyageSeats" value={voyageSeats} onChange={(e) => setVoyageSeats(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
                                     </div>
                                 </div>
-                                {/* Image Upload (Kompressor) */}
-                                <div>
-                                    <ImageUpload
-                                        onUploadSuccess={setVoyageImage}
-                                        currentImage={voyageImage}
-                                        label="Kort / Coverbillede til Togtet (Valgfrit)"
-                                        aspectRatio="video"
-                                    />
+                                {/* Pris og Billede */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label htmlFor="voyageBunkFee" className="block text-sm font-semibold mb-2">Køjepenge (Valgfrit)</label>
+                                        <input type="text" id="voyageBunkFee" value={voyageBunkFee} onChange={(e) => setVoyageBunkFee(e.target.value)} placeholder="F.eks. 3500 kr pr. måned" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        <p className="text-[11px] text-muted-foreground mt-1.5">Køjepenge tænkes som et solidarisk bidrag til skibets drift.</p>
+                                    </div>
+                                    <div>
+                                        <ImageUpload
+                                            onUploadSuccess={setVoyageImage}
+                                            currentImage={voyageImage}
+                                            label="Kort / Coverbillede (Valgfrit)"
+                                            aspectRatio="video"
+                                        />
+                                    </div>
                                 </div>
                                 {/* Description */}
                                 <div>

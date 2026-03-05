@@ -4,7 +4,7 @@ import slugify from 'slugify';
 
 export const createVoyage = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { title, description, startDate, endDate, boatId, fromLocation, toLocation, imageUrl, availableSeats } = req.body;
+        const { title, description, startDate, endDate, boatId, fromLocation, toLocation, imageUrl, availableSeats, bunkFee } = req.body;
 
         if (!title || !startDate || !boatId) {
             res.status(400).json({ error: 'Titel, Startdato og Båd-ID er påkrævet.' });
@@ -24,6 +24,7 @@ export const createVoyage = async (req: Request, res: Response): Promise<void> =
                 startDate: new Date(startDate),
                 endDate: endDate ? new Date(endDate) : null,
                 availableSeats: availableSeats ? Number(availableSeats) : 0,
+                bunkFee,
                 boatId: Number(boatId)
             }
         });
@@ -102,7 +103,7 @@ export const getAllVoyages = async (req: Request, res: Response): Promise<void> 
 
 export const updateVoyage = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { title, description, startDate, endDate, fromLocation, toLocation, imageUrl } = req.body;
+        const { title, description, startDate, endDate, fromLocation, toLocation, imageUrl, availableSeats, bunkFee } = req.body;
         const updated = await prisma.voyage.update({
             where: { id: Number(req.params.id) },
             data: {
@@ -111,6 +112,8 @@ export const updateVoyage = async (req: Request, res: Response): Promise<void> =
                 ...(fromLocation !== undefined && { fromLocation }),
                 ...(toLocation !== undefined && { toLocation }),
                 ...(imageUrl !== undefined && { imageUrl }),
+                ...(availableSeats !== undefined && { availableSeats: Number(availableSeats) }),
+                ...(bunkFee !== undefined && { bunkFee }),
                 ...(startDate && { startDate: new Date(startDate) }),
                 ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
             }

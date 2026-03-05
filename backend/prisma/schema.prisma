@@ -132,6 +132,7 @@ model Voyage {
   toLocation   String?
   imageUrl     String?
   availableSeats Int       @default(0)
+  bunkFee      String?     // Køjepenge (f.eks. "150 DKK pr. dag")
   
   boat        Boat          @relation(fields: [boatId], references: [id])
   boatId      Int
