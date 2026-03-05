@@ -122,9 +122,6 @@ export default function Navbar() {
                     <Link href="/om" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                         Om Langturssejlads
                     </Link>
-                    <Link href="/laer-om-langturssejlads" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                        Lær om Langturssejlads
-                    </Link>
                     <Link href="/annoncor" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                         Bliv annoncør
                     </Link>
