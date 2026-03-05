@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
-import { Anchor, Compass, UserCircle2, ShieldAlert, Globe, Link as LinkIcon, Instagram, Youtube, Facebook } from 'lucide-react';
+import { Anchor, Compass, UserCircle2, ShieldAlert, Globe, Link as LinkIcon, Instagram, Youtube, Facebook, Ruler, Anchor as AnchorIcon, Users, Ship } from 'lucide-react';
 import Link from 'next/link';
 
 export interface Post {
@@ -26,6 +26,11 @@ interface Boat {
     coverImage: string | null;
     profileImage: string | null;
     websiteUrl: string | null;
+    boatModel?: string | null;
+    length: number;
+    width?: number | null;
+    tonnage?: number | null;
+    bunks?: number | null;
     isBoardPublic: boolean;
     socialLinks: { platform: string; url: string }[] | null;
     crewMemberships: {
@@ -142,10 +147,51 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-                {/* Sidebar: Crew & Voyages */}
+                {/* Sidebar: Specs, Crew & Voyages */}
                 <aside className="lg:col-span-1 space-y-12">
+                    {/* Båd Specifikationer */}
+                    {(boat.length > 0 || boat.boatModel || boat.width || boat.tonnage || boat.bunks) && (
+                        <div className="bg-muted/30 border border-border/50 rounded-3xl p-6 shadow-sm">
+                            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-border/80 pb-3 mb-5 flex items-center gap-2 text-foreground/90">
+                                <Ship className="w-4 h-4 text-primary" /> Info om båden
+                            </h3>
+                            <ul className="space-y-4 text-sm">
+                                {boat.boatModel && (
+                                    <li className="flex items-center justify-between">
+                                        <span className="text-muted-foreground flex items-center gap-2"><Ship className="w-4 h-4" /> Model</span>
+                                        <span className="font-semibold text-foreground text-right">{boat.boatModel}</span>
+                                    </li>
+                                )}
+                                {boat.length > 0 && (
+                                    <li className="flex items-center justify-between">
+                                        <span className="text-muted-foreground flex items-center gap-2"><Ruler className="w-4 h-4" /> Længde</span>
+                                        <span className="font-semibold text-foreground">{boat.length} fod</span>
+                                    </li>
+                                )}
+                                {boat.width && (
+                                    <li className="flex items-center justify-between">
+                                        <span className="text-muted-foreground flex items-center gap-2"><Ruler className="w-4 h-4" /> Bredde</span>
+                                        <span className="font-semibold text-foreground">{boat.width} m</span>
+                                    </li>
+                                )}
+                                {boat.tonnage && (
+                                    <li className="flex items-center justify-between">
+                                        <span className="text-muted-foreground flex items-center gap-2"><AnchorIcon className="w-4 h-4" /> Tonnage</span>
+                                        <span className="font-semibold text-foreground">{boat.tonnage.toLocaleString('da-DK')} kg</span>
+                                    </li>
+                                )}
+                                {boat.bunks && (
+                                    <li className="flex items-center justify-between">
+                                        <span className="text-muted-foreground flex items-center gap-2"><Users className="w-4 h-4" /> Køjer</span>
+                                        <span className="font-semibold text-foreground">{boat.bunks} sovepladser</span>
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    )}
+
                     <div>
-                        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-foreground pb-2 mb-6">
+                        <h3 className="text-sm font-bold uppercase tracking-widest border-b border-foreground pb-2 mb-6 text-foreground/90">
                             Mandskab
                         </h3>
                         <div className="flex flex-col gap-4">

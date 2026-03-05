@@ -5,7 +5,7 @@ import slugify from 'slugify';
 
 export const createBoat = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { name, description, coverImage } = req.body;
+        const { name, description, coverImage, profileImage, boatModel, length, width, tonnage, bunks } = req.body;
         const userId = req.user?.userId;
 
         if (!userId) {
@@ -21,6 +21,12 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
                     slug: slugify(name, { lower: true, strict: true }),
                     description,
                     coverImage,
+                    profileImage,
+                    boatModel,
+                    length: length ? parseFloat(length) : 0,
+                    width: width ? parseFloat(width) : null,
+                    tonnage: tonnage ? parseInt(tonnage) : null,
+                    bunks: bunks ? parseInt(bunks) : null
                 },
             });
 
@@ -94,7 +100,7 @@ export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<vo
 export const updateBoat = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const boatId = parseInt(req.params.id as string);
-        const { name, description, coverImage, profileImage, websiteUrl, socialLinks } = req.body;
+        const { name, description, coverImage, profileImage, websiteUrl, socialLinks, boatModel, length, width, tonnage, bunks } = req.body;
         const userId = req.user?.userId;
 
         if (!userId) {
@@ -127,8 +133,15 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
             coverImage,
             profileImage,
             websiteUrl,
-            socialLinks
+            socialLinks,
+            boatModel,
         };
+
+        // Parse the numeric specs
+        if (length !== undefined && length !== null && length !== '') updateData.length = parseFloat(length);
+        if (width !== undefined) updateData.width = width === '' || width === null ? null : parseFloat(width);
+        if (tonnage !== undefined) updateData.tonnage = tonnage === '' || tonnage === null ? null : parseInt(tonnage);
+        if (bunks !== undefined) updateData.bunks = bunks === '' || bunks === null ? null : parseInt(bunks);
 
         // Only update name and slug if the name is provided and changed
         if (name) {

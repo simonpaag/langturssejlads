@@ -41,6 +41,11 @@ export default function Dashboard() {
     const [boatProfileImage, setBoatProfileImage] = useState('');
     const [boatWebsiteUrl, setBoatWebsiteUrl] = useState('');
     const [boatSocialLinks, setBoatSocialLinks] = useState<{ platform: string, url: string }[]>([]);
+    const [boatModel, setBoatModel] = useState('');
+    const [boatLength, setBoatLength] = useState('');
+    const [boatWidth, setBoatWidth] = useState('');
+    const [boatTonnage, setBoatTonnage] = useState('');
+    const [boatBunks, setBoatBunks] = useState('');
     const [isSubmittingBoat, setIsSubmittingBoat] = useState(false);
 
     const [isBoardPublic, setIsBoardPublic] = useState(true);
@@ -108,6 +113,11 @@ export default function Dashboard() {
             setBoatWebsiteUrl(currentBoat.websiteUrl || '');
             setBoatSocialLinks(Array.isArray(currentBoat.socialLinks) ? currentBoat.socialLinks : []);
             setIsBoardPublic(currentBoat.isBoardPublic ?? true);
+            setBoatModel(currentBoat.boatModel || '');
+            setBoatLength(currentBoat.length?.toString() || '');
+            setBoatWidth(currentBoat.width?.toString() || '');
+            setBoatTonnage(currentBoat.tonnage?.toString() || '');
+            setBoatBunks(currentBoat.bunks?.toString() || '');
         }
     }, [currentBoat]);
 
@@ -232,7 +242,12 @@ export default function Dashboard() {
                     coverImage: boatCoverImage,
                     profileImage: boatProfileImage,
                     websiteUrl: boatWebsiteUrl,
-                    socialLinks: boatSocialLinks
+                    socialLinks: boatSocialLinks,
+                    boatModel: boatModel,
+                    length: boatLength,
+                    width: boatWidth,
+                    tonnage: boatTonnage,
+                    bunks: boatBunks
                 })
             });
 
@@ -617,6 +632,34 @@ export default function Dashboard() {
                                         placeholder="https://..."
                                         className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                                     />
+                                </div>
+
+                                <div className="p-6 border border-border rounded-2xl bg-muted/10 space-y-4">
+                                    <h3 className="block text-sm font-semibold mb-2">Bådens Specifikationer</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label htmlFor="boatLength" className="block text-xs font-semibold mb-1 uppercase tracking-widest text-muted-foreground">Længde i fod <span className="text-red-500">*</span></label>
+                                            <input type="number" step="0.1" id="boatLength" value={boatLength} onChange={(e) => setBoatLength(e.target.value)} required placeholder="F.eks. 35" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="boatModel" className="block text-xs font-semibold mb-1 uppercase tracking-widest text-muted-foreground">Bådmodel (Frivillig)</label>
+                                            <input type="text" id="boatModel" value={boatModel} onChange={(e) => setBoatModel(e.target.value)} placeholder="F.eks. Hallberg-Rassy 352" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                        <div>
+                                            <label htmlFor="boatWidth" className="block text-xs font-semibold mb-1 uppercase tracking-widest text-muted-foreground">Bredde i meter (Frivillig)</label>
+                                            <input type="number" step="0.1" id="boatWidth" value={boatWidth} onChange={(e) => setBoatWidth(e.target.value)} placeholder="F.eks. 3.4" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="boatTonnage" className="block text-xs font-semibold mb-1 uppercase tracking-widest text-muted-foreground">Tonnage i kg (Frivillig)</label>
+                                            <input type="number" id="boatTonnage" value={boatTonnage} onChange={(e) => setBoatTonnage(e.target.value)} placeholder="F.eks. 6500" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="boatBunks" className="block text-xs font-semibold mb-1 uppercase tracking-widest text-muted-foreground">Antal Køjer (Frivillig)</label>
+                                            <input type="number" id="boatBunks" value={boatBunks} onChange={(e) => setBoatBunks(e.target.value)} placeholder="F.eks. 6" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="p-5 border border-border rounded-2xl bg-muted/10">

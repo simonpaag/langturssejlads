@@ -35,6 +35,13 @@ model Boat {
   socialLinks  Json?     // [{ platform: 'Instagram', url: '...' }]
   isBoardPublic Boolean  @default(true)
   
+  // Specs
+  boatModel    String?   // Model
+  length       Float     @default(0) // Længde (i fod) - Required
+  width        Float?    // Bredde (i meter)
+  tonnage      Int?      // Brutto tonnage (i kilo)
+  bunks        Int?      // Antal køjer (sovende personer)
+  
   crewMemberships CrewMember[]
   posts           Post[]
   voyages         Voyage[]

@@ -11,6 +11,14 @@ export default function CreateBoatPage() {
     const [description, setDescription] = useState('');
     const [coverImage, setCoverImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
+
+    // Boat specs
+    const [boatModel, setBoatModel] = useState('');
+    const [length, setLength] = useState('');
+    const [width, setWidth] = useState('');
+    const [tonnage, setTonnage] = useState('');
+    const [bunks, setBunks] = useState('');
+
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState<string | null>(null);
@@ -39,7 +47,7 @@ export default function CreateBoatPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ name, description, coverImage, profileImage }),
+                body: JSON.stringify({ name, description, coverImage, profileImage, boatModel, length, width, tonnage, bunks }),
             });
 
             const data = await res.json();
@@ -107,6 +115,69 @@ export default function CreateBoatPage() {
                                 className="w-full px-5 py-4 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground min-h-[120px] resize-y"
                                 placeholder="Hvor er vi på vej hen? Hvad er båden for en type?"
                             />
+                        </div>
+
+                        <div className="pt-4 pb-2 border-y border-border/50 my-2">
+                            <h3 className="font-merriweather font-bold text-lg mb-4 text-foreground/80">Specifikationer</h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label className="block text-[11px] font-bold mb-2 text-foreground/90 uppercase tracking-widest">Længde (i fod)<span className="text-red-500 ml-1">*</span></label>
+                                    <input
+                                        type="number"
+                                        step="0.1"
+                                        value={length}
+                                        onChange={(e) => setLength(e.target.value)}
+                                        className="w-full px-4 py-3 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                                        placeholder="F.eks. 35"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[11px] font-bold mb-2 text-foreground/90 uppercase tracking-widest">Bådmodel (Frivillig)</label>
+                                    <input
+                                        type="text"
+                                        value={boatModel}
+                                        onChange={(e) => setBoatModel(e.target.value)}
+                                        className="w-full px-4 py-3 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                                        placeholder="F.eks. Hallberg-Rassy 352"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-[11px] font-bold mb-2 text-foreground/90 uppercase tracking-widest">Bredde i m (Frivillig)</label>
+                                    <input
+                                        type="number"
+                                        step="0.1"
+                                        value={width}
+                                        onChange={(e) => setWidth(e.target.value)}
+                                        className="w-full px-4 py-3 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                                        placeholder="F.eks. 3.4"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[11px] font-bold mb-2 text-foreground/90 uppercase tracking-widest">Tonnage i kg (Frivillig)</label>
+                                    <input
+                                        type="number"
+                                        value={tonnage}
+                                        onChange={(e) => setTonnage(e.target.value)}
+                                        className="w-full px-4 py-3 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                                        placeholder="F.eks. 6500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[11px] font-bold mb-2 text-foreground/90 uppercase tracking-widest">Køjer (Frivillig)</label>
+                                    <input
+                                        type="number"
+                                        value={bunks}
+                                        onChange={(e) => setBunks(e.target.value)}
+                                        className="w-full px-4 py-3 bg-background text-foreground rounded-xl border-2 border-border/50 focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                                        placeholder="F.eks. 6"
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-6">
