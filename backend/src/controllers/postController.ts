@@ -5,7 +5,7 @@ import slugify from 'slugify';
 
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { title, content, youtubeUrl, imageUrl, postType, voyageId, boatId } = req.body;
+        const { title, content, youtubeUrl, imageUrl, imageUrls, postType, voyageId, boatId } = req.body;
         const authorId = req.user?.userId;
 
         if (!authorId) {
@@ -39,6 +39,7 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
                 content,
                 youtubeUrl,
                 imageUrl,
+                imageUrls: imageUrls || [],
                 postType: postType || 'QUICK_TEXT',
                 voyageId: voyageId ? Number(voyageId) : undefined,
                 authorId,
@@ -286,7 +287,7 @@ export const toggleVote = async (req: AuthRequest, res: Response): Promise<void>
 export const updatePost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { id } = req.params;
-        const { title, content, youtubeUrl, imageUrl, postType } = req.body;
+        const { title, content, youtubeUrl, imageUrl, imageUrls, postType } = req.body;
         const userId = req.user?.userId;
 
         if (!userId) {
@@ -331,6 +332,7 @@ export const updatePost = async (req: AuthRequest, res: Response): Promise<void>
                 content: content !== undefined ? content : undefined,
                 youtubeUrl: youtubeUrl !== undefined ? youtubeUrl : undefined,
                 imageUrl: imageUrl !== undefined ? imageUrl : undefined,
+                imageUrls: imageUrls !== undefined ? imageUrls : undefined,
                 postType: postType !== undefined ? postType : undefined,
                 slug: newSlug,
             },

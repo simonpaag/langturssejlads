@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { Resend } from 'resend';
+import { prisma } from '../server';
+import { AuthRequest } from '../middlewares/authMiddleware';
 
 export const submitContact = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -44,5 +46,139 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
     } catch (error) {
         console.error('Contact controller error:', error);
         res.status(500).json({ error: 'Intern server fejl under afsendelse.' });
+    }
+};
+
+// POST /api/contact/boat
+// Opretter en ny kontaktbesked (åben for alle besøgende)
+export const submitBoatContactMessage = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { senderName, senderEmail, message, boatId, voyageId } = req.body;
+
+        if (!senderName || !senderEmail || !message || !boatId) {
+            res.status(400).json({ error: 'Udfyld venligst alle obligatoriske felter (Navn, Email, Besked, Båd).' });
+            return;
+        }
+
+        // Tjek om båden findes
+        const boat = await prisma.boat.findUnique({ where: { id: Number(boatId) } });
+        if (!boat) {
+            res.status(404).json({ error: 'Båden blev ikke fundet.' });
+            return;
+        }
+
+        const newMessage = await prisma.contactMessage.create({
+            data: {
+                senderName,
+                senderEmail,
+                message,
+                boatId: Number(boatId),
+                voyageId: voyageId ? Number(voyageId) : undefined,
+            }
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Din besked er sendt til båden!',
+            data: newMessage,
+        });
+
+    } catch (error) {
+        console.error('Submit contact message error:', error);
+        res.status(500).json({ error: 'Der opstod en serverfejl. Prøv igen senere.' });
+    }
+};
+
+// GET /api/contact/boat/:boatId
+// Henter alle beskeder til en specifik båd (kræver at man er besætning på båden)
+export const getMessagesForBoat = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { boatId } = req.params;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        // Tjek om brugeren er besætning på denne båd
+        const membership = await prisma.crewMember.findUnique({
+            where: {
+                userId_boatId: {
+                    userId,
+                    boatId: Number(boatId)
+                }
+            }
+        });
+
+        if (!membership && !req.user?.isSystemAdmin) {
+            res.status(403).json({ error: 'Forbidden. Du har ikke adgang til denne båds beskeder.' });
+            return;
+        }
+
+        const messages = await prisma.contactMessage.findMany({
+            where: { boatId: Number(boatId) },
+            include: {
+                voyage: {
+                    select: {
+                        id: true,
+                        title: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json(messages);
+    } catch (error) {
+        console.error('Get messages error:', error);
+        res.status(500).json({ error: 'Der opstod en serverfejl ved hentning af beskeder.' });
+    }
+};
+
+// PUT /api/contact/boat/:id/read
+// Markerer en besked som læst (kræver besætning)
+export const markMessageAsRead = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const messageRecord = await prisma.contactMessage.findUnique({
+            where: { id: Number(id) }
+        });
+
+        if (!messageRecord) {
+            res.status(404).json({ error: 'Beskeden blev ikke fundet.' });
+            return;
+        }
+
+        const membership = await prisma.crewMember.findUnique({
+            where: {
+                userId_boatId: {
+                    userId,
+                    boatId: messageRecord.boatId
+                }
+            }
+        });
+
+        if (!membership && !req.user?.isSystemAdmin) {
+            res.status(403).json({ error: 'Forbidden. Du har ikke adgang til at redigere denne besked.' });
+            return;
+        }
+
+        const updatedMessage = await prisma.contactMessage.update({
+            where: { id: Number(id) },
+            data: { isRead: true }
+        });
+
+        res.json({ success: true, message: updatedMessage });
+    } catch (error) {
+        console.error('Mark message read error:', error);
+        res.status(500).json({ error: 'Der opstod en serverfejl.' });
     }
 };

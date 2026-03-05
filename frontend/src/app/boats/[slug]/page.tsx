@@ -50,6 +50,7 @@ interface Boat {
 import { unstable_noStore as noStore } from 'next/cache';
 import PostVotes from '@/components/PostVotes';
 import Noticeboard from '@/components/Noticeboard';
+import ContactForm from '@/components/ContactForm';
 
 export const revalidate = 60; // Cache i et minut for superhastighed
 
@@ -233,6 +234,11 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                         ) : (
                             <p className="text-muted-foreground italic">Ingen planlagte togter</p>
                         )}
+                    </div>
+
+                    {/* Kontakt Båden Formular */}
+                    <div className="pt-8 border-t border-border/60">
+                        <ContactForm boatId={boat.id} boatName={boat.name} />
                     </div>
                 </aside>
 

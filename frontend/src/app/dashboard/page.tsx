@@ -1,15 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool } from 'lucide-react';
+import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool, Mail } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PostManager from '@/components/dashboard/PostManager';
 import ImageUpload from '@/components/ImageUpload';
+import MultiImageUpload from '@/components/MultiImageUpload';
+import Inbox from '@/components/dashboard/Inbox';
 
 export default function Dashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts'>('write');
+    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox'>('write');
     const [user, setUser] = useState<any>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
 
@@ -18,6 +20,7 @@ export default function Dashboard() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [imageUrl, setImageUrl] = useState('');
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [youtubeUrl, setYoutubeUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [editingPostId, setEditingPostId] = useState<number | null>(null);
@@ -151,7 +154,8 @@ export default function Dashboard() {
                     postType,
                     title: postType === 'ARTICLE' ? title : undefined,
                     content,
-                    imageUrl: (postType === 'PHOTO' || postType === 'ARTICLE') ? imageUrl : undefined,
+                    imageUrl: postType === 'ARTICLE' ? imageUrl : undefined,
+                    imageUrls: postType === 'PHOTO' ? imageUrls : undefined,
                     youtubeUrl: postType === 'YOUTUBE' ? youtubeUrl : undefined
                 })
             });
@@ -165,6 +169,7 @@ export default function Dashboard() {
             setTitle('');
             setContent('');
             setImageUrl('');
+            setImageUrls([]);
             setYoutubeUrl('');
             setEditingPostId(null);
 
@@ -362,6 +367,16 @@ export default function Dashboard() {
 
                     {currentBoat && (
                         <button
+                            onClick={() => setActiveTab('inbox')}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'inbox' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
+                        >
+                            <Mail className="h-5 w-5" />
+                            <span className="font-medium">Indbakke</span>
+                        </button>
+                    )}
+
+                    {currentBoat && (
+                        <button
                             onClick={() => setActiveTab('posts')}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'posts' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
                         >
@@ -430,13 +445,23 @@ export default function Dashboard() {
                                     </div>
                                 )}
 
-                                {(postType === 'PHOTO' || postType === 'ARTICLE') && (
+                                {postType === 'ARTICLE' && (
                                     <div className="mb-4">
                                         <ImageUpload
                                             onUploadSuccess={setImageUrl}
                                             currentImage={imageUrl}
-                                            label={postType === 'ARTICLE' ? 'Coverbillede URL (Valgfri)' : 'Billede til dit indlæg'}
+                                            label="Coverbillede URL (Valgfri)"
                                             aspectRatio="video"
+                                        />
+                                    </div>
+                                )}
+
+                                {postType === 'PHOTO' && (
+                                    <div className="mb-4">
+                                        <MultiImageUpload
+                                            onUploadSuccess={setImageUrls}
+                                            currentImages={imageUrls}
+                                            label="Billeder til galleriet (Vælg én eller flere)"
                                         />
                                     </div>
                                 )}
@@ -478,6 +503,7 @@ export default function Dashboard() {
                                                 setTitle('');
                                                 setContent('');
                                                 setImageUrl('');
+                                                setImageUrls([]);
                                                 setYoutubeUrl('');
                                                 setPostType('QUICK_TEXT');
                                                 setActiveTab('posts');
@@ -778,11 +804,14 @@ export default function Dashboard() {
                                 setTitle(post.title || '');
                                 setContent(post.content || '');
                                 setImageUrl(post.imageUrl || '');
+                                setImageUrls(post.imageUrls || []);
                                 setYoutubeUrl(post.youtubeUrl || '');
                                 setActiveTab('write');
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                         />
+                    ) : activeTab === 'inbox' && currentBoat ? (
+                        <Inbox boatId={currentBoat.id} />
                     ) : null}
                 </div>
             </main>

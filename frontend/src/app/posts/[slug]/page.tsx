@@ -11,10 +11,11 @@ interface Post {
     postType: string;
     youtubeUrl: string | null;
     imageUrl: string | null;
+    imageUrls: string[] | null;
     status: string;
     createdAt: string;
     author: { id: number; name: string; profileImage?: string | null; };
-    boat: { id: number; slug: string; name: string; profileImage?: string | null; };
+    boat: { id: number; slug: string; name: string; profileImage?: string | null; coverImage?: string | null; };
 }
 
 export const revalidate = 60;
@@ -45,7 +46,19 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         );
     }
 
-    const displayImage = post.imageUrl || 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop';
+    const fallbackImage = 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop';
+    let displayImage = post.imageUrl || post.boat.coverImage || fallbackImage;
+
+    // Hvis det er en Billedopdatering (PHOTO), prioriter Bådens Cover som Hero image over selve postens billeder.
+    if (post.postType === 'PHOTO') {
+        displayImage = post.boat.coverImage || fallbackImage;
+    }
+
+    // Saml alle billeder til galleriet (inkl. legacy `imageUrl` hvis det findes men typen er PHOTO)
+    const galleryImages: string[] = post.imageUrls || [];
+    if (post.postType === 'PHOTO' && post.imageUrl && !galleryImages.includes(post.imageUrl)) {
+        galleryImages.unshift(post.imageUrl);
+    }
 
     return (
         <article className="min-h-screen bg-background pb-24">
@@ -101,10 +114,27 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
                 {/* Main Content Body */}
                 {post.content && (
-                    <div className="prose prose-lg md:prose-xl max-w-none font-merriweather text-foreground/90 leading-relaxed dark:prose-invert prose-p:mb-8 prose-h2:text-3xl prose-h2:font-black prose-h2:mb-6">
+                    <div className={`prose prose-lg md:prose-xl max-w-none font-merriweather text-foreground/90 leading-relaxed dark:prose-invert prose-p:mb-8 prose-h2:text-3xl prose-h2:font-black prose-h2:mb-6 ${galleryImages.length > 0 ? 'mb-12' : ''}`}>
                         {post.content.split('\n').map((paragraph: string, index: number) => (
                             <p key={index}>{paragraph}</p>
                         ))}
+                    </div>
+                )}
+
+                {/* Fotogalleri (Swipeable container) */}
+                {galleryImages.length > 0 && (
+                    <div className="mb-16 -mx-4 sm:mx-0">
+                        <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 px-4 sm:px-0 pb-4">
+                            {galleryImages.map((img: string, idx: number) => (
+                                <div key={idx} className="snap-center shrink-0 w-[85vw] sm:w-[600px] md:w-[700px] h-[300px] sm:h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-xl border border-border/40 relative">
+                                    <img
+                                        src={img}
+                                        alt={`Billede ${idx + 1}`}
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
 

@@ -46,6 +46,7 @@ model Boat {
   posts           Post[]
   voyages         Voyage[]
   boardMessages   BoardMessage[]
+  contactMessages ContactMessage[]
 }
 
 model CrewMember {
@@ -73,7 +74,8 @@ model Post {
   title       String?       // Used by ARTICLE and VOYAGE_UPDATE
   content     String?       // Body text/HTML
   youtubeUrl  String?
-  imageUrl    String?       // Image for PHOTO or Cover for ARTICLE
+  imageUrl    String?       // Image for PHOTO or Cover for ARTICLE (Legacy)
+  imageUrls   String[]      @default([]) // For PHOTO post galleries
   status      String        @default("DRAFT") // 'DRAFT' | 'APPROVED' | 'PUBLISHED' | 'REJECTED'
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -141,6 +143,8 @@ model Voyage {
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
+  contactMessages ContactMessage[]
 }
 
 model FaqArticle {
@@ -151,4 +155,20 @@ model FaqArticle {
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id          Int      @id @default(autoincrement())
+  senderName  String
+  senderEmail String
+  message     String
+  isRead      Boolean  @default(false)
+  
+  boatId      Int
+  boat        Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
+  
+  voyageId    Int?
+  voyage      Voyage?  @relation(fields: [voyageId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime @default(now())
 }

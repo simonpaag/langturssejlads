@@ -3,6 +3,7 @@ import { format, differenceInDays } from 'date-fns';
 import { da } from 'date-fns/locale';
 import { MapPin, Navigation, CalendarDays, Users, Anchor, CheckCircle2, Navigation2, FileText, UserCircle2, Settings2, ShieldAlert, Ship, Compass, HelpCircle, Coins } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import ContactForm from '@/components/ContactForm';
 
 export const revalidate = 60; // 60 sek. Cache
 
@@ -188,6 +189,11 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Kontakt Båden */}
+                                <div className="mt-4">
+                                    <ContactForm boatId={voyage.boat.id} voyageId={voyage.id} boatName={voyage.boat.name} />
+                                </div>
 
                             </div>
                         </div>
