@@ -19,6 +19,33 @@ export default function AdminDashboard() {
     const [ads, setAds] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]);
 
+    async function fetchAllData(token: string) {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const headers = { 'Authorization': `Bearer ${token}` };
+
+        try {
+            // Logs
+            fetch(`${apiUrl}/api/admin/logs`, { headers })
+                .then(r => r.json()).then(setLogs).catch(() => { });
+            // Users
+            fetch(`${apiUrl}/api/admin/users`, { headers })
+                .then(r => r.json()).then(setUsers).catch(() => { });
+            // Posts
+            fetch(`${apiUrl}/api/admin/posts`, { headers })
+                .then(r => r.json()).then(setPosts).catch(() => { });
+            // Emails
+            fetch(`${apiUrl}/api/admin/emails/templates`, { headers })
+                .then(r => r.json()).then(setTemplates).catch(() => { });
+            fetch(`${apiUrl}/api/admin/emails/sent`, { headers })
+                .then(r => r.json()).then(setSentEmails).catch(() => { });
+            // Ads
+            fetch(`${apiUrl}/api/admin/ads`, { headers })
+                .then(r => r.json()).then(setAds).catch(() => { });
+        } catch (e) {
+            console.error("Failed fetching admin data", e);
+        }
+    };
+
     useEffect(() => {
         const verifyAdmin = async () => {
             const token = localStorage.getItem('user_token');
@@ -52,32 +79,6 @@ export default function AdminDashboard() {
         verifyAdmin();
     }, [router]);
 
-    const fetchAllData = async (token: string) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-        const headers = { 'Authorization': `Bearer ${token}` };
-
-        try {
-            // Logs
-            fetch(`${apiUrl}/api/admin/logs`, { headers })
-                .then(r => r.json()).then(setLogs).catch(() => { });
-            // Users
-            fetch(`${apiUrl}/api/admin/users`, { headers })
-                .then(r => r.json()).then(setUsers).catch(() => { });
-            // Posts
-            fetch(`${apiUrl}/api/admin/posts`, { headers })
-                .then(r => r.json()).then(setPosts).catch(() => { });
-            // Emails
-            fetch(`${apiUrl}/api/admin/emails/templates`, { headers })
-                .then(r => r.json()).then(setTemplates).catch(() => { });
-            fetch(`${apiUrl}/api/admin/emails/sent`, { headers })
-                .then(r => r.json()).then(setSentEmails).catch(() => { });
-            // Ads
-            fetch(`${apiUrl}/api/admin/ads`, { headers })
-                .then(r => r.json()).then(setAds).catch(() => { });
-        } catch (e) {
-            console.error("Failed fetching admin data", e);
-        }
-    };
 
     if (isLoading) {
         return <div className="min-h-screen flex items-center justify-center bg-background"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
