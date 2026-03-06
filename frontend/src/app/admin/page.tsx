@@ -105,17 +105,17 @@ export default function AdminDashboard() {
                             <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity className="w-5 h-5" />} label="Aktivitetslog" />
                             <TabButton active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users className="w-5 h-5" />} label="Brugere" />
                             <TabButton active={activeTab === 'posts'} onClick={() => setActiveTab('posts')} icon={<FileText className="w-5 h-5" />} label="Moderation" />
-                            <TabButton active={activeTab === 'emails'} onClick={() => setActiveTab('emails')} icon={<Mail className="w-5 h-5" />} label="Notifikationer" />
+                            <TabButton active={activeTab === 'emails'} onClick={() => setActiveTab('emails')} icon={<Mail className="w-5 h-5" />} label="Notification Center" />
                             <TabButton active={activeTab === 'ads'} onClick={() => setActiveTab('ads')} icon={<Megaphone className="w-5 h-5" />} label="Native Ads" />
                         </div>
                     </div>
 
                     {/* Content Area */}
                     <div className="flex-1 min-w-0 bg-background rounded-3xl p-6 lg:p-10 shadow-xl border border-border/50">
-                        {activeTab === 'logs' && <LogsTab logs={logs} />}
+                        {activeTab === 'logs' && <LogsTab logs={logs} sentEmails={sentEmails} />}
                         {activeTab === 'users' && <UsersTab users={users} setUsers={setUsers} />}
                         {activeTab === 'posts' && <PostsTab posts={posts} setPosts={setPosts} />}
-                        {activeTab === 'emails' && <EmailsTab templates={templates} sentEmails={sentEmails} />}
+                        {activeTab === 'emails' && <EmailsTab templates={templates} />}
                         {activeTab === 'ads' && <AdsTab ads={ads} setAds={setAds} />}
                     </div>
                 </div>
@@ -142,27 +142,54 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
 // TABS COMPONENTS
 // ----------------------------------------------------
 
-function LogsTab({ logs }: { logs: any[] }) {
+function LogsTab({ logs, sentEmails }: { logs: any[], sentEmails: any[] }) {
     return (
         <div>
             <h2 className="text-2xl font-merriweather font-bold mb-6">Aktivitetslog</h2>
-            <div className="space-y-4">
-                {logs.length === 0 ? <p className="text-muted-foreground">Ingen logs fundet.</p> : null}
-                {logs.map(log => (
-                    <div key={log.id} className="p-4 border border-border/50 rounded-2xl bg-muted/20 flex gap-4 items-start">
-                        <div className="bg-primary/10 p-2 rounded-full mt-1">
-                            <Activity className="w-4 h-4 text-primary" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-3 mb-1">
-                                <span className="font-bold text-sm">{log.action}</span>
-                                <span className="text-xs text-muted-foreground">{new Date(log.createdAt).toLocaleString('da-DK')}</span>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+                {/* System Logs */}
+                <div>
+                    <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">System Hændelser</h3>
+                    <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                        {logs.length === 0 ? <p className="text-muted-foreground text-sm">Ingen system logs fundet.</p> : null}
+                        {logs.map(log => (
+                            <div key={log.id} className="p-4 border border-border/50 rounded-2xl bg-muted/20 flex gap-4 items-start">
+                                <div className="bg-primary/10 p-2 rounded-full mt-1 shrink-0">
+                                    <Activity className="w-4 h-4 text-primary" />
+                                </div>
+                                <div>
+                                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                                        <span className="font-bold text-sm">{log.action}</span>
+                                        <span className="text-xs text-muted-foreground whitespace-nowrap">{new Date(log.createdAt).toLocaleString('da-DK')}</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">Bruger: {log.user?.email || 'System'}</p>
+                                    {log.details && <p className="text-xs bg-muted p-2 rounded-lg mt-2 font-mono break-all">{log.details}</p>}
+                                </div>
                             </div>
-                            <p className="text-sm text-muted-foreground">Bruger: {log.user?.email || 'System'}</p>
-                            {log.details && <p className="text-xs bg-muted p-2 rounded-lg mt-2 font-mono">{log.details}</p>}
-                        </div>
+                        ))}
                     </div>
-                ))}
+                </div>
+
+                {/* Sent Emails Log */}
+                <div>
+                    <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">Afsendte Mails</h3>
+                    <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                        {sentEmails.length === 0 ? <p className="text-muted-foreground text-sm">Ingen udsendte mails endnu.</p> : null}
+                        {sentEmails.map(mail => (
+                            <div key={mail.id} className="flex flex-col p-3 bg-muted/20 rounded-xl border border-border/30 text-sm">
+                                <div className="flex justify-between items-start gap-2 mb-2">
+                                    <p className="font-semibold leading-tight">{mail.subject}</p>
+                                    <span className={`shrink-0 text-[10px] font-bold uppercase px-2 py-1 rounded-full ${mail.status === 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        {mail.status}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-muted-foreground truncate" title={mail.toEmail}>Til: {mail.toEmail}</p>
+                                <span className="text-[10px] text-muted-foreground mt-2">{new Date(mail.sentAt).toLocaleString('da-DK')}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -240,38 +267,30 @@ function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
     );
 }
 
-function EmailsTab({ templates, sentEmails }: { templates: any[], sentEmails: any[] }) {
-    // Only handling read-only log feed for now to stay concise, templates soon
+function EmailsTab({ templates }: { templates: any[] }) {
+
+    // User friendly template name mapping
+    const TEMPLATE_NAMES: Record<string, string> = {
+        'INVITE_EMAIL': 'Mangler en båd du kender?',
+        'BOAT_CONTACT_EMAIL': 'Profil-kontakt',
+        'VOYAGE_CONTACT_EMAIL': 'Togt-kontakt'
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-merriweather font-bold mb-6">Notification Center</h2>
-
-            <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">Senest Afsendte Mails</h3>
-            <div className="space-y-3 mb-10 border border-border/50 rounded-2xl p-4 max-h-[400px] overflow-y-auto">
-                {sentEmails.map(mail => (
-                    <div key={mail.id} className="flex flex-col sm:flex-row justify-between sm:items-center p-3 bg-muted/20 rounded-xl border border-border/30 text-sm">
-                        <div>
-                            <p className="font-semibold">{mail.subject}</p>
-                            <p className="text-xs text-muted-foreground">Til: {mail.toEmail}</p>
-                        </div>
-                        <div className="flex flex-col sm:items-end mt-2 sm:mt-0">
-                            <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full ${mail.status === 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                {mail.status}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground mt-1">{new Date(mail.sentAt).toLocaleString('da-DK')}</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
+            <p className="text-muted-foreground mb-8">
+                Her kan du redigere de tekster der bliver afsendt fra platformens mail-skabeloner (Tilknyttet kontaktformularer mv).
+            </p>
 
             <div className="p-6 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 rounded-2xl">
-                <h3 className="font-bold text-lg font-merriweather mb-4 text-primary">Rediger Skabeloner</h3>
+                <h3 className="font-bold text-lg font-merriweather mb-6 text-primary">System Skabeloner</h3>
                 {templates.length === 0 ? (
                     <p className="text-sm text-muted-foreground">Ingen skabeloner fundet i databasen endnu.</p>
                 ) : (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         {templates.map(tmpl => (
-                            <EditableTemplate key={tmpl.id} template={tmpl} />
+                            <EditableTemplate key={tmpl.id} template={tmpl} displayName={TEMPLATE_NAMES[tmpl.name]} />
                         ))}
                     </div>
                 )}
@@ -280,9 +299,9 @@ function EmailsTab({ templates, sentEmails }: { templates: any[], sentEmails: an
     );
 }
 
-function EditableTemplate({ template }: { template: any }) {
-    const [subject, setSubject] = useState(template.subject);
-    const [bodyHtml, setBodyHtml] = useState(template.bodyHtml);
+function EditableTemplate({ template, displayName }: { template: any, displayName?: string }) {
+    const [subject, setSubject] = useState(template.subject || '');
+    const [bodyHtml, setBodyHtml] = useState(template.bodyHtml || '');
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
@@ -312,9 +331,15 @@ function EditableTemplate({ template }: { template: any }) {
     };
 
     return (
-        <div className="border border-border bg-background p-4 rounded-xl space-y-4 shadow-sm">
-            <div className="flex justify-between items-center border-b border-border/50 pb-2">
-                <span className="font-bold text-primary uppercase tracking-widest text-xs">{template.name}</span>
+        <div className="border border-border/50 rounded-xl p-5 bg-background shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-2 mb-4">
+                <Mail className="w-5 h-5 text-muted-foreground" />
+                <h4 className="font-bold">
+                    {displayName || template.name}
+                </h4>
+                <span className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground ml-auto font-mono">
+                    {template.name}
+                </span>
             </div>
 
             <div className="space-y-2">
