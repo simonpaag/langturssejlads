@@ -1,4 +1,5 @@
-import { BookOpen, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { BookOpen, AlertCircle, TrendingUp, Anchor, Compass, ChevronRight } from 'lucide-react';
 
 export const metadata = {
     title: 'Lær om Langturssejlads | FAQ og Nyttig Viden',
@@ -7,7 +8,7 @@ export const metadata = {
 
 async function getFaqs() {
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/faq`, { next: { revalidate: 60 } });
         if (!res.ok) return [];
         return await res.json();
@@ -36,40 +37,38 @@ export default async function LearnAboutSailing() {
                     </div>
                 </div>
 
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-                    {/* FAQ Grid */}
-                    <div className="space-y-12">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+                    {/* Oversigts Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {faqs.length > 0 ? (
-                            faqs.map((faq: any) => (
-                                <article key={faq.id} id={faq.slug} className="bg-card border border-border shadow-sm rounded-3xl p-8 md:p-10 transition-shadow hover:shadow-md">
-                                    <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border/60">
-                                        <div className="p-3 bg-primary/10 text-primary rounded-xl">
-                                            <BookOpen className="w-6 h-6" />
+                            faqs.map((faq: any, idx: number) => {
+                                // Strip HTML tags to get raw text for snippet
+                                const plainText = faq.content?.replace(/<[^>]+>/g, ' ') || '';
+                                return (
+                                    <Link
+                                        href={`/laer-om-langturssejlads/${faq.slug}`}
+                                        key={faq.id}
+                                        className="group bg-card border border-border shadow-sm rounded-3xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col justify-between"
+                                    >
+                                        <div>
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="p-3 bg-primary/10 text-primary rounded-xl group-hover:scale-110 transition-transform">
+                                                    {idx % 3 === 0 ? <TrendingUp className="w-6 h-6" /> : idx % 3 === 1 ? <Anchor className="w-6 h-6" /> : <Compass className="w-6 h-6" />}
+                                                </div>
+                                                <h2 className="text-xl font-bold font-merriweather text-foreground group-hover:text-primary transition-colors">{faq.title}</h2>
+                                            </div>
+                                            <p className="text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
+                                                {plainText}
+                                            </p>
                                         </div>
-                                        <h2 className="text-2xl font-bold font-merriweather">{faq.title}</h2>
-                                    </div>
-
-                                    <div className="prose prose-lg dark:prose-invert text-foreground leading-relaxed font-medium opacity-90 max-w-none space-y-4">
-                                        {/* Simple render of plain text or HTML */}
-                                        {faq.content.includes('<') ? (
-                                            <div dangerouslySetInnerHTML={{ __html: faq.content }} />
-                                        ) : (
-                                            faq.content.split('\n\n').map((paragraph: string, idx: number) => (
-                                                <p key={idx}>
-                                                    {paragraph.split('\n').map((line: string, lineIdx: number) => (
-                                                        <span key={lineIdx}>
-                                                            {line}
-                                                            {lineIdx !== paragraph.split('\n').length - 1 && <br />}
-                                                        </span>
-                                                    ))}
-                                                </p>
-                                            ))
-                                        )}
-                                    </div>
-                                </article>
-                            ))
+                                        <div className="inline-flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase">
+                                            Læs hele artiklen <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        </div>
+                                    </Link>
+                                );
+                            })
                         ) : (
-                            <div className="bg-card border border-border shadow-sm rounded-3xl p-12 text-center text-muted-foreground">
+                            <div className="col-span-1 md:col-span-2 bg-card border border-border shadow-sm rounded-3xl p-12 text-center text-muted-foreground">
                                 <AlertCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
                                 <h3 className="text-xl font-bold font-merriweather mb-2 text-foreground">Ingen artikler fundet</h3>
                                 <p>Vi er i øjeblikket ved at opdatere vores vidensbase. Kom tilbage senere!</p>
