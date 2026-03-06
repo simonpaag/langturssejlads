@@ -482,8 +482,7 @@ export default function Dashboard() {
                                         <ImageUpload
                                             onUploadSuccess={setImageUrl}
                                             currentImage={imageUrl}
-                                            label="Coverbillede URL (Valgfri)"
-                                            aspectRatio="video"
+                                            label="Coverbillede (Valgfri)"
                                         />
                                     </div>
                                 )}
