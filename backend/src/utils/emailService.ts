@@ -9,9 +9,7 @@ export const sendInviteEmail = async (toEmail: string) => {
             return {
                 success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK: ' + JSON.stringify({
                     exists: !!apiKey,
-                    type: typeof apiKey,
-                    val: apiKey,
-                    keys: Object.keys(process.env).filter(k => k.includes('RESEND'))
+                    keys: Object.keys(process.env).filter(k => !k.toLowerCase().includes('npm') && !k.toLowerCase().includes('nvm'))
                 })
             };
         }
