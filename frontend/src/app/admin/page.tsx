@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
+import ImageUpload from '@/components/ImageUpload';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -460,8 +461,12 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
                             <textarea required value={content} onChange={e => setContent(e.target.value)} rows={3} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Annoncens brødtekst..."></textarea>
                         </div>
                         <div className="space-y-2 md:col-span-2">
-                            <label className="text-xs font-bold uppercase text-muted-foreground">Billede URL</label>
-                            <input type="url" value={imageUrl} onChange={e => setImageUrl(e.target.value)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="https://...billede.jpg" />
+                            <ImageUpload
+                                onUploadSuccess={setImageUrl}
+                                currentImage={imageUrl}
+                                label="Annonce Billede (Bør være 16:9 eller bredere)"
+                                aspectRatio="video"
+                            />
                         </div>
                         <div className="space-y-2">
                             <label className="text-xs font-bold uppercase text-muted-foreground">Placering i feedet (Index)</label>

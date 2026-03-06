@@ -5,8 +5,7 @@ import { prisma } from '../server';
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
         const users = await prisma.user.findMany({
-            select: { id: true, name: true, email: true, isSystemAdmin: true, createdAt: true },
-            orderBy: { createdAt: 'desc' }
+            select: { id: true, name: true, email: true, isSystemAdmin: true }
         });
         res.json(users);
     } catch (error) {
@@ -17,7 +16,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const promoteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id as string);
         const { isSystemAdmin } = req.body;
 
         const updatedUser = await prisma.user.update({
@@ -79,7 +78,7 @@ export const getAdminPosts = async (req: Request, res: Response): Promise<void> 
 
 export const updatePostModeration = async (req: Request, res: Response): Promise<void> => {
     try {
-        const postId = parseInt(req.params.id);
+        const postId = parseInt(req.params.id as string);
         const { showOnFrontpage, status } = req.body;
 
         const updatedPost = await prisma.post.update({
@@ -120,7 +119,7 @@ export const getEmailTemplates = async (req: Request, res: Response): Promise<vo
 
 export const updateEmailTemplate = async (req: Request, res: Response): Promise<void> => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id as string);
         const { subject, bodyHtml } = req.body;
 
         const updated = await prisma.emailTemplate.update({
@@ -185,7 +184,7 @@ export const createNativeAd = async (req: Request, res: Response): Promise<void>
 
 export const updateNativeAd = async (req: Request, res: Response): Promise<void> => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id as string);
         const { headline, content, imageUrl, linkUrl, placement, startDate, endDate, isActive } = req.body;
         const updatedAd = await prisma.nativeAd.update({
             where: { id },
@@ -209,7 +208,7 @@ export const updateNativeAd = async (req: Request, res: Response): Promise<void>
 
 export const deleteNativeAd = async (req: Request, res: Response): Promise<void> => {
     try {
-        const id = parseInt(req.params.id);
+        const id = parseInt(req.params.id as string);
         await prisma.nativeAd.delete({ where: { id } });
         res.json({ success: true });
     } catch (error) {
