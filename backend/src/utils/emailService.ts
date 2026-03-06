@@ -6,7 +6,14 @@ export const sendInviteEmail = async (toEmail: string) => {
         const apiKey = process.env.RESEND_API_KEY;
         if (!apiKey) {
             console.error('BEMÆRK: RESEND_API_KEY mangler i serverens miljøvariabler. Invitation afbrudt.');
-            return { success: false, error: 'API nøgle mangler.' };
+            return {
+                success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK: ' + JSON.stringify({
+                    exists: !!apiKey,
+                    type: typeof apiKey,
+                    val: apiKey,
+                    keys: Object.keys(process.env).filter(k => k.includes('RESEND'))
+                })
+            };
         }
 
         const resend = new Resend(apiKey);
