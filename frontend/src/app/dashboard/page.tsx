@@ -627,8 +627,11 @@ export default function Dashboard() {
                                 </div>
                                 {/* Description */}
                                 <div>
-                                    <label htmlFor="voyageDescription" className="block text-sm font-semibold mb-2">Beskiv ruten (F.eks: Vær med på togtet til Thailand...)</label>
-                                    <textarea id="voyageDescription" value={voyageDescription} onChange={(e) => setVoyageDescription(e.target.value)} placeholder="Beskriv turen, og fremhæv hvem der sejler med..." rows={5} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none leading-relaxed" required />
+                                    <label htmlFor="voyageDescription" className="block text-sm font-semibold mb-2">Beskriv ruten (F.eks: Vær med på togtet til Thailand...)</label>
+                                    <RichTextEditor
+                                        content={voyageDescription}
+                                        onChange={setVoyageDescription}
+                                    />
                                 </div>
                                 <div className="flex justify-end pt-4 border-t border-border mt-2">
                                     <button type="submit" disabled={isSubmittingVoyage} className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50">

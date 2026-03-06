@@ -107,7 +107,11 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
                         <div className="lg:col-span-8">
                             <div className="prose prose-lg dark:prose-invert max-w-none text-foreground leading-[1.8] font-medium opacity-90 tracking-[0.015em]">
                                 <h2 className="font-merriweather text-3xl font-black mb-6">Om rejsen</h2>
-                                <p className="whitespace-pre-line text-lg">{voyage.description || 'Der er ingen yderligere beskrivelse af dette togt.'}</p>
+                                {voyage.description ? (
+                                    <div className="text-lg" dangerouslySetInnerHTML={{ __html: voyage.description }} />
+                                ) : (
+                                    <p className="whitespace-pre-line text-lg">Der er ingen yderligere beskrivelse af dette togt.</p>
+                                )}
                             </div>
 
                             {/* Togtlogbog / Posts for dette togt (Fremtidigt if der findes opslag) */}
