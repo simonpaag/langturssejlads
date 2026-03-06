@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/SearchBar';
+import FifthElement from '@/components/FifthElement';
 
 export default function Navbar() {
     const router = useRouter();
@@ -62,7 +63,7 @@ export default function Navbar() {
     return (
         <nav className="bg-background relative">
             {/* Top utility bar */}
-            <div className="border-b border-border py-2 px-4 sm:px-6 lg:px-8 flex justify-between items-center max-w-7xl mx-auto relative z-50">
+            <div className="border-b border-border py-2 px-4 sm:px-6 lg:px-8 flex justify-between items-center max-w-7xl mx-auto relative z-[60]">
 
                 {/* Mobile Left: Menu Toggle */}
                 <button
@@ -75,7 +76,9 @@ export default function Navbar() {
 
                 {/* Desktop Left: Links */}
                 <div className="hidden md:flex items-center gap-4 text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                    <a href="https://langturssejlads.dk/" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">Langturssejlads.dk</a>
+                    <Link href="/" className="font-merriweather font-black text-xl text-foreground hover:opacity-80 transition-opacity tracking-tight lowercase">
+                        langturssejlads.dk
+                    </Link>
                     <span className="text-border">|</span>
                     <Link href="/om" className="hover:text-foreground transition-colors">Om Langturssejlads</Link>
                     <span className="text-border">|</span>
@@ -171,6 +174,7 @@ export default function Navbar() {
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
 
                     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-48 mt-[15%] md:mt-12 flex flex-col items-center justify-center text-center">
+                        <FifthElement className="mb-6 text-white/90 drop-shadow-md" />
                         <Link href="/" className="group drop-shadow-lg">
                             <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-white group-hover:text-primary transition-colors">
                                 Langturssejlads
