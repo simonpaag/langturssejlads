@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, LogOut } from 'lucide-react';
+import { Save, LogOut, Bell, Ship, CheckSquare } from 'lucide-react';
 import ImageUpload from '@/components/ImageUpload';
 
 export default function ProfilePage() {
     const router = useRouter();
     const [name, setName] = useState('');
     const [profileImage, setProfileImage] = useState('');
+    const [wantsNewsletter, setWantsNewsletter] = useState(true);
+    const [subscribedBoatIds, setSubscribedBoatIds] = useState<number[]>([]);
+    const [allBoats, setAllBoats] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
@@ -23,14 +26,24 @@ export default function ProfilePage() {
 
             try {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+
+                // Fetch User data including subscriptions
                 const res = await fetch(`${apiUrl}/api/auth/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (res.ok) {
+                // Fetch All Boats for the dropdown/list
+                const boatsRes = await fetch(`${apiUrl}/api/boats`);
+
+                if (res.ok && boatsRes.ok) {
                     const data = await res.json();
+                    const boatsData = await boatsRes.json();
+
                     setName(data.user.name || '');
                     setProfileImage(data.user.profileImage || '');
+                    setWantsNewsletter(data.user.wantsNewsletter ?? true);
+                    setSubscribedBoatIds(data.user.subscriptions?.map((sub: any) => sub.boatId) || []);
+                    setAllBoats(boatsData);
                 } else {
                     router.push('/login');
                 }
@@ -52,7 +65,9 @@ export default function ProfilePage() {
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-            const res = await fetch(`${apiUrl}/api/auth/profile`, {
+
+            // 1. Gem profilinfo
+            const resProfile = await fetch(`${apiUrl}/api/auth/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,13 +76,22 @@ export default function ProfilePage() {
                 body: JSON.stringify({ name, profileImage: profileImage || null }),
             });
 
-            if (res.ok) {
-                setMessage({ text: 'Profilen er succesfuldt opdateret! Opdater siden hvis billedet for oven driller.', type: 'success' });
+            // 2. Gem notifikationsindstillinger
+            const resNotif = await fetch(`${apiUrl}/api/auth/notifications`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ wantsNewsletter, boatIds: subscribedBoatIds })
+            });
+
+            if (resProfile.ok && resNotif.ok) {
+                setMessage({ text: 'Profil og indstillinger er succesfuldt opdateret!', type: 'success' });
                 // Trig menuen til at opdatere sig
                 window.dispatchEvent(new Event('userStateChange'));
             } else {
-                const err = await res.json();
-                setMessage({ text: err.error || 'Kunne ikke opdatere profil.', type: 'error' });
+                setMessage({ text: 'Noget gik galt under gemning. Prøv igen.', type: 'error' });
             }
         } catch (error) {
             setMessage({ text: 'Netværksfejl under opdatering.', type: 'error' });
@@ -129,7 +153,56 @@ export default function ProfilePage() {
                             />
                         </div>
 
-                        <div className="pt-6">
+                        {/* Notifikationer Sektion */}
+                        <div className="pt-8 border-t border-border/40 space-y-6">
+                            <h2 className="text-xl font-merriweather font-bold flex items-center gap-2">
+                                <Bell className="w-5 h-5 text-primary" />
+                                Notifikations-indstillinger
+                            </h2>
+
+                            {/* Nyhedsbrev Toggle */}
+                            <div className="bg-muted/10 p-5 rounded-2xl border border-border flex items-start gap-4 cursor-pointer hover:bg-muted/20 transition-colors" onClick={() => setWantsNewsletter(!wantsNewsletter)}>
+                                <div className={`w-6 h-6 rounded flex items-center justify-center shrink-0 mt-0.5 transition-colors ${wantsNewsletter ? 'bg-primary text-primary-foreground' : 'border-2 border-muted-foreground/30 text-transparent'}`}>
+                                    <CheckSquare className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="font-bold text-sm">Modtag Nyhedsbrev</p>
+                                    <p className="text-xs text-muted-foreground mt-1">Få en samlet opdatering med de vigtigste nyheder og spændende historier fra platformen direkte i din indbakke.</p>
+                                </div>
+                            </div>
+
+                            {/* Båd Følger Select */}
+                            <div className="bg-muted/10 p-5 rounded-2xl border border-border">
+                                <div className="mb-4">
+                                    <p className="font-bold text-sm flex items-center gap-2"><Ship className="w-4 h-4 text-primary" /> Følg Specifikke Både</p>
+                                    <p className="text-xs text-muted-foreground mt-1">Vælg hvilke både du ønsker at få besked fra, når de udgiver nye logbøger eller billeder.</p>
+                                </div>
+
+                                <div className="max-h-60 overflow-y-auto space-y-1.5 pr-2 border border-border/50 bg-background rounded-xl p-3">
+                                    {allBoats.length === 0 && <p className="text-xs text-muted-foreground p-2">Indlæser både...</p>}
+                                    {allBoats.map(boat => {
+                                        const isSubscribed = subscribedBoatIds.includes(boat.id);
+                                        return (
+                                            <div
+                                                key={boat.id}
+                                                onClick={() => {
+                                                    if (isSubscribed) setSubscribedBoatIds(prev => prev.filter(id => id !== boat.id));
+                                                    else setSubscribedBoatIds(prev => [...prev, boat.id]);
+                                                }}
+                                                className={`flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-colors border ${isSubscribed ? 'bg-primary/5 border-primary/20 hover:bg-primary/10' : 'bg-transparent border-transparent hover:bg-muted'}`}
+                                            >
+                                                <div className={`w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors ${isSubscribed ? 'bg-primary text-primary-foreground' : 'border-2 border-muted-foreground/30 text-transparent'}`}>
+                                                    <CheckSquare className="w-4 h-4" />
+                                                </div>
+                                                <span className={`text-sm ${isSubscribed ? 'font-bold' : 'font-medium'}`}>{boat.name}</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-border/40">
                             <button
                                 type="submit"
                                 disabled={isSaving || !name.trim()}

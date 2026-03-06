@@ -95,6 +95,11 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
                     include: {
                         boat: true
                     }
+                },
+                subscriptions: {
+                    include: {
+                        boat: true
+                    }
                 }
             }
         });
@@ -172,6 +177,66 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
         });
     } catch (error) {
         console.error('Update profile error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const updateNotifications = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+        const { wantsNewsletter, boatIds } = req.body;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        // Use a transaction to update the user and replace subscriptions
+        await prisma.$transaction(async (tx) => {
+            // Update newsletter preference
+            if (typeof wantsNewsletter === 'boolean') {
+                await tx.user.update({
+                    where: { id: userId },
+                    data: { wantsNewsletter }
+                });
+            }
+
+            // If boatIds are provided, replace existing subscriptions
+            if (Array.isArray(boatIds)) {
+                // Delete existing ones
+                await tx.notificationSubscription.deleteMany({
+                    where: { userId }
+                });
+
+                // Create new ones
+                if (boatIds.length > 0) {
+                    await tx.notificationSubscription.createMany({
+                        data: boatIds.map((boatId: number) => ({
+                            userId,
+                            boatId
+                        }))
+                    });
+                }
+            }
+        });
+
+        // Refetch user to return updated state
+        const updatedUser = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+                subscriptions: {
+                    include: { boat: true }
+                }
+            }
+        });
+
+        res.status(200).json({
+            message: 'Notifikationsindstillinger opdateret',
+            wantsNewsletter: updatedUser?.wantsNewsletter,
+            subscriptions: updatedUser?.subscriptions
+        });
+    } catch (error) {
+        console.error('Update notifications error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };

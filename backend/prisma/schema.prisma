@@ -17,12 +17,14 @@ model User {
   profileImage   String?
   isSystemAdmin  Boolean   @default(false)
   interests      String[]
+  wantsNewsletter Boolean  @default(true)
   
   crewMemberships CrewMember[]
   posts           Post[]
   votes           Vote[]
   boardMessages   BoardMessage[]
   auditLogs       AuditLog[]
+  subscriptions   NotificationSubscription[]
 }
 
 model Boat {
@@ -48,6 +50,7 @@ model Boat {
   voyages         Voyage[]
   boardMessages   BoardMessage[]
   contactMessages ContactMessage[]
+  subscribers     NotificationSubscription[]
 }
 
 model CrewMember {
@@ -58,6 +61,19 @@ model CrewMember {
   role     String   // 'BOAT_ADMIN' | 'BOAT_AUTHOR'
 
   @@id([userId, boatId])
+}
+
+model NotificationSubscription {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+
+  boat      Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
+  boatId    Int
+
+  @@unique([userId, boatId]) // En bruger kan kun abonnere på samme båd én gang
 }
 
 enum PostType {
