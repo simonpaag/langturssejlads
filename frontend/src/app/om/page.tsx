@@ -1,11 +1,40 @@
-'use client';
-
-import { Send, Lightbulb, Anchor } from 'lucide-react';
+import { useState } from 'react';
+import { Send, Lightbulb, Anchor, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function OmPage() {
-    const handleIdeaSubmit = (e: React.FormEvent) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [status, setStatus] = useState<{ type: 'success' | 'error' | null, text: string }>({ type: null, text: '' });
+
+    const handleIdeaSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Tak for din idé! \n\nHUSK (Simon): Du skal lige sætte servicen op, der sender denne kontaktformular til simon@paag.dk!');
+        setIsSubmitting(true);
+        setStatus({ type: null, text: '' });
+
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+            const res = await fetch(`${apiUrl}/api/contact`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, message })
+            });
+
+            if (res.ok) {
+                setStatus({ type: 'success', text: 'Tak for din idé! Den er nu sendt til kaptajnsmødet.' });
+                setName('');
+                setEmail('');
+                setMessage('');
+            } else {
+                const data = await res.json();
+                setStatus({ type: 'error', text: data.error || 'Noget gik galt. Prøv igen senere.' });
+            }
+        } catch (error) {
+            setStatus({ type: 'error', text: 'Kunne ikke oprette forbindelse til serveren.' });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -102,19 +131,27 @@ export default function OmPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label htmlFor="idea-name" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Dit navn</label>
-                                        <input id="idea-name" required type="text" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none" placeholder="F.eks. Jens Hansen" />
+                                        <input id="idea-name" required type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none" placeholder="F.eks. Jens Hansen" disabled={isSubmitting} />
                                     </div>
                                     <div>
                                         <label htmlFor="idea-email" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Din E-mail</label>
-                                        <input id="idea-email" required type="email" className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none" placeholder="jens@havet.dk" />
+                                        <input id="idea-email" required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none" placeholder="jens@havet.dk" disabled={isSubmitting} />
                                     </div>
                                     <div>
                                         <label htmlFor="idea-text" className="block text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Hvad kunne være fedt?</label>
-                                        <textarea id="idea-text" required rows={4} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none resize-none" placeholder="Jeg drømmer om at sitet også kunne..."></textarea>
+                                        <textarea id="idea-text" required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-background border border-border focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none resize-none" placeholder="Jeg drømmer om at sitet også kunne..." disabled={isSubmitting}></textarea>
                                     </div>
-                                    <button type="submit" className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 px-6 rounded-xl transition-all shadow-md mt-2">
+
+                                    {status.type && (
+                                        <div className={`p-4 rounded-xl flex items-start gap-3 mt-4 ${status.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                            {status.type === 'success' ? <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" /> : <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />}
+                                            <p className="text-sm font-semibold">{status.text}</p>
+                                        </div>
+                                    )}
+
+                                    <button type="submit" disabled={isSubmitting} className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 px-6 rounded-xl transition-all shadow-md mt-2 disabled:opacity-50 disabled:cursor-not-allowed">
                                         <Send className="w-4 h-4" />
-                                        Send Idé
+                                        {isSubmitting ? 'Sender...' : 'Send Idé'}
                                     </button>
                                 </div>
                             </form>
