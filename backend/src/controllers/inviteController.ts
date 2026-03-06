@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { sendInviteEmail } from '../utils/emailService';
+import { prisma } from '../server';
 
 export const sendInvite = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -17,6 +18,15 @@ export const sendInvite = async (req: Request, res: Response): Promise<void> => 
         }
 
         const result = await sendInviteEmail(email);
+
+        await prisma.sentEmail.create({
+            data: {
+                toEmail: email,
+                subject: 'Du er blevet anbefalet til Langturssejlads.dk ⛵',
+                status: result.success ? 'DELIVERED' : 'FAILED',
+                errorMsg: result.error ? JSON.stringify(result.error) : null,
+            }
+        });
 
         if (result.success) {
             res.json({ message: 'Invitation sendt succesfuldt!' });

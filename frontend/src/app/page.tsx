@@ -42,14 +42,18 @@ export const revalidate = 60; // Cached per minut
 export default async function Home() {
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];
+  let activeAds: any[] = [];
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-    const res = await fetch(`${apiUrl}/api/posts`, { next: { revalidate: 60 } });
-    if (res.ok) {
-      allPosts = await res.json();
-    }
+    const [postsRes, adsRes] = await Promise.all([
+      fetch(`${apiUrl}/api/posts`, { next: { revalidate: 60 } }),
+      fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
+    ]);
+
+    if (postsRes.ok) allPosts = await postsRes.json();
+    if (adsRes.ok) activeAds = await adsRes.json();
   } catch (error) {
-    console.error('Failed to fetch posts:', error);
+    console.error('Failed to fetch posts or ads:', error);
   }
 
   // The Frontpage acts as a newspaper, so we only want to feature rich content like Articles and YouTube videos
@@ -147,69 +151,107 @@ export default async function Home() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
               <InviteCard />
-              {restOfPosts.map((post, idx) => (
-                <article key={post.id} className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
-                  <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
-                    <Image
-                      src={post.imageUrl || post.boat.coverImage || post.boat.profileImage || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${post.id}`}
-                      alt={`Glimt fra havet: ${post.title || post.boat.name}`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
-                    />
-                    {post.youtubeUrl && (
-                      <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase flex items-center gap-1.5 shadow-md">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Video
-                      </div>
-                    )}
-                  </Link>
-
-                  <div className="flex flex-col flex-grow p-6">
-                    <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-primary">
-                      <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-1.5 items-center">
-                        {post.boat.profileImage && (
-                          <div className="w-5 h-5 relative">
+              {restOfPosts.map((post, idx) => {
+                const ad = activeAds.find(a => a.placement === idx);
+                return (
+                  <div className="contents" key={post.id}>
+                    {ad && (
+                      <article className="group flex flex-col h-full bg-primary/5 rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border-2 border-primary/20 overflow-hidden relative">
+                        <div className="absolute top-4 left-4 bg-primary text-primary-foreground text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full z-10 shadow-md">
+                          Annonce
+                        </div>
+                        {ad.imageUrl && (
+                          <Link href={ad.linkUrl || '#'} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
                             <Image
-                              src={post.boat.profileImage}
-                              alt={`Logo for ${post.boat.name}`}
+                              src={ad.imageUrl}
+                              alt={ad.headline}
                               fill
-                              className="rounded-full object-cover"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                             />
+                          </Link>
+                        )}
+                        <div className="flex flex-col flex-grow p-6">
+                          <Link href={ad.linkUrl || '#'}>
+                            <h3 className="text-2xl font-merriweather font-bold mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-3">
+                              {ad.headline}
+                            </h3>
+                          </Link>
+                          <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-4">
+                            {ad.content}
+                          </p>
+                          <div className="mt-auto flex justify-end border-t border-primary/10 pt-4">
+                            <Link href={ad.linkUrl || '#'} className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-1 hover:underline underline-offset-4">
+                              Læs mere <ChevronRight className="w-4 h-4" />
+                            </Link>
+                          </div>
+                        </div>
+                      </article>
+                    )}
+                    <article className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
+                      <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
+                        <Image
+                          src={post.imageUrl || post.boat.coverImage || post.boat.profileImage || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${post.id}`}
+                          alt={`Glimt fra havet: ${post.title || post.boat.name}`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+                        />
+                        {post.youtubeUrl && (
+                          <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase flex items-center gap-1.5 shadow-md">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Video
                           </div>
                         )}
-                        {post.boat.name}
                       </Link>
-                      <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(post.createdAt), 'd. MMM yyyy', { locale: da })}</span>
-                    </div>
 
-                    <Link href={`/posts/${post.slug}`}>
-                      <h3 className="text-2xl font-merriweather font-bold mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-3">
-                        {post.title || (post.postType === 'PHOTO' ? 'Nyt Billede' : 'Opdatering')}
-                      </h3>
-                    </Link>
+                      <div className="flex flex-col flex-grow p-6">
+                        <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-primary">
+                          <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-1.5 items-center">
+                            {post.boat.profileImage && (
+                              <div className="w-5 h-5 relative">
+                                <Image
+                                  src={post.boat.profileImage}
+                                  alt={`Logo for ${post.boat.name}`}
+                                  fill
+                                  className="rounded-full object-cover"
+                                />
+                              </div>
+                            )}
+                            {post.boat.name}
+                          </Link>
+                          <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(post.createdAt), 'd. MMM yyyy', { locale: da })}</span>
+                        </div>
 
-                    <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">
-                      {post.content}
-                    </p>
+                        <Link href={`/posts/${post.slug}`}>
+                          <h3 className="text-2xl font-merriweather font-bold mb-3 leading-snug group-hover:text-primary transition-colors line-clamp-3">
+                            {post.title || (post.postType === 'PHOTO' ? 'Nyt Billede' : 'Opdatering')}
+                          </h3>
+                        </Link>
 
-                    <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
-                      <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
-                        {post.author.profileImage ? (
-                          <Image
-                            src={post.author.profileImage}
-                            alt={`Profilbillede af forfatter ${post.author.name}`}
-                            width={24} height={24}
-                            className="rounded-full object-cover w-6 h-6"
-                          />
-                        ) : (
-                          <User className="w-4 h-4 text-muted-foreground mr-1" />
-                        )}
-                        Af {post.author.name}
-                      </span>
-                    </div>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">
+                          {post.content}
+                        </p>
+
+                        <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
+                          <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
+                            {post.author.profileImage ? (
+                              <Image
+                                src={post.author.profileImage}
+                                alt={`Profilbillede af forfatter ${post.author.name}`}
+                                width={24} height={24}
+                                className="rounded-full object-cover w-6 h-6"
+                              />
+                            ) : (
+                              <User className="w-4 h-4 text-muted-foreground mr-1" />
+                            )}
+                            Af {post.author.name}
+                          </span>
+                        </div>
+                      </div>
+                    </article>
                   </div>
-                </article>
-              ))}
+                );
+              })}
             </div>
           </div>
         )

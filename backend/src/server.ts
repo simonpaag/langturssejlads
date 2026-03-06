@@ -23,6 +23,7 @@ import inviteRoutes from './routes/inviteRoutes';
 import contactRoutes from './routes/contactRoutes';
 import faqRoutes from './routes/faqRoutes';
 import searchRoutes from './routes/searchRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 // We will import and mount routes here later
 app.use('/api/auth', authRoutes);
@@ -35,6 +36,7 @@ app.use('/api/invite', inviteRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/faq', faqRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

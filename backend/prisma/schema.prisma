@@ -22,6 +22,7 @@ model User {
   posts           Post[]
   votes           Vote[]
   boardMessages   BoardMessage[]
+  auditLogs       AuditLog[]
 }
 
 model Boat {
@@ -77,6 +78,7 @@ model Post {
   imageUrl    String?       // Image for PHOTO or Cover for ARTICLE (Legacy)
   imageUrls   String[]      @default([]) // For PHOTO post galleries
   status      String        @default("DRAFT") // 'DRAFT' | 'APPROVED' | 'PUBLISHED' | 'REJECTED'
+  showOnFrontpage Boolean   @default(true)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -164,11 +166,57 @@ model ContactMessage {
   message     String
   isRead      Boolean  @default(false)
   
-  boatId      Int
   boat        Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
-  
+  boatId      Int
+
+  voyage      Voyage?  @relation(fields: [voyageId], references: [id], onDelete: Cascade)
   voyageId    Int?
-  voyage      Voyage?  @relation(fields: [voyageId], references: [id], onDelete: SetNull)
-  
+
   createdAt   DateTime @default(now())
+}
+
+// ----------------------------------------------------
+// Super Admin / PosseidonAdmin Models
+// ----------------------------------------------------
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String   // f.eks. "CREATED_POST", "SENT_EMAIL"
+  entityId  Int?     // ID på det ændrede objekt
+  details   String?  // JSON struktureret array med data eller bare tekst
+  userId    Int?     // Kan være null hvis system-genereret
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model EmailTemplate {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique // F.eks. "INVITE_EMAIL"
+  subject   String
+  bodyHtml  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SentEmail {
+  id        Int      @id @default(autoincrement())
+  toEmail   String
+  subject   String
+  status    String   // "DELIVERED", "FAILED", "BOUNCED"
+  errorMsg  String?
+  sentAt    DateTime @default(now())
+}
+
+model NativeAd {
+  id          Int       @id @default(autoincrement())
+  headline    String
+  content     String
+  imageUrl    String?
+  linkUrl     String?   // Hvor peger den hen? (f f.eks. webshop)
+  placement   Int       @default(0) // Position mellem indlæg på forsiden
+  startDate   DateTime?
+  endDate     DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

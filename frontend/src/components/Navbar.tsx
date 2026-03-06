@@ -13,7 +13,7 @@ export default function Navbar() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
-    const [user, setUser] = useState<{ id: number; name: string; profileImage?: string | null } | null>(null);
+    const [user, setUser] = useState<{ id: number; name: string; profileImage?: string | null; isSystemAdmin?: boolean } | null>(null);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -88,15 +88,25 @@ export default function Navbar() {
                         <SearchBar />
                     </div>
                     {(isLoggedIn) ? (
-                        <Link href="/profil" className="group flex items-center gap-2 hover:opacity-80 transition-opacity">
-                            <div className="w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] overflow-hidden rounded-full border-2 border-primary/20 bg-muted flex items-center justify-center shadow-sm relative">
-                                {user?.profileImage ? (
-                                    <img src={user.profileImage} alt="Profil" className="w-full h-full object-cover" />
-                                ) : (
-                                    <UserCircle className="w-6 h-6 text-muted-foreground opacity-60" />
-                                )}
-                            </div>
-                        </Link>
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            {user?.isSystemAdmin && (
+                                <Link href="/admin" className="hidden sm:flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors" title="PosseidonAdmin">
+                                    <span className="bg-primary/10 p-1.5 rounded-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-alert"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+                                    </span>
+                                    <span className="hidden lg:inline text-[10px] font-black tracking-widest uppercase">Admin</span>
+                                </Link>
+                            )}
+                            <Link href="/profil" className="group flex items-center gap-2 hover:opacity-80 transition-opacity">
+                                <div className="w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] overflow-hidden rounded-full border-2 border-primary/20 bg-muted flex items-center justify-center shadow-sm relative">
+                                    {user?.profileImage ? (
+                                        <img src={user.profileImage} alt="Profil" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <UserCircle className="w-6 h-6 text-muted-foreground opacity-60" />
+                                    )}
+                                </div>
+                            </Link>
+                        </div>
                     ) : isAdmin ? (
                         <button onClick={handleLogout} className="flex items-center gap-1.5 px-4 py-2 bg-muted/50 hover:bg-destructive/10 hover:text-destructive rounded-full transition-all">
                             <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Log ud</span>
@@ -132,6 +142,12 @@ export default function Navbar() {
                     <Link href="/annoncor" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                         Bliv annoncør
                     </Link>
+                    {user?.isSystemAdmin && (
+                        <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-3 mt-2 border-t border-border pt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+                            PosseidonAdmin
+                        </Link>
+                    )}
                     {(!isLoggedIn && !isAdmin) && (
                         <div className="pt-4 mt-2 border-t border-border sm:hidden">
                             <Link href="/register" onClick={() => setIsMenuOpen(false)} className="w-full text-center block px-4 py-3 bg-muted rounded-xl text-xs font-bold uppercase tracking-widest text-foreground hover:bg-muted/80 transition-colors">

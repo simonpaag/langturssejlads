@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import slugify from 'slugify';
@@ -81,7 +81,7 @@ export const updatePostStatus = async (req: AuthRequest, res: Response): Promise
 export const getPublicPosts = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const posts = await prisma.post.findMany({
-            where: { status: 'PUBLISHED' },
+            where: { status: 'PUBLISHED', showOnFrontpage: true },
             include: {
                 author: { select: { id: true, name: true, profileImage: true } },
                 boat: { select: { id: true, slug: true, name: true, profileImage: true, coverImage: true } },
@@ -93,6 +93,28 @@ export const getPublicPosts = async (req: AuthRequest, res: Response): Promise<v
         res.json(posts);
     } catch (error) {
         console.error('Get posts error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const getActiveAds = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const now = new Date();
+        const ads = await prisma.nativeAd.findMany({
+            where: {
+                isActive: true,
+                OR: [
+                    { startDate: null, endDate: null },
+                    { startDate: { lte: now }, endDate: { gte: now } },
+                    { startDate: { lte: now }, endDate: null },
+                    { startDate: null, endDate: { gte: now } }
+                ]
+            },
+            orderBy: { placement: 'asc' }
+        });
+        res.json(ads);
+    } catch (error) {
+        console.error('Get native ads error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
