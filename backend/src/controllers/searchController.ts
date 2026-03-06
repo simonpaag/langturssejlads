@@ -20,6 +20,7 @@ export const globalSearch = async (req: Request, res: Response) => {
                         { boatModel: { contains: searchTerm, mode: 'insensitive' } }
                     ]
                 },
+                select: { id: true, slug: true, name: true, boatModel: true },
                 take: 10
             }),
             prisma.voyage.findMany({
@@ -31,6 +32,7 @@ export const globalSearch = async (req: Request, res: Response) => {
                         { toLocation: { contains: searchTerm, mode: 'insensitive' } }
                     ]
                 },
+                select: { id: true, slug: true, title: true, fromLocation: true, toLocation: true },
                 take: 10
             }),
             prisma.post.findMany({
@@ -41,6 +43,7 @@ export const globalSearch = async (req: Request, res: Response) => {
                         { content: { contains: searchTerm, mode: 'insensitive' } }
                     ]
                 },
+                select: { id: true, slug: true, title: true },
                 take: 10
             }),
             prisma.faqArticle.findMany({
@@ -50,6 +53,7 @@ export const globalSearch = async (req: Request, res: Response) => {
                         { content: { contains: searchTerm, mode: 'insensitive' } }
                     ]
                 },
+                select: { id: true, slug: true, title: true },
                 take: 10
             })
         ]);

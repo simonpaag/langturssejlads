@@ -86,7 +86,7 @@ export default function SearchBar() {
             </form>
 
             {isOpen && (
-                <div className="absolute top-full mt-2 left-0 right-0 w-full min-w-[300px] md:w-[400px] md:-right-12 md:left-auto bg-card border border-border rounded-xl shadow-xl overflow-hidden z-50">
+                <div className="absolute top-full mt-2 left-0 right-0 w-full min-w-[300px] md:w-[400px] md:-right-12 md:left-auto bg-slate-950 border border-border/50 rounded-xl shadow-2xl overflow-hidden z-[100]">
                     <div className="max-h-[400px] overflow-y-auto overscroll-contain">
                         {isLoading && (
                             <div className="p-4 text-center text-sm text-muted-foreground">
