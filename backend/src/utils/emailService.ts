@@ -3,7 +3,7 @@ import { prisma } from '../server';
 
 export const sendInviteEmail = async (toEmail: string) => {
     try {
-        const apiKey = process.env.RESEND_API_KEY || 're_fFv9mwsZ_GkD99x2eqiwVt9edPVNFjp3c';
+        const apiKey = process.env.RESEND_API_KEY;
 
         if (!apiKey) {
             console.error('BEMÆRK: RESEND_API_KEY mangler i serverens miljøvariabler. Invitation afbrudt.');

@@ -18,8 +18,7 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
-        // TODO: Fjern fallback når Render env logs problem er løst
-        const apiKey = process.env.RESEND_API_KEY || 're_fFv9mwsZ_GkD99x2eqiwVt9edPVNFjp3c';
+        const apiKey = process.env.RESEND_API_KEY;
 
         let data: any = null;
         if (!apiKey) {
