@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import { createPost, getPublicPosts, getPostBySlug, updatePostStatus, getAllPostsForAdmin, getPostsByBoatId, togglePostStatus, toggleVote, updatePost, getActiveAds } from '../controllers/postController';
-import { authenticateToken } from '../middlewares/authMiddleware';
+import { authenticateToken, requireActiveUser } from '../middlewares/authMiddleware';
 
 const router = Router();
 
 // /api/posts
-router.post('/', authenticateToken, createPost);
-router.put('/:id', authenticateToken, updatePost);
+router.post('/', authenticateToken, requireActiveUser, createPost);
+router.put('/:id', authenticateToken, requireActiveUser, updatePost);
 router.get('/', getPublicPosts); // Public newsfeed
 router.get('/ads', getActiveAds); // Active native ads
 router.get('/:slug', getPostBySlug); // Single public post

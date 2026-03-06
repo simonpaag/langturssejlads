@@ -5,7 +5,7 @@ import { prisma } from '../server';
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
         const users = await prisma.user.findMany({
-            select: { id: true, name: true, email: true, isSystemAdmin: true, createdAt: true }
+            select: { id: true, name: true, email: true, isSystemAdmin: true, isBlocked: true, createdAt: true }
         });
         res.json(users);
     } catch (error) {
@@ -39,6 +39,57 @@ export const promoteUser = async (req: Request, res: Response): Promise<void> =>
     } catch (error) {
         console.error('Error promoting user:', error);
         res.status(500).json({ error: 'Failed to update user role' });
+    }
+};
+
+export const blockUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id as string);
+        const { isBlocked } = req.body;
+
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { isBlocked },
+            select: { id: true, name: true, email: true, isBlocked: true }
+        });
+
+        await prisma.auditLog.create({
+            data: {
+                action: isBlocked ? 'BLOCKED_USER' : 'UNBLOCKED_USER',
+                entityId: id,
+                details: `Bruger blokeringsstatus ændret til: ${isBlocked}`,
+                userId: (req as any).user?.userId || null
+            }
+        });
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error('Error blocking user:', error);
+        res.status(500).json({ error: 'Failed to update user block status' });
+    }
+};
+
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id as string);
+
+        await prisma.user.delete({
+            where: { id }
+        });
+
+        await prisma.auditLog.create({
+            data: {
+                action: 'DELETED_USER',
+                entityId: id,
+                details: `Bruger med ID ${id} blev permanent slettet.`,
+                userId: (req as any).user?.userId || null
+            }
+        });
+
+        res.json({ success: true, message: 'User deleted' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ error: 'Failed to delete user' });
     }
 };
 

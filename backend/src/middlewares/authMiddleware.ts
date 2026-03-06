@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { prisma } from '../server';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-me-later';
 
@@ -51,5 +52,28 @@ export const authorizeSystemAdmin = (req: AuthRequest, res: Response, next: Next
         next();
     } else {
         res.status(403).json({ error: 'Access denied. System Admin role required.' });
+    }
+};
+
+export const requireActiveUser = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.user?.userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.userId },
+            select: { isBlocked: true }
+        });
+
+        if (!user || user.isBlocked) {
+            res.status(403).json({ error: 'Forbidden. Brugerkontoen er blokeret.' });
+            return;
+        }
+
+        next();
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error while checking user status.' });
     }
 };

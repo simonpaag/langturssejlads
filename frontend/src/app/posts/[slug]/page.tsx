@@ -89,7 +89,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                         </h1>
 
                         <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider backdrop-blur-sm p-3 inline-flex rounded-2xl bg-muted/10">
-                            <span className="text-foreground">Af {post.author.name}</span>
+                            <span className="text-foreground">Af {post.author?.name || 'Slettet Bruger'}</span>
                         </div>
                     </div>
                 </div>

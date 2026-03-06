@@ -28,7 +28,7 @@ export interface Post {
   status: string;
   createdAt: string;
   updatedAt: string;
-  author: Author;
+  author: Author | null;
   boat: Boat;
   voyage: { id: number; title: string } | null;
 }
@@ -37,17 +37,18 @@ import { unstable_noStore as noStore } from 'next/cache';
 import { Ship, Sailboat, ChevronRight, User } from 'lucide-react';
 import InviteCard from '@/components/InviteCard';
 
-export const revalidate = 60; // Cached per minut
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  noStore();
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];
   let activeAds: any[] = [];
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
     const [postsRes, adsRes] = await Promise.all([
-      fetch(`${apiUrl}/api/posts`, { next: { revalidate: 60 } }),
-      fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
+      fetch(`${apiUrl}/api/posts`, { cache: 'no-store' }),
+      fetch(`${apiUrl}/api/posts/ads`, { cache: 'no-store' })
     ]);
 
     if (postsRes.ok) allPosts = await postsRes.json();
@@ -117,7 +118,7 @@ export default async function Home() {
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
               <span className="font-semibold text-sm flex items-center gap-2">
-                {featured.author.profileImage ? (
+                {featured.author?.profileImage ? (
                   <Image
                     src={featured.author.profileImage}
                     alt={`Profilbillede af Kaptajn ${featured.author.name}`}
@@ -127,7 +128,7 @@ export default async function Home() {
                 ) : (
                   <User className="w-5 h-5 text-muted-foreground mr-1" />
                 )}
-                Af {featured.author.name}
+                Af {featured.author?.name || 'Slettet Bruger'}
               </span>
               <Link href={`/posts/${featured.slug}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
                 Se detaljer
@@ -234,7 +235,7 @@ export default async function Home() {
 
                         <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
                           <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
-                            {post.author.profileImage ? (
+                            {post.author?.profileImage ? (
                               <Image
                                 src={post.author.profileImage}
                                 alt={`Profilbillede af forfatter ${post.author.name}`}
@@ -244,7 +245,7 @@ export default async function Home() {
                             ) : (
                               <User className="w-4 h-4 text-muted-foreground mr-1" />
                             )}
-                            Af {post.author.name}
+                            Af {post.author?.name || 'Slettet Bruger'}
                           </span>
                         </div>
                       </div>

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken, authorizeSystemAdmin } from '../middlewares/authMiddleware';
 import {
-    getUsers, promoteUser,
+    getUsers, promoteUser, blockUser, deleteUser,
     getLogs,
     getAdminPosts, updatePostModeration,
     getEmailTemplates, updateEmailTemplate, getSentEmails,
@@ -17,6 +17,8 @@ router.use(authorizeSystemAdmin);
 // Users
 router.get('/users', getUsers);
 router.put('/users/:id/promote', promoteUser);
+router.put('/users/:id/block', blockUser);
+router.delete('/users/:id', deleteUser);
 
 // Logs
 router.get('/logs', getLogs);

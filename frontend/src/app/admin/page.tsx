@@ -632,6 +632,52 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
         }
     };
 
+    const handleBlock = async (userId: number, currentStatus: boolean) => {
+        if (!confirm(currentStatus ? 'Vil du fjerne blokeringen for denne bruger?' : 'Vil du blokere denne bruger fra at oprette indhold?')) return;
+
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/users/${userId}/block`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ isBlocked: !currentStatus })
+            });
+            if (res.ok) {
+                const updatedUser = await res.json();
+                setUsers(users.map(u => u.id === userId ? { ...u, isBlocked: updatedUser.isBlocked } : u));
+            }
+        } catch (error) {
+            console.error('Failed to block user:', error);
+        }
+    };
+
+    const handleDelete = async (userId: number) => {
+        if (!confirm('ER DU SIKKER? Dette sletter brugeren permanent, men bevarer deres indhold som "Slettet Bruger" (anonymt). Handlingen kan ikke fortrydes!')) return;
+
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (res.ok) {
+                setUsers(users.filter(u => u.id !== userId));
+            } else {
+                alert('Kunne ikke slette brugeren.');
+            }
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+            alert('Der opstod en fejl under sletning af brugeren.');
+        }
+    };
+
     return (
         <div>
             <h2 className="text-2xl font-merriweather font-bold mb-6">Brugeradministration</h2>
@@ -642,7 +688,9 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
                             <th className="pb-3 pr-4">Brugernavn</th>
                             <th className="pb-3 px-4">Email</th>
                             <th className="pb-3 px-4">Oprettet</th>
-                            <th className="pb-3 pl-4 text-right">System Admin</th>
+                            <th className="pb-3 px-4">System Admin</th>
+                            <th className="pb-3 px-4">Status</th>
+                            <th className="pb-3 pl-4 text-right">Handlinger</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
@@ -653,15 +701,34 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
                                 <td className="py-4 px-4 text-muted-foreground">
                                     {new Date(user.createdAt).toLocaleDateString('da-DK')}
                                 </td>
-                                <td className="py-4 pl-4 text-right">
+                                <td className="py-4 px-4">
                                     <button
                                         onClick={() => handlePromote(user.id, user.isSystemAdmin)}
-                                        className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors ${user.isSystemAdmin
+                                        className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest transition-colors ${user.isSystemAdmin
                                             ? 'bg-primary text-primary-foreground hover:bg-red-500/90'
                                             : 'bg-muted hover:bg-primary/20 hover:text-primary'
                                             }`}
                                     >
-                                        {user.isSystemAdmin ? 'Ja (Fjern)' : 'Nej (Gør til admin)'}
+                                        {user.isSystemAdmin ? 'Fjern' : 'Gør til admin'}
+                                    </button>
+                                </td>
+                                <td className="py-4 px-4">
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.isBlocked ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                                        {user.isBlocked ? 'Blokeret' : 'Aktiv'}
+                                    </span>
+                                </td>
+                                <td className="py-4 pl-4 text-right space-x-2">
+                                    <button
+                                        onClick={() => handleBlock(user.id, user.isBlocked)}
+                                        className="text-muted-foreground hover:text-primary transition-colors text-xs font-semibold"
+                                    >
+                                        {user.isBlocked ? 'Fjern blokering' : 'Bloker'}
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(user.id)}
+                                        className="text-red-500 hover:text-red-700 transition-colors text-xs font-semibold"
+                                    >
+                                        Slet
                                     </button>
                                 </td>
                             </tr>

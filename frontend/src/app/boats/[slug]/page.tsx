@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
-import { Anchor, Compass, UserCircle2, ShieldAlert, Globe, Link as LinkIcon, Instagram, Youtube, Facebook, Ruler, Anchor as AnchorIcon, Users, Ship } from 'lucide-react';
+import { MapPin, Anchor, Users, Navigation, Compass, Calendar, ArrowRight, UserCircle2, ArrowLeft, Globe, Link as LinkIcon, Info, Image as ImageIcon, Video, Ship, ChevronRight, MessageCircle, MoreVertical, X, Clock, ShieldAlert, Instagram, Youtube, Facebook, Ruler, Anchor as AnchorIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export interface Post {
@@ -61,7 +61,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     let boat: Boat | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/boats/${slug}`, { next: { revalidate: 60 } });
+        const res = await fetch(`${apiUrl} /api/boats / ${slug} `, { next: { revalidate: 60 } });
         if (res.ok) {
             boat = await res.json();
         }
@@ -73,7 +73,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     let posts: Post[] = [];
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/posts`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl} /api/posts`, { cache: 'no-store' });
         if (res.ok) {
             const allPosts: Post[] = await res.json();
             posts = allPosts.filter((p: any) => p.boat?.slug === slug);
@@ -103,17 +103,19 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                         className="w-full h-full object-cover rounded-[2rem]"
                     />
                     {/* Subtle inner overlay for depth */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/10 rounded-[2rem] pointer-events-none"></div>
+                    < div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/10 rounded-[2rem] pointer-events-none" ></div >
 
                     {/* Profile Image overlapping the cover */}
-                    <div className="absolute -bottom-16 md:-bottom-20 left-1/2 -translate-x-1/2 md:left-16 md:translate-x-0 w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] border-background overflow-hidden bg-muted shadow-2xl z-10 transition-transform hover:scale-105 duration-300">
-                        {boat.profileImage ? (
-                            <img src={boat.profileImage} alt={boat.name} className="w-full h-full object-cover" />
-                        ) : (
-                            <Anchor className="w-full h-full p-8 text-muted-foreground" />
-                        )}
-                    </div>
-                </div>
+                    < div className="absolute -bottom-16 md:-bottom-20 left-1/2 -translate-x-1/2 md:left-16 md:translate-x-0 w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] border-background overflow-hidden bg-muted shadow-2xl z-10 transition-transform hover:scale-105 duration-300" >
+                        {
+                            boat.profileImage ? (
+                                <img src={boat.profileImage} alt={boat.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <Anchor className="w-full h-full p-8 text-muted-foreground" />
+                            )
+                        }
+                    </div >
+                </div >
 
                 <div className="md:ml-[17rem] text-center md:text-left">
                     <h1 className="text-5xl md:text-7xl font-merriweather font-black text-foreground mb-6 tracking-tighter drop-shadow-sm">
@@ -144,7 +146,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                         })}
                     </div>
                 </div>
-            </div>
+            </div >
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
@@ -260,20 +262,25 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                 <article key={post.id} className="group bg-background rounded-[1.5rem] shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden mb-12">
                                     {/* Post Header */}
                                     <div className="p-6 pb-4 flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-full overflow-hidden bg-muted border border-border/50">
-                                            {post.author.profileImage ? (
-                                                <img src={post.author.profileImage} alt={post.author.name} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <UserCircle2 className="w-full h-full p-2 text-muted-foreground" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <p className="font-bold text-sm tracking-wide text-foreground">{post.author.name}</p>
-                                            <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mt-0.5">
-                                                <time dateTime={post.createdAt}>{format(new Date(post.createdAt), "d. MMM yyyy 'kl.' HH:mm", { locale: da })}</time>
-                                                {post.voyage && <span>&bull; {post.voyage.title}</span>}
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-border/50 bg-background/50 backdrop-blur-sm">
+                                                {post.author?.profileImage ? (
+                                                    <img src={post.author.profileImage} alt={post.author.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-muted-foreground">
+                                                        {(post.author?.name || 'Slettet').substring(0, 2).toUpperCase()}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-sm tracking-wide text-foreground">{post.author?.name || 'Slettet Bruger'}</p>
+                                                <time className="text-xs text-muted-foreground font-medium flex items-center gap-1.5 opacity-80">
+                                                    <Clock className="w-3 h-3" />
+                                                    {format(new Date(post.createdAt), 'd. MMM yyyy HH:mm', { locale: da })}
+                                                </time>
                                             </div>
                                         </div>
+                                        {post.voyage && <span className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mt-0.5">&bull; {post.voyage.title}</span>}
                                     </div>
 
                                     {/* Post Content based on postType */}
@@ -362,6 +369,6 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                     </div>
                 </main>
             </div>
-        </div>
+        </div >
     );
 }

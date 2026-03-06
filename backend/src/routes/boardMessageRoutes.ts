@@ -1,15 +1,14 @@
 import { Router } from 'express';
-import { getMessages, createMessage, deleteMessage } from '../controllers/boardMessageController';
-import { authenticateToken, optionalAuth } from '../middlewares/authMiddleware';
+import { getMessages as getBoardMessages, createMessage, deleteMessage } from '../controllers/boardMessageController';
+import { authenticateToken, optionalAuth, requireActiveUser } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-// GET /api/boats/:id/messages
-// Vi bruger optionalAuth, så gæster (uden token) også kan hente beskeder (hvis tavlen er offentlig)
-router.get('/boats/:id/messages', optionalAuth, getMessages);
+// Hent opslag for en specifik post (public, optionally authenticated for read state)
+router.get('/boats/:id/messages', optionalAuth as any, getBoardMessages);
 
-// POST /api/boats/:id/messages
-router.post('/boats/:id/messages', authenticateToken, createMessage);
+// Nyt opslag på en båds opslagstavle
+router.post('/boats/:id/messages', authenticateToken, requireActiveUser, createMessage);
 
 // DELETE /api/messages/:msgId
 router.delete('/messages/:msgId', authenticateToken, deleteMessage);

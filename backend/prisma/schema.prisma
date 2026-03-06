@@ -19,6 +19,7 @@ model User {
   interests      String[]
   wantsNewsletter Boolean  @default(true)
   createdAt      DateTime  @default(now())
+  isBlocked      Boolean   @default(false)
   
   crewMemberships CrewMember[]
   posts           Post[]
@@ -55,7 +56,7 @@ model Boat {
 }
 
 model CrewMember {
-  user     User     @relation(fields: [userId], references: [id])
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   Int
   boat     Boat     @relation(fields: [boatId], references: [id])
   boatId   Int
@@ -99,8 +100,8 @@ model Post {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  author      User          @relation(fields: [authorId], references: [id])
-  authorId    Int
+  author      User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorId    Int?
   
   boat        Boat          @relation(fields: [boatId], references: [id])
   boatId      Int
@@ -121,7 +122,7 @@ model Vote {
   type      VoteType
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   
   post      Post     @relation(fields: [postId], references: [id])
@@ -135,8 +136,8 @@ model BoardMessage {
   content   String
   createdAt DateTime @default(now())
   
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
   
   boatId    Int
   boat      Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
@@ -202,7 +203,7 @@ model AuditLog {
   entityId  Int?     // ID på det ændrede objekt
   details   String?  // JSON struktureret array med data eller bare tekst
   userId    Int?     // Kan være null hvis system-genereret
-  user      User?    @relation(fields: [userId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
 }
 

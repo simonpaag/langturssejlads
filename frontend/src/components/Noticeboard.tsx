@@ -214,23 +214,28 @@ export default function Noticeboard({ boatId, boatName, isPublic, isAdmin }: Not
                         <p className="text-muted-foreground italic text-sm">Opslagstavlen er tom. Vær den første til at sende en hilsen!</p>
                     </div>
                 ) : (
-                    messages.map((msg) => {
-                        const isMsgAuthor = user?.userId === msg.author.id;
+                    messages.map(msg => {
+                        const author = msg.author || { id: 0, name: 'Slettet Bruger', profileImage: null };
+                        const isMsgAuthor = user?.userId === author.id && author.id !== 0;
+
                         return (
-                            <div key={msg.id} className="flex gap-4 group">
-                                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-border/50 bg-muted">
-                                    {msg.author.profileImage ? (
-                                        <img src={msg.author.profileImage} alt={msg.author.name} className="w-full h-full object-cover" />
+                            <div key={msg.id} className="p-4 flex gap-4 items-start group relative bg-background/50 backdrop-blur-sm rounded-xl border border-border/50 hover:border-primary/20 transition-all">
+                                {/* Profilbillede / Logo */}
+                                <div className="w-10 h-10 shrink-0 rounded-full overflow-hidden bg-muted flex items-center justify-center border border-border/50">
+                                    {author.profileImage ? (
+                                        <img src={author.profileImage} alt={author.name} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-xs font-bold text-muted-foreground">
-                                            {msg.author.name.substring(0, 2).toUpperCase()}
-                                        </div>
+                                        <span className="text-muted-foreground font-semibold text-sm">
+                                            {author.name.substring(0, 2).toUpperCase()}
+                                        </span>
                                     )}
                                 </div>
-                                <div className="flex-1">
+
+                                {/* Besked Indhold */}
+                                <div className="flex-1 min-w-0">
                                     <div className="bg-muted/30 rounded-2xl rounded-tl-sm px-5 py-3 border border-border/40 relative">
                                         <div className="flex justify-between items-start mb-1">
-                                            <span className="font-bold text-sm text-foreground">{msg.author.name}</span>
+                                            <span className="font-bold text-sm text-foreground">{author.name}</span>
                                         </div>
                                         <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">
                                             {msg.content}
