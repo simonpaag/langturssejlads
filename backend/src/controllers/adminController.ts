@@ -1,6 +1,48 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
 
+// --- USERS ---
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const users = await prisma.user.findMany({
+            select: { id: true, name: true, email: true, isSystemAdmin: true, createdAt: true },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Failed to fetch users' });
+    }
+};
+
+export const promoteUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id);
+        const { isSystemAdmin } = req.body;
+
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { isSystemAdmin },
+            select: { id: true, name: true, email: true, isSystemAdmin: true }
+        });
+
+        // Log action
+        await prisma.auditLog.create({
+            data: {
+                action: 'UPDATED_USER_ROLE',
+                entityId: id,
+                details: `Bruger gjort til system-tildeling: ${isSystemAdmin}`,
+                userId: (req as any).user.userId
+            }
+        });
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error('Error promoting user:', error);
+        res.status(500).json({ error: 'Failed to update user role' });
+    }
+};
+
 // --- LOGS ---
 export const getLogs = async (req: Request, res: Response): Promise<void> => {
     try {

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken, authorizeSystemAdmin } from '../middlewares/authMiddleware';
 import {
+    getUsers, promoteUser,
     getLogs,
     getAdminPosts, updatePostModeration,
     getEmailTemplates, updateEmailTemplate, getSentEmails,
@@ -12,6 +13,10 @@ const router = Router();
 // Alle ruter under /admin kræver system admin!
 router.use(authenticateToken);
 router.use(authorizeSystemAdmin);
+
+// Users
+router.get('/users', getUsers);
+router.put('/users/:id/promote', promoteUser);
 
 // Logs
 router.get('/logs', getLogs);

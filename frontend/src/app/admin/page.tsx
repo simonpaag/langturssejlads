@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save } from 'lucide-react';
+import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 
 export default function AdminDashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'logs' | 'posts' | 'emails' | 'ads'>('logs');
+    const [activeTab, setActiveTab] = useState<'logs' | 'posts' | 'emails' | 'ads' | 'users'>('logs');
     const [isLoading, setIsLoading] = useState(true);
 
     // Data States
@@ -16,6 +16,7 @@ export default function AdminDashboard() {
     const [templates, setTemplates] = useState<any[]>([]);
     const [sentEmails, setSentEmails] = useState<any[]>([]);
     const [ads, setAds] = useState<any[]>([]);
+    const [users, setUsers] = useState<any[]>([]);
 
     useEffect(() => {
         const verifyAdmin = async () => {
@@ -58,6 +59,9 @@ export default function AdminDashboard() {
             // Logs
             fetch(`${apiUrl}/api/admin/logs`, { headers })
                 .then(r => r.json()).then(setLogs).catch(() => { });
+            // Users
+            fetch(`${apiUrl}/api/admin/users`, { headers })
+                .then(r => r.json()).then(setUsers).catch(() => { });
             // Posts
             fetch(`${apiUrl}/api/admin/posts`, { headers })
                 .then(r => r.json()).then(setPosts).catch(() => { });
@@ -98,6 +102,7 @@ export default function AdminDashboard() {
                     <div className="lg:w-64 shrink-0">
                         <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 hide-scrollbar sticky top-24">
                             <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity className="w-5 h-5" />} label="Aktivitetslog" />
+                            <TabButton active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users className="w-5 h-5" />} label="Brugere" />
                             <TabButton active={activeTab === 'posts'} onClick={() => setActiveTab('posts')} icon={<FileText className="w-5 h-5" />} label="Moderation" />
                             <TabButton active={activeTab === 'emails'} onClick={() => setActiveTab('emails')} icon={<Mail className="w-5 h-5" />} label="Notifikationer" />
                             <TabButton active={activeTab === 'ads'} onClick={() => setActiveTab('ads')} icon={<Megaphone className="w-5 h-5" />} label="Native Ads" />
@@ -107,6 +112,7 @@ export default function AdminDashboard() {
                     {/* Content Area */}
                     <div className="flex-1 min-w-0 bg-background rounded-3xl p-6 lg:p-10 shadow-xl border border-border/50">
                         {activeTab === 'logs' && <LogsTab logs={logs} />}
+                        {activeTab === 'users' && <UsersTab users={users} setUsers={setUsers} />}
                         {activeTab === 'posts' && <PostsTab posts={posts} setPosts={setPosts} />}
                         {activeTab === 'emails' && <EmailsTab templates={templates} sentEmails={sentEmails} />}
                         {activeTab === 'ads' && <AdsTab ads={ads} setAds={setAds} />}
@@ -122,8 +128,8 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
         <button
             onClick={onClick}
             className={`flex items-center gap-3 px-5 py-4 rounded-xl text-sm font-bold uppercase tracking-widest transition-all whitespace-nowrap ${active
-                    ? 'bg-primary text-primary-foreground shadow-md scale-[1.02]'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                ? 'bg-primary text-primary-foreground shadow-md scale-[1.02]'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
         >
             {icon} {label}
@@ -258,8 +264,88 @@ function EmailsTab({ templates, sentEmails }: { templates: any[], sentEmails: an
             </div>
 
             <div className="p-6 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 rounded-2xl">
-                <h3 className="font-bold text-sm uppercase tracking-widest text-primary mb-2">Rediger Skabeloner (Kommer snart)</h3>
-                <p className="text-sm text-muted-foreground">Systemet er nu klargjort med databasemodeller til skabelon-styring. Editoren tilknyttes i næste iteration.</p>
+                <h3 className="font-bold text-lg font-merriweather mb-4 text-primary">Rediger Skabeloner</h3>
+                {templates.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Ingen skabeloner fundet i databasen endnu.</p>
+                ) : (
+                    <div className="space-y-6">
+                        {templates.map(tmpl => (
+                            <EditableTemplate key={tmpl.id} template={tmpl} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function EditableTemplate({ template }: { template: any }) {
+    const [subject, setSubject] = useState(template.subject);
+    const [bodyHtml, setBodyHtml] = useState(template.bodyHtml);
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/emails/templates/${template.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ subject, bodyHtml })
+            });
+            if (res.ok) {
+                alert('Skabelon gemt!');
+            } else {
+                alert('Fejl ved gemning.');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Netværksfejl.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    return (
+        <div className="border border-border bg-background p-4 rounded-xl space-y-4 shadow-sm">
+            <div className="flex justify-between items-center border-b border-border/50 pb-2">
+                <span className="font-bold text-primary uppercase tracking-widest text-xs">{template.name}</span>
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold uppercase text-muted-foreground">Emne / Subject</label>
+                <input
+                    type="text"
+                    value={subject}
+                    onChange={e => setSubject(e.target.value)}
+                    className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-xs font-bold uppercase text-muted-foreground">HTML Indhold</label>
+                <p className="text-[10px] text-muted-foreground -mt-1 mb-2">Du kan redigere den underliggende HTML struktur her for bedst understøttelse i mail-klienter.</p>
+                <textarea
+                    value={bodyHtml}
+                    onChange={e => setBodyHtml(e.target.value)}
+                    rows={12}
+                    className="w-full px-4 py-3 bg-muted/20 border border-border rounded-lg text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+            </div>
+
+            <div className="pt-2 flex justify-end">
+                <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-md disabled:opacity-50"
+                >
+                    <Save className="w-4 h-4" />
+                    {isSaving ? 'Gemmer...' : 'Gem Skabelon'}
+                </button>
             </div>
         </div>
     );
@@ -267,32 +353,246 @@ function EmailsTab({ templates, sentEmails }: { templates: any[], sentEmails: an
 
 function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
     const [isCreating, setIsCreating] = useState(false);
+
+    // Form state
+    const [headline, setHeadline] = useState('');
+    const [content, setContent] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [linkUrl, setLinkUrl] = useState('');
+    const [placement, setPlacement] = useState(0);
+    const [isActive, setIsActive] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+
+    const resetForm = () => {
+        setHeadline(''); setContent(''); setImageUrl(''); setLinkUrl(''); setPlacement(0); setIsActive(true);
+        setIsCreating(false);
+    };
+
+    const handleCreateSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSaving(true);
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+
+            const res = await fetch(`${apiUrl}/api/admin/ads`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ headline, content, imageUrl, linkUrl, placement, isActive })
+            });
+
+            if (res.ok) {
+                const newAd = await res.json();
+                setAds([...ads, newAd].sort((a, b) => a.placement - b.placement));
+                resetForm();
+            } else {
+                alert('Fejl ved oprettelse');
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('Sikker på du vil slette denne annonce?')) return;
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/ads/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setAds(ads.filter(a => a.id !== id));
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleToggleActive = async (id: number, current: boolean) => {
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/ads/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ isActive: !current })
+            });
+            if (res.ok) {
+                setAds(ads.map(a => a.id === id ? { ...a, isActive: !current } : a));
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-merriweather font-bold">Native Ads</h2>
-                <button onClick={() => setIsCreating(!isCreating)} className="bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full hover:bg-primary/90 transition-colors">
+                <button
+                    onClick={() => isCreating ? resetForm() : setIsCreating(true)}
+                    className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full transition-colors ${isCreating ? 'bg-muted text-foreground hover:bg-muted/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'
+                        }`}
+                >
                     {isCreating ? 'Afbryd' : '+ Opret Ny'}
                 </button>
             </div>
 
             {isCreating && (
-                <div className="mb-8 p-6 border border-primary/30 bg-primary/5 rounded-2xl">
-                    <p className="text-sm font-semibold mb-4">Ad Oprettelsesformular (Placeholder)</p>
-                    <p className="text-xs text-muted-foreground">Her indsættes felterne (Headline, Billede, LinkUrl, Placering). API endpoints er klar bagved.</p>
-                </div>
+                <form onSubmit={handleCreateSubmit} className="mb-8 p-6 lg:p-8 border border-border shadow-sm bg-background rounded-2xl">
+                    <h3 className="text-lg font-merriweather font-bold mb-6 text-primary border-b border-border/50 pb-2">Opret Ny Annonce</h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">Overskrift *</label>
+                            <input required type="text" value={headline} onChange={e => setHeadline(e.target.value)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Titel på annoncen" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">URL Link destination</label>
+                            <input type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="https://..." />
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">Indhold / Tekst *</label>
+                            <textarea required value={content} onChange={e => setContent(e.target.value)} rows={3} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Annoncens brødtekst..."></textarea>
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">Billede URL</label>
+                            <input type="url" value={imageUrl} onChange={e => setImageUrl(e.target.value)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="https://...billede.jpg" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">Placering i feedet (Index)</label>
+                            <input type="number" min="0" value={placement} onChange={e => setPlacement(parseInt(e.target.value) || 0)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" />
+                            <p className="text-[10px] text-muted-foreground">E.g., 0 = Første post, 2 = Under andet indlæg.</p>
+                        </div>
+                        <div className="space-y-2 flex flex-col justify-center">
+                            <label className="flex items-center gap-3 cursor-pointer mt-4">
+                                <input type="checkbox" checked={isActive} onChange={e => setIsActive(e.target.checked)} className="w-5 h-5 accent-primary cursor-pointer" />
+                                <span className="text-sm font-bold">Er Aktiv</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-border/50">
+                        <button type="button" onClick={resetForm} className="px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted transition-colors">Annuller</button>
+                        <button type="submit" disabled={isSaving} className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-md disabled:opacity-50">
+                            <Save className="w-4 h-4" />
+                            {isSaving ? 'Opretter...' : 'Opret Annonce'}
+                        </button>
+                    </div>
+                </form>
             )}
 
             <div className="grid gap-4">
                 {ads.map(ad => (
-                    <div key={ad.id} className="p-4 border border-border rounded-xl flex items-center justify-between">
-                        <div>
-                            <p className="font-bold">{ad.headline}</p>
-                            <p className="text-xs text-muted-foreground">Placering: {ad.placement} | Aktiv: {ad.isActive ? 'Ja' : 'Nej'}</p>
+                    <div key={ad.id} className={`p-5 lg:p-6 border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors ${ad.isActive ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/10 opacity-70'}`}>
+                        <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-1">
+                                <span className="bg-primary text-primary-foreground text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full">Placering: {ad.placement}</span>
+                                {ad.isActive ? (
+                                    <span className="text-[10px] font-bold text-green-600 uppercase flex items-center gap-1"><Eye className="w-3 h-3" /> Aktiv</span>
+                                ) : (
+                                    <span className="text-[10px] font-bold text-orange-500 uppercase flex items-center gap-1"><EyeOff className="w-3 h-3" /> Deaktiveret</span>
+                                )}
+                            </div>
+                            <h3 className="font-bold text-lg leading-tight mb-1">{ad.headline}</h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2">{ad.content}</p>
+                            {ad.linkUrl && <a href={ad.linkUrl} target="_blank" rel="noreferrer" className="text-xs text-primary hover:underline mt-2 inline-block">🔗 {ad.linkUrl}</a>}
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0 border-t md:border-t-0 border-border/50 pt-3 md:pt-0">
+                            <button
+                                onClick={() => handleToggleActive(ad.id, ad.isActive)}
+                                className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors ${ad.isActive ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
+                            >
+                                {ad.isActive ? 'Deaktiver' : 'Aktivér'}
+                            </button>
+                            <button
+                                onClick={() => handleDelete(ad.id)}
+                                className="p-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Slet annonce"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
                         </div>
                     </div>
                 ))}
-                {ads.length === 0 && !isCreating && <p className="text-muted-foreground text-sm">Ingen Native Ads oprettet endnu.</p>}
+
+                {ads.length === 0 && !isCreating && (
+                    <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-muted/10">
+                        <Megaphone className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                        <p className="text-muted-foreground font-semibold">Ingen Native Ads er oprettet endnu.</p>
+                        <p className="text-xs text-muted-foreground mt-1">Opret en annonce for at fremhæve indhold i det sociale feed.</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
+    const handlePromote = async (userId: number, currentStatus: boolean) => {
+        if (!confirm(`Er du sikker på at du vil ændre denne brugers admin-status til ${!currentStatus}?`)) return;
+
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/users/${userId}/promote`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ isSystemAdmin: !currentStatus })
+            });
+            if (res.ok) {
+                const updatedUser = await res.json();
+                setUsers(users.map(u => u.id === userId ? { ...u, isSystemAdmin: updatedUser.isSystemAdmin } : u));
+            }
+        } catch (error) {
+            console.error('Failed to promote user:', error);
+        }
+    };
+
+    return (
+        <div>
+            <h2 className="text-2xl font-merriweather font-bold mb-6">Brugeradministration</h2>
+            <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm whitespace-nowrap">
+                    <thead>
+                        <tr className="border-b border-border/50 text-muted-foreground uppercase tracking-widest text-[10px] font-bold">
+                            <th className="pb-3 pr-4">Brugernavn</th>
+                            <th className="pb-3 px-4">Email</th>
+                            <th className="pb-3 px-4">Oprettet</th>
+                            <th className="pb-3 pl-4 text-right">System Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/50">
+                        {users.map(user => (
+                            <tr key={user.id} className="hover:bg-muted/10 transition-colors">
+                                <td className="py-4 pr-4 font-semibold">{user.name}</td>
+                                <td className="py-4 px-4 text-muted-foreground">{user.email}</td>
+                                <td className="py-4 px-4 text-muted-foreground">
+                                    {new Date(user.createdAt).toLocaleDateString('da-DK')}
+                                </td>
+                                <td className="py-4 pl-4 text-right">
+                                    <button
+                                        onClick={() => handlePromote(user.id, user.isSystemAdmin)}
+                                        className={`px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors ${user.isSystemAdmin
+                                            ? 'bg-primary text-primary-foreground hover:bg-red-500/90'
+                                            : 'bg-muted hover:bg-primary/20 hover:text-primary'
+                                            }`}
+                                    >
+                                        {user.isSystemAdmin ? 'Ja (Fjern)' : 'Nej (Gør til admin)'}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {users.length === 0 && <p className="text-muted-foreground mt-4 text-sm">Ingen brugere fundet.</p>}
             </div>
         </div>
     );
