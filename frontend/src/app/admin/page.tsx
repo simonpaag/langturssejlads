@@ -354,6 +354,7 @@ function EditableTemplate({ template }: { template: any }) {
 
 function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
     const [isCreating, setIsCreating] = useState(false);
+    const [editingAdId, setEditingAdId] = useState<number | null>(null);
 
     // Form state
     const [headline, setHeadline] = useState('');
@@ -367,6 +368,19 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
     const resetForm = () => {
         setHeadline(''); setContent(''); setImageUrl(''); setLinkUrl(''); setPlacement(0); setIsActive(true);
         setIsCreating(false);
+        setEditingAdId(null);
+    };
+
+    const startEdit = (ad: any) => {
+        setEditingAdId(ad.id);
+        setHeadline(ad.headline);
+        setContent(ad.content);
+        setImageUrl(ad.imageUrl || '');
+        setLinkUrl(ad.linkUrl || '');
+        setPlacement(ad.placement);
+        setIsActive(ad.isActive);
+        setIsCreating(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleCreateSubmit = async (e: React.FormEvent) => {
@@ -376,18 +390,25 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
             const token = localStorage.getItem('user_token');
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
 
-            const res = await fetch(`${apiUrl}/api/admin/ads`, {
-                method: 'POST',
+            const method = editingAdId ? 'PUT' : 'POST';
+            const endpoint = editingAdId ? `/api/admin/ads/${editingAdId}` : '/api/admin/ads';
+
+            const res = await fetch(`${apiUrl}${endpoint}`, {
+                method,
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ headline, content, imageUrl, linkUrl, placement, isActive })
             });
 
             if (res.ok) {
-                const newAd = await res.json();
-                setAds([...ads, newAd].sort((a, b) => a.placement - b.placement));
+                const savedAd = await res.json();
+                if (editingAdId) {
+                    setAds(ads.map(a => a.id === editingAdId ? savedAd : a).sort((a, b) => a.placement - b.placement));
+                } else {
+                    setAds([...ads, savedAd].sort((a, b) => a.placement - b.placement));
+                }
                 resetForm();
             } else {
-                alert('Fejl ved oprettelse');
+                alert(`Fejl ved ${editingAdId ? 'opdatering' : 'oprettelse'}`);
             }
         } catch (error) {
             console.error(error);
@@ -445,7 +466,9 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
 
             {isCreating && (
                 <form onSubmit={handleCreateSubmit} className="mb-8 p-6 lg:p-8 border border-border shadow-sm bg-background rounded-2xl">
-                    <h3 className="text-lg font-merriweather font-bold mb-6 text-primary border-b border-border/50 pb-2">Opret Ny Annonce</h3>
+                    <h3 className="text-lg font-merriweather font-bold mb-6 text-primary border-b border-border/50 pb-2">
+                        {editingAdId ? 'Rediger Annonce' : 'Opret Ny Annonce'}
+                    </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="space-y-2">
@@ -485,7 +508,7 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
                         <button type="button" onClick={resetForm} className="px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted transition-colors">Annuller</button>
                         <button type="submit" disabled={isSaving} className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-md disabled:opacity-50">
                             <Save className="w-4 h-4" />
-                            {isSaving ? 'Opretter...' : 'Opret Annonce'}
+                            {isSaving ? 'Gemmer...' : editingAdId ? 'Gem Ændringer' : 'Opret Annonce'}
                         </button>
                     </div>
                 </form>
@@ -509,6 +532,12 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0 border-t md:border-t-0 border-border/50 pt-3 md:pt-0">
+                            <button
+                                onClick={() => startEdit(ad)}
+                                className="px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+                            >
+                                Rediger
+                            </button>
                             <button
                                 onClick={() => handleToggleActive(ad.id, ad.isActive)}
                                 className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors ${ad.isActive ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
