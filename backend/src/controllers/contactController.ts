@@ -31,7 +31,7 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
 
         data = await resend.emails.send({
             from: 'Langturssejlads Support <info@langturssejlads.dk>',
-            to: ['kontakt@langturssejlads.dk'],
+            to: ['simon@paag.dk'],
             replyTo: email,
             subject: `Ny Besked fra ${name} (Langturssejlads.dk Vilkår)`,
             html: `
