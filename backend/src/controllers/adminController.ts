@@ -5,7 +5,7 @@ import { prisma } from '../server';
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
         const users = await prisma.user.findMany({
-            select: { id: true, name: true, email: true, isSystemAdmin: true }
+            select: { id: true, name: true, email: true, isSystemAdmin: true, createdAt: true }
         });
         res.json(users);
     } catch (error) {

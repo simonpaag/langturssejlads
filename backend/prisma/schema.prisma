@@ -18,6 +18,7 @@ model User {
   isSystemAdmin  Boolean   @default(false)
   interests      String[]
   wantsNewsletter Boolean  @default(true)
+  createdAt      DateTime  @default(now())
   
   crewMemberships CrewMember[]
   posts           Post[]
