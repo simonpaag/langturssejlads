@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Calendar, Anchor, ArrowRight, Ship, Users } from 'lucide-react';
 import { format, isFuture, isPast } from 'date-fns';
+import AnimatedLoader from '@/components/AnimatedLoader';
 import { da } from 'date-fns/locale';
 
 interface Boat {
@@ -128,7 +129,7 @@ export default function VoyagesOverviewPage() {
     if (loading) {
         return (
             <div className="min-h-screen pt-32 pb-24 flex justify-center items-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                <AnimatedLoader className="scale-125" text="Henter Togter..." />
             </div>
         );
     }

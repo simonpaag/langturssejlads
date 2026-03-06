@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
+import AnimatedLoader from '@/components/AnimatedLoader';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -81,7 +82,7 @@ export default function AdminDashboard() {
 
 
     if (isLoading) {
-        return <div className="min-h-screen flex items-center justify-center bg-background"><div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>;
+        return <div className="min-h-screen flex items-center justify-center bg-background"><AnimatedLoader className="scale-125" text="Autentificerer..." /></div>;
     }
 
     return (
