@@ -61,7 +61,10 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     let boat: Boat | null = null;
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl} /api/boats / ${slug} `, { next: { revalidate: 60 } });
+        const res = await fetch(`${apiUrl}/api/boats/${slug}`, { next: { revalidate: 60 } });
+        if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
+            throw new Error(`API Offline eller Server Fejl: ${res.status}`);
+        }
         if (res.ok) {
             boat = await res.json();
         }
@@ -73,7 +76,10 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     let posts: Post[] = [];
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl} /api/posts`, { cache: 'no-store' });
+        const res = await fetch(`${apiUrl}/api/posts`, { cache: 'no-store' });
+        if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
+            throw new Error(`API Offline eller Server Fejl: ${res.status}`);
+        }
         if (res.ok) {
             const allPosts: Post[] = await res.json();
             posts = allPosts.filter((p: any) => p.boat?.slug === slug);

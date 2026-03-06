@@ -22,11 +22,13 @@ export default async function BoatsPage() {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/boats`, { next: { revalidate: 60 } });
-        if (res.ok) {
-            boats = await res.json();
+        if (!res.ok) {
+            throw new Error(`API error: ${res.status}`);
         }
+        boats = await res.json();
     } catch (error) {
         console.error('Failed to fetch boats:', error);
+        throw error;
     }
 
     return (

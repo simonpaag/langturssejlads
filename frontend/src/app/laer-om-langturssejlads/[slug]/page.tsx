@@ -6,11 +6,14 @@ async function getFaq(slug: string) {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/faq/${slug}`, { next: { revalidate: 60 } });
+        if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
+            throw new Error(`API Offline eller Server Fejl: ${res.status}`);
+        }
         if (!res.ok) return null;
         return await res.json();
     } catch (e) {
         console.error('Failed to fetch FAQ:', e);
-        return null;
+        throw e;
     }
 }
 

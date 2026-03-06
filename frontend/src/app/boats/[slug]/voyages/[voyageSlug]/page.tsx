@@ -11,13 +11,17 @@ async function getVoyage(voyageSlug: string) {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/voyages/${voyageSlug}`, { next: { revalidate: 60 } });
+        if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
+            throw new Error(`API Offline eller Server Fejl: ${res.status}`);
+        }
         if (!res.ok) {
-            return { error: true, status: res.status, url: `${apiUrl}/api/voyages/${voyageSlug}` };
+            notFound();
         }
         return res.json();
-    } catch (e) {
+    } catch (e: any) {
+        if (e.message === 'NEXT_NOT_FOUND') throw e; // Lad Next.js håndtere notFound()
         console.error('Failed to fetch voyage:', e);
-        return { error: true, exception: true };
+        throw e;
     }
 }
 

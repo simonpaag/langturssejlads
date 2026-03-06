@@ -27,6 +27,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/posts/${slug}`, { next: { revalidate: 60 } });
+        if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
+            throw new Error(`API Offline eller Server Fejl: ${res.status}`);
+        }
         if (res.ok) {
             post = await res.json();
         }

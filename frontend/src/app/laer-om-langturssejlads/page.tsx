@@ -10,11 +10,13 @@ async function getFaqs() {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/faq`, { next: { revalidate: 60 } });
-        if (!res.ok) return [];
+        if (!res.ok) {
+            throw new Error(`API returned status: ${res.status}`);
+        }
         return await res.json();
     } catch (e) {
         console.error('Failed to fetch FAQs:', e);
-        return [];
+        throw e;
     }
 }
 
