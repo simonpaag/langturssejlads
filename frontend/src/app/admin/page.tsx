@@ -243,8 +243,9 @@ function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
                 <tbody className="text-sm">
                     {posts.map(post => {
                         let contentLink = '#';
-                        if (post.postType === 'ARTICLE') contentLink = `/post/${post.slug}`;
-                        if (post.postType === 'VOYAGE') contentLink = `/boats/unknown/voyages/${post.slug}`; // Note: Ideal URL would have boat slug, but we don't fetch related boat slug here currently
+                        const baseUrl = 'https://langturssejlads.dk';
+                        if (post.postType === 'ARTICLE') contentLink = `${baseUrl}/post/${post.slug}`;
+                        if (post.postType === 'VOYAGE') contentLink = `${baseUrl}/boats/unknown/voyages/${post.slug}`; // Note: Ideal URL would have boat slug, but we don't fetch related boat slug here currently
 
                         return (
                             <tr key={post.id} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
