@@ -356,8 +356,7 @@ export default function Dashboard() {
             {/* Sidebar */}
             <aside className="w-64 bg-card border-r border-border flex flex-col hidden md:flex">
                 <div className="p-6 border-b border-border">
-                    <h2 className="font-bold text-lg mb-1">Kaptajnens Kahyt</h2>
-                    <p className="text-sm font-merriweather text-foreground mb-3">{currentBoat?.name || 'Ingen båd'}</p>
+                    <h2 className="font-bold text-lg mb-1">{currentBoat?.name || 'Nede om læ'}</h2>
                     {currentBoat && (
                         <Link
                             href={`/boats/${currentBoat.slug}`}
