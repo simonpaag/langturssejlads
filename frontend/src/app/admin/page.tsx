@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus } from 'lucide-react';
+import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
 
@@ -241,26 +241,41 @@ function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
                     </tr>
                 </thead>
                 <tbody className="text-sm">
-                    {posts.map(post => (
-                        <tr key={post.id} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
-                            <td className="p-3 whitespace-nowrap">{new Date(post.createdAt).toLocaleDateString('da-DK')}</td>
-                            <td className="p-3 font-semibold max-w-[200px] truncate">{post.title || `[${post.postType}]`}</td>
-                            <td className="p-3 text-muted-foreground">{post.author?.name}</td>
-                            <td className="p-3">
-                                {post.status === 'REJECTED' ? <span className="text-red-500 font-bold">Afvist</span> :
-                                    post.showOnFrontpage ? <span className="text-green-600 font-bold">Forside</span> :
-                                        <span className="text-orange-500 font-bold">Skjult</span>}
-                            </td>
-                            <td className="p-3 text-right flex justify-end gap-2">
-                                <button onClick={() => handleToggleFrontpage(post.id, post.showOnFrontpage)} className="p-2 border border-border rounded-lg hover:bg-muted transition-colors opacity-70 hover:opacity-100" title="Skjul/Vis på forside">
-                                    {post.showOnFrontpage ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                                <button onClick={() => handleReject(post.id)} className="p-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Afvis helt">
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                    {posts.map(post => {
+                        let contentLink = '#';
+                        if (post.postType === 'ARTICLE') contentLink = `/post/${post.slug}`;
+                        if (post.postType === 'VOYAGE') contentLink = `/boats/unknown/voyages/${post.slug}`; // Note: Ideal URL would have boat slug, but we don't fetch related boat slug here currently
+
+                        return (
+                            <tr key={post.id} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
+                                <td className="p-3 whitespace-nowrap">{new Date(post.createdAt).toLocaleDateString('da-DK')}</td>
+                                <td className="p-3">
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold max-w-[200px] truncate">{post.title || `[${post.postType}]`}</span>
+                                        {post.slug && (
+                                            <a href={contentLink} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0" title="Se indhold">
+                                                <ExternalLink className="w-3.5 h-3.5" />
+                                            </a>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="p-3 text-muted-foreground">{post.author?.name}</td>
+                                <td className="p-3">
+                                    {post.status === 'REJECTED' ? <span className="text-red-500 font-bold">Afvist</span> :
+                                        post.showOnFrontpage ? <span className="text-green-600 font-bold">Forside</span> :
+                                            <span className="text-orange-500 font-bold">Skjult</span>}
+                                </td>
+                                <td className="p-3 text-right flex justify-end gap-2">
+                                    <button onClick={() => handleToggleFrontpage(post.id, post.showOnFrontpage)} className="p-2 border border-border rounded-lg hover:bg-muted transition-colors opacity-70 hover:opacity-100" title="Skjul/Vis på forside">
+                                        {post.showOnFrontpage ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
+                                    <button onClick={() => handleReject(post.id)} className="p-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="Afvis helt">
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </td>
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>
