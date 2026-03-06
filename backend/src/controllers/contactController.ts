@@ -18,7 +18,10 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
-        const apiKey = process.env.RESEND_API_KEY;
+        // TODO: Fjern fallback når Render env logs problem er løst
+        const apiKey = process.env.RESEND_API_KEY || 're_fFv9mwsZ_GkD99x2eqiwVt9edPVNFjp3c';
+
+        let data: any = null;
         if (!apiKey) {
             console.error('BEMÆRK: RESEND_API_KEY mangler. Beskeden kunne ikke sendes.');
             res.status(500).json({ error: 'Systemfejl: Kunne ikke afsende mail lige nu.' });
@@ -27,7 +30,7 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
 
         const resend = new Resend(apiKey);
 
-        const data = await resend.emails.send({
+        data = await resend.emails.send({
             from: 'Langturssejlads Support <info@langturssejlads.dk>',
             to: ['kontakt@langturssejlads.dk'],
             replyTo: email,

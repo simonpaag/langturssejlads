@@ -3,15 +3,11 @@ import { prisma } from '../server';
 
 export const sendInviteEmail = async (toEmail: string) => {
     try {
-        const apiKey = process.env.RESEND_API_KEY;
+        const apiKey = process.env.RESEND_API_KEY || 're_fFv9mwsZ_GkD99x2eqiwVt9edPVNFjp3c';
+
         if (!apiKey) {
             console.error('BEMÆRK: RESEND_API_KEY mangler i serverens miljøvariabler. Invitation afbrudt.');
-            return {
-                success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK: ' + JSON.stringify({
-                    exists: !!apiKey,
-                    keys: Object.keys(process.env).filter(k => !k.toLowerCase().includes('npm') && !k.toLowerCase().includes('nvm'))
-                })
-            };
+            return { success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK' };
         }
 
         const resend = new Resend(apiKey);
