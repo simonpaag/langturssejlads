@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/SearchBar';
 import FifthElement from '@/components/FifthElement';
+import { getFallbackImage } from '@/utils/fallbackImage';
 
 export default function Navbar() {
     const router = useRouter();
@@ -105,7 +106,7 @@ export default function Navbar() {
                                     {user?.profileImage ? (
                                         <img src={user.profileImage} alt="Profil" className="w-full h-full object-cover" />
                                     ) : (
-                                        <UserCircle className="w-6 h-6 text-muted-foreground opacity-60" />
+                                        <img src={getFallbackImage(user?.id, 'avatar')} alt="Profil" className="w-full h-full object-cover opacity-80" />
                                     )}
                                 </div>
                             </Link>

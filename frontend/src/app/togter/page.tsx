@@ -6,6 +6,7 @@ import { MapPin, Calendar, Anchor, ArrowRight, Ship, Users } from 'lucide-react'
 import { format, isFuture, isPast } from 'date-fns';
 import AnimatedLoader from '@/components/AnimatedLoader';
 import { da } from 'date-fns/locale';
+import { getFallbackImage } from '@/utils/fallbackImage';
 
 interface Boat {
     id: number;
@@ -61,7 +62,7 @@ export default function VoyagesOverviewPage() {
             <div className="bg-card border border-border rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
                 <div className="relative h-64 overflow-hidden">
                     <img
-                        src={voyage.imageUrl || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&q=80'}
+                        src={voyage.imageUrl || getFallbackImage(voyage.id, 'cover')}
                         alt={voyage.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
@@ -89,9 +90,9 @@ export default function VoyagesOverviewPage() {
                 <div className="p-6 flex flex-col flex-1">
                     <div className="flex items-center gap-3 mb-4">
                         <img
-                            src={voyage.boat.profileImage || 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100&q=80'}
+                            src={voyage.boat.profileImage || getFallbackImage(voyage.boat.id, 'avatar')}
                             alt={voyage.boat.name}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-primary shadow-sm"
+                            className="w-10 h-10 rounded-full object-cover border-2 border-primary shadow-sm bg-background/50"
                         />
                         <div>
                             <p className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Båd</p>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, UserPlus, ShieldAlert, Trash2, Shield, Mail, CheckCircle2, Copy } from 'lucide-react';
 import AnimatedLoader from '@/components/AnimatedLoader';
+import { getFallbackImage } from '@/utils/fallbackImage';
 
 export default function CrewManager({ boatId, myRole }: { boatId: number, myRole: string }) {
     const [crew, setCrew] = useState<any[]>([]);
@@ -249,13 +250,7 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
                         {joinRequests.map(req => (
                             <li key={req.id} className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background hover:bg-muted/10 transition-colors">
                                 <div className="flex items-center gap-4">
-                                    {req.user.profileImage ? (
-                                        <img src={req.user.profileImage} alt={req.user.name} className="w-12 h-12 rounded-full object-cover border border-border" />
-                                    ) : (
-                                        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg border border-primary/20">
-                                            {req.user.name.charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
+                                    <img src={req.user.profileImage || getFallbackImage(req.user.id, 'avatar')} alt={req.user.name} className="w-12 h-12 rounded-full object-cover border border-border bg-background/50" />
                                     <div>
                                         <p className="font-bold text-lg">{req.user.name}</p>
                                         <p className="text-sm text-muted-foreground mt-0.5">Anmoder om at blive <strong className="text-foreground/80">Gast</strong> på dækket</p>

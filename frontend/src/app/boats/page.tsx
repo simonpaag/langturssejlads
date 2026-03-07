@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Ship } from 'lucide-react';
 import Image from 'next/image';
+import { getFallbackImage } from '@/utils/fallbackImage';
 
 interface Boat {
     id: number;
@@ -52,7 +53,7 @@ export default async function BoatsPage() {
                             <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
                                 {/* Visuel prioritet: Cover -> Profilbillede -> Placeholder */}
                                 <Image
-                                    src={boat.coverImage || boat.profileImage || `https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=800&auto=format&fit=crop&sig=${boat.id * 10}`}
+                                    src={boat.coverImage || boat.profileImage || getFallbackImage(boat.id, 'cover')}
                                     alt={`Sejlbåden ${boat.name} - Danske Sejlere`}
                                     fill
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
