@@ -175,7 +175,7 @@ export default function ProfilePage() {
                             <div className="bg-muted/10 p-5 rounded-2xl border border-border">
                                 <div className="mb-4">
                                     <p className="font-bold text-sm flex items-center gap-2"><Ship className="w-4 h-4 text-primary" /> Følg Specifikke Både</p>
-                                    <p className="text-xs text-muted-foreground mt-1">Vælg hvilke både du ønsker at få besked fra, når de udgiver nye logbøger eller billeder.</p>
+                                    <p className="text-xs text-muted-foreground mt-1">Vælg hvilke både du ønsker at få besked fra, når de udgiver nye logbøger eller billeder. Du får en notifikation på mail hver gang der er nyt fra det eller de skibe du vælger.</p>
                                 </div>
 
                                 <div className="max-h-60 overflow-y-auto space-y-1.5 pr-2 border border-border/50 bg-background rounded-xl p-3">
