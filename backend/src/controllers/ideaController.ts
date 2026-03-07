@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
+import { IdeaStatus } from '@prisma/client';
 
 export const getIdeas = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -30,6 +31,31 @@ export const getAllIdeasAdmin = async (req: Request, res: Response): Promise<voi
     } catch (error) {
         console.error('Error fetching admin ideas:', error);
         res.status(500).json({ error: 'Kunne ikke hente idéer' });
+    }
+};
+
+export const createIdeaAdmin = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { message } = req.body;
+
+        if (!message) {
+            res.status(400).json({ error: 'Beskeden må ikke være tom' });
+            return;
+        }
+
+        const newIdea = await prisma.idea.create({
+            data: {
+                name: 'System',
+                email: 'Intern Info',
+                message,
+                status: 'IDEA'
+            }
+        });
+
+        res.status(201).json(newIdea);
+    } catch (error) {
+        console.error('Error creating admin idea:', error);
+        res.status(500).json({ error: 'Kunne ikke oprette idé' });
     }
 };
 

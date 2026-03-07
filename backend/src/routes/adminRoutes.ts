@@ -9,7 +9,7 @@ import {
     getNativeAdsAdmin, createNativeAd, updateNativeAd, deleteNativeAd,
     getAdminFaqs
 } from '../controllers/adminController';
-import { getAllIdeasAdmin, updateIdeaStatus, deleteIdea } from '../controllers/ideaController';
+import { getAllIdeasAdmin, updateIdeaStatus, deleteIdea, createIdeaAdmin } from '../controllers/ideaController';
 
 const router = Router();
 
@@ -49,6 +49,7 @@ router.get('/faqs', getAdminFaqs);
 
 // Ideas
 router.get('/ideas', getAllIdeasAdmin);
+router.post('/ideas', createIdeaAdmin);
 router.put('/ideas/:id', updateIdeaStatus);
 router.delete('/ideas/:id', deleteIdea);
 
