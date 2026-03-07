@@ -14,7 +14,7 @@ export default function Navbar() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
-    const [user, setUser] = useState<{ id: number; name: string; profileImage?: string | null; isSystemAdmin?: boolean } | null>(null);
+    const [user, setUser] = useState<{ id: number; name: string; profileImage?: string | null; isSystemAdmin?: boolean; crewMemberships?: any[] } | null>(null);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -225,9 +225,9 @@ export default function Navbar() {
                         <Link href="/faq" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
                             Lær om Langturssejlads
                         </Link>
-                        {(isLoggedIn || isAdmin) && (
+                        {(isAdmin || (isLoggedIn && user && user.crewMemberships && user.crewMemberships.length > 0)) && (
                             <Link href="/dashboard" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                                &quot;Under dæk&quot;
+                                "Under dæk"
                             </Link>
                         )}
                     </div>
