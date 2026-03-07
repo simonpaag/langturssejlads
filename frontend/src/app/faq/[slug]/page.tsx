@@ -2,6 +2,8 @@ import { BookOpen, ArrowLeft, Anchor, Compass } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+export const revalidate = 60;
+
 async function getFaq(slug: string) {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
@@ -18,7 +20,12 @@ async function getFaq(slug: string) {
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const faq = await getFaq(params.slug);
+    let faq = null;
+    try {
+        faq = await getFaq(params.slug);
+    } catch (e) {
+        console.error('Metadata fetch fejet:', e);
+    }
 
     if (!faq) {
         return {
@@ -42,7 +49,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function FaqArticlePage({ params }: { params: { slug: string } }) {
-    const faq = await getFaq(params.slug);
+    let faq = null;
+    try {
+        faq = await getFaq(params.slug);
+    } catch (e) {
+        console.error('Page fetch fejlet:', e);
+    }
 
     if (!faq) {
         notFound();
