@@ -31,10 +31,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     const description = plainText.substring(0, 160) + '...';
 
     return {
-        title: `${faq.title} | Lær om Langturssejlads`,
+        title: `${faq.title} | Lær om langfart`,
         description: description,
         openGraph: {
-            title: `${faq.title} | Lær om Langturssejlads`,
+            title: `${faq.title} | Lær om langfart`,
             description: description,
             type: 'article',
         }

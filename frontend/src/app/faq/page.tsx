@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { BookOpen, AlertCircle, TrendingUp, Anchor, Compass, ChevronRight } from 'lucide-react';
 
 export const metadata = {
-    title: 'Lær om Langturssejlads | FAQ og Nyttig Viden',
+    title: 'Lær om langfart | FAQ og Nyttig Viden',
     description: 'Bliv klogere på langtursslivet. Læs om køjepenge, regler, og hvordan du forbereder dig på at stævne ud.'
 };
 
@@ -32,7 +32,7 @@ export default async function LearnAboutSailing() {
                         <div className="inline-flex justify-center items-center p-4 bg-background border border-border rounded-full shadow-sm mb-6 text-primary">
                             <BookOpen className="w-8 h-8" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-merriweather font-black text-foreground mb-6">Lær om Langturssejlads</h1>
+                        <h1 className="text-4xl md:text-5xl font-merriweather font-black text-foreground mb-6">Lær om langfart</h1>
                         <p className="text-xl text-muted-foreground leading-relaxed">
                             Din primære kilde til uskrevne regler, faste aftaler og livet ombord på sejlbådene. Udforsk viden før du står til søs eller inviterer ombord.
                         </p>

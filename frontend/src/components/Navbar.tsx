@@ -223,7 +223,7 @@ export default function Navbar() {
                             Togter
                         </Link>
                         <Link href="/faq" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Lær om Langturssejlads
+                            Lær om langfart
                         </Link>
                         {(isAdmin || (isLoggedIn && user && user.crewMemberships && user.crewMemberships.length > 0)) && (
                             <Link href="/dashboard" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">

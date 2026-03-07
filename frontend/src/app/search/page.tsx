@@ -152,7 +152,7 @@ function SearchResults() {
                         <section>
                             <div className="flex items-center gap-3 mb-6">
                                 <BookOpen className="text-emerald-600 w-6 h-6" />
-                                <h2 className="text-2xl font-black font-merriweather">Lær om Langturssejlads</h2>
+                                <h2 className="text-2xl font-black font-merriweather">Lær om langfart</h2>
                                 <span className="bg-muted px-2 py-0.5 rounded-full text-xs font-bold text-muted-foreground">{results.faqs.length}</span>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
