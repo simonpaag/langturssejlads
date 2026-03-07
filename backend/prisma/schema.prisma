@@ -27,6 +27,7 @@ model User {
   boardMessages   BoardMessage[]
   auditLogs       AuditLog[]
   subscriptions   NotificationSubscription[]
+  joinRequests    JoinRequest[]
 }
 
 model Boat {
@@ -54,6 +55,7 @@ model Boat {
   contactMessages ContactMessage[]
   subscribers     NotificationSubscription[]
   invitations     BoatInvitation[]
+  joinRequests    JoinRequest[]
 }
 
 model CrewMember {
@@ -89,6 +91,21 @@ model BoatInvitation {
   createdAt DateTime @default(now())
   
   @@unique([email, boatId])
+}
+
+model JoinRequest {
+  id        Int      @id @default(autoincrement())
+  status    String   @default("PENDING") // 'PENDING' | 'ACCEPTED' | 'REJECTED'
+  
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  boatId    Int
+  boat      Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, boatId]) // En bruger kan kun anmode én gang pr båd
 }
 
 enum PostType {

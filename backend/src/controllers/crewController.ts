@@ -1,7 +1,7 @@
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
-import { sendCrewInviteEmail } from '../utils/emailService';
+import { sendCrewInviteEmail, sendJoinRequestEmail } from '../utils/emailService';
 import crypto from 'crypto';
 
 // Helper for check
@@ -124,7 +124,13 @@ export const getBoatCrew = async (req: Request, res: Response): Promise<void> =>
             select: { id: true, email: true, role: true, createdAt: true }
         });
 
-        res.json({ crew, invites });
+        // Fetch join requests
+        const joinRequests = await prisma.joinRequest.findMany({
+            where: { boatId, status: 'PENDING' },
+            include: { user: { select: { id: true, name: true, profileImage: true } } }
+        });
+
+        res.json({ crew, invites, joinRequests });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -212,6 +218,106 @@ export const deleteInvitation = async (req: AuthRequest, res: Response): Promise
 
         await prisma.boatInvitation.delete({ where: { id: inviteId } });
         res.json({ message: 'Invitation slettet' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// 8. Create Join Request
+export const createJoinRequest = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const boatId = Number(req.body.boatId);
+        const userId = req.user?.userId;
+        if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+
+        // Check if user is already crew
+        const existingCrew = await prisma.crewMember.findFirst({ where: { userId, boatId } });
+        if (existingCrew) { res.status(400).json({ error: 'Du er allerede påmønstret' }); return; }
+
+        // Check if request already exists
+        const existingReq = await prisma.joinRequest.findFirst({ where: { userId, boatId, status: 'PENDING' } });
+        if (existingReq) { res.status(400).json({ error: 'Du har allerede ansøgt' }); return; }
+
+        await prisma.joinRequest.create({ data: { userId, boatId } });
+
+        // Notify admins
+        const admins = await prisma.crewMember.findMany({
+            where: { boatId, role: { in: ['OWNER', 'ADMIN'] } },
+            include: { user: true, boat: true }
+        });
+
+        const me = await prisma.user.findUnique({ where: { id: userId } });
+        const myName = me?.name || 'En bruger';
+
+        for (const admin of admins) {
+            await sendJoinRequestEmail(admin.user.email, myName, admin.boat.name);
+        }
+
+        res.json({ message: 'Join request created' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// 9. Get my join requests
+export const getMyJoinRequests = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+
+        const requests = await prisma.joinRequest.findMany({
+            where: { userId, status: 'PENDING' }
+        });
+
+        res.json(requests);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// 10. Accept join request
+export const acceptJoinRequest = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const reqId = Number(req.params.id);
+        const boatId = Number(req.params.boatId);
+        const myId = req.user?.userId;
+        if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+
+        const myRole = await checkRole(myId, boatId);
+        if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
+            res.status(403).json({ error: 'Forbidden' }); return;
+        }
+
+        const joinReq = await prisma.joinRequest.findUnique({ where: { id: reqId } });
+        if (!joinReq) { res.status(404).json({ error: 'Anmodning ikke fundet' }); return; }
+
+        // Create CrewMember safely
+        await prisma.$transaction([
+            prisma.crewMember.create({ data: { userId: joinReq.userId, boatId, role: 'CREW' } }),
+            prisma.joinRequest.update({ where: { id: reqId }, data: { status: 'ACCEPTED' } })
+        ]);
+
+        res.json({ message: 'Bruger tilføjet som GAST' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// 11. Reject join request
+export const rejectJoinRequest = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const reqId = Number(req.params.id);
+        const boatId = Number(req.params.boatId);
+        const myId = req.user?.userId;
+        if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+
+        const myRole = await checkRole(myId, boatId);
+        if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
+            res.status(403).json({ error: 'Forbidden' }); return;
+        }
+
+        await prisma.joinRequest.update({ where: { id: reqId }, data: { status: 'REJECTED' } });
+        res.json({ message: 'Anmodning afvist' });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }

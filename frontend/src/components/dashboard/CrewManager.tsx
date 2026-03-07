@@ -5,6 +5,7 @@ import AnimatedLoader from '@/components/AnimatedLoader';
 export default function CrewManager({ boatId, myRole }: { boatId: number, myRole: string }) {
     const [crew, setCrew] = useState<any[]>([]);
     const [invites, setInvites] = useState<any[]>([]);
+    const [joinRequests, setJoinRequests] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [inviteEmail, setInviteEmail] = useState('');
@@ -30,6 +31,7 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
                 const data = await res.json();
                 setCrew(data.crew);
                 setInvites(data.invites);
+                setJoinRequests(data.joinRequests || []);
             }
         } catch (e) {
             console.error(e);
@@ -76,6 +78,42 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
                 fetchCrewData();
             } else {
                 alert('Kunne ikke slette invitationen');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleAcceptRequest = async (reqId: number) => {
+        const token = localStorage.getItem('user_token');
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/crew/join-request/${reqId}/accept/boat/${boatId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                fetchCrewData();
+            } else {
+                const err = await res.json();
+                alert(err.error || 'Kunne ikke acceptere anmodning');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleRejectRequest = async (reqId: number) => {
+        const token = localStorage.getItem('user_token');
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/crew/join-request/${reqId}/reject/boat/${boatId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                fetchCrewData();
+            } else {
+                const err = await res.json();
+                alert(err.error || 'Kunne ikke afvise anmodning');
             }
         } catch (e) {
             console.error(e);
@@ -193,6 +231,55 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
                     </button>
                 </form>
             </div>
+
+            {/* Anmodninger om påmønstring */}
+            {joinRequests.length > 0 && (
+                <div className="bg-card border-2 border-primary/20 shadow-xl rounded-3xl overflow-hidden mt-8 animate-fade-in-up">
+                    <div className="p-6 border-b border-border bg-primary/5 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-primary/20 p-2 rounded-full relative">
+                                <UserPlus className="w-5 h-5 text-primary" />
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{joinRequests.length}</span>
+                            </div>
+                            <h3 className="font-bold text-lg font-merriweather text-primary">Nye ansøgninger</h3>
+                        </div>
+                        <span className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Venter på dig</span>
+                    </div>
+                    <ul className="divide-y divide-border/50">
+                        {joinRequests.map(req => (
+                            <li key={req.id} className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background hover:bg-muted/10 transition-colors">
+                                <div className="flex items-center gap-4">
+                                    {req.user.profileImage ? (
+                                        <img src={req.user.profileImage} alt={req.user.name} className="w-12 h-12 rounded-full object-cover border border-border" />
+                                    ) : (
+                                        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg border border-primary/20">
+                                            {req.user.name.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
+                                    <div>
+                                        <p className="font-bold text-lg">{req.user.name}</p>
+                                        <p className="text-sm text-muted-foreground mt-0.5">Anmoder om at blive <strong className="text-foreground/80">Gast</strong> på dækket</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                    <button
+                                        onClick={() => handleAcceptRequest(req.id)}
+                                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold transition-transform hover:scale-105 flex items-center justify-center gap-2 shadow-md"
+                                    >
+                                        <CheckCircle2 className="w-4 h-4" /> Accepter
+                                    </button>
+                                    <button
+                                        onClick={() => handleRejectRequest(req.id)}
+                                        className="text-red-500 hover:text-red-700 bg-red-500/10 hover:bg-red-500/20 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        <Trash2 className="w-4 h-4" /> Afvis
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {/* Oversigt over sendte invites der endnu mangler at blive reageret på */}
             {invites.length > 0 && (

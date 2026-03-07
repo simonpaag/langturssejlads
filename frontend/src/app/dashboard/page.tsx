@@ -9,6 +9,7 @@ import ImageUpload from '@/components/ImageUpload';
 import MultiImageUpload from '@/components/MultiImageUpload';
 import Inbox from '@/components/dashboard/Inbox';
 import CrewManager from '@/components/dashboard/CrewManager';
+import NoBoatDashboard from '@/components/dashboard/NoBoatDashboard';
 import RichTextEditor from '@/components/RichTextEditor';
 
 export default function Dashboard() {
@@ -351,6 +352,10 @@ export default function Dashboard() {
 
     if (isLoadingUser) {
         return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
+    }
+
+    if (!currentBoat) {
+        return <NoBoatDashboard user={user} />;
     }
 
     return (

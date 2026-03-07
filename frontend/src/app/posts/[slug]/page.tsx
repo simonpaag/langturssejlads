@@ -92,7 +92,21 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                         </h1>
 
                         <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider backdrop-blur-sm p-3 inline-flex rounded-2xl bg-muted/10">
-                            <span className="text-foreground">Af {post.author?.name || 'Slettet Bruger'}</span>
+                            {post.boat.profileImage && (
+                                <Link href={`/boats/${post.boat.slug}`} className="shrink-0 hover:scale-105 transition-transform">
+                                    <img
+                                        src={post.boat.profileImage}
+                                        alt={post.boat.name}
+                                        className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-primary/20"
+                                    />
+                                </Link>
+                            )}
+                            <div className="flex flex-col">
+                                <span className="text-[10px] tracking-widest uppercase opacity-70 mb-0.5 leading-none">Skrevet af</span>
+                                <span className="text-foreground -mt-0.5">
+                                    {post.author?.name || 'Slettet Bruger'}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

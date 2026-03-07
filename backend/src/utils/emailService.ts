@@ -118,7 +118,56 @@ export const sendCrewInviteEmail = async (toEmail: string, token: string, boatNa
 
         return { success: true, data };
     } catch (error) {
-        console.error('Email sending failed in try-catch:', error);
+        return { success: false, error };
+    }
+};
+
+export const sendJoinRequestEmail = async (toEmail: string, requesterName: string, boatName: string) => {
+    try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) return { success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK' };
+
+        const resend = new Resend(apiKey);
+        let subject = `Anmodning om påmønstring på ${boatName}`;
+        let bodyHtml = '';
+
+        try {
+            const template = await prisma.emailTemplate.findUnique({ where: { name: 'JOIN_REQUEST' } });
+            if (template) {
+                subject = template.subject.replace(/\{\{boatName\}\}/g, boatName).replace(/\{\{requesterName\}\}/g, requesterName);
+                bodyHtml = template.bodyHtml
+                    .replace(/\{\{boatName\}\}/g, boatName)
+                    .replace(/\{\{requesterName\}\}/g, requesterName)
+                    .replace(/\{\{dashboardLink\}\}/g, `https://langturssejlads.dk/dashboard`);
+            }
+        } catch (dbError) {
+            console.error('Kunne ikke hente JOIN_REQUEST fra DB:', dbError);
+        }
+
+        const { data, error } = await resend.emails.send({
+            from: 'Langturssejlads.dk <info@langturssejlads.dk>',
+            to: [toEmail],
+            subject: subject,
+            html: bodyHtml || `
+                <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #111;">
+                    <h2 style="color: #0f2c59; font-family: 'Merriweather', serif; font-size: 24px; margin-bottom: 24px;">Ny anmodning om påmønstring</h2>
+                    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 16px;">Hej Kaptajn,</p>
+                    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+                        Brugeren <strong>${requesterName}</strong> anmoder om at blive gast på din båd <strong>${boatName}</strong>. 
+                        Du kan godkende eller afvise vedkommende direkte i dit dashboard.
+                    </p>
+                    <div style="text-align: center; margin: 40px 0;">
+                        <a href="https://langturssejlads.dk/dashboard" style="background-color: #0f2c59; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+                            Gå til Kahytten
+                        </a>
+                    </div>
+                </div>
+            `,
+        });
+
+        if (error) return { success: false, error };
+        return { success: true, data };
+    } catch (error) {
         return { success: false, error };
     }
 };
