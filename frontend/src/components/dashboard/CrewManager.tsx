@@ -26,7 +26,8 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
         const token = localStorage.getItem('user_token');
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/crew/boat/${boatId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: { 'Authorization': `Bearer ${token}` },
+                cache: 'no-store'
             });
             if (res.ok) {
                 const data = await res.json();
