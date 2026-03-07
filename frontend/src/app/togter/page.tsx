@@ -154,6 +154,20 @@ export default function VoyagesOverviewPage() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
 
+                {/* Frivillige Info Boks */}
+                <div className="bg-primary/5 border border-primary/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-sm -mt-6">
+                    <div className="bg-primary/10 p-4 rounded-full text-primary shrink-0">
+                        <Ship className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Hjælp os med at bygge platformen! ⚓️</h3>
+                        <p className="text-muted-foreground leading-relaxed font-medium">
+                            Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
+                            Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-primary hover:underline font-bold">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen. Sammen skaber vi Danmarks fedeste mødested for langturssejlere!
+                        </p>
+                    </div>
+                </div>
+
                 {/* Åbne Togter */}
                 {openVoyages.length > 0 && (
                     <section>

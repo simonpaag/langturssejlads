@@ -46,6 +46,20 @@ export default async function BoatsPage() {
                 </div>
             </header>
 
+            {/* Frivillige Info Boks */}
+            <div className="mb-16 bg-primary/5 border border-primary/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-sm">
+                <div className="bg-primary/10 p-4 rounded-full text-primary shrink-0">
+                    <Ship className="w-6 h-6" />
+                </div>
+                <div>
+                    <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Hjælp os med at bygge platformen! ⚓️</h3>
+                    <p className="text-muted-foreground leading-relaxed font-medium">
+                        Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
+                        Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-primary hover:underline font-bold">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen. Sammen skaber vi Danmarks fedeste mødested for langturssejlere!
+                    </p>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                 {boats.map((boat) => (
                     <Link href={`/boats/${boat.slug}`} key={boat.id} className="block group">
