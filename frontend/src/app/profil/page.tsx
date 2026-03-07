@@ -167,7 +167,7 @@ export default function ProfilePage() {
                                 </div>
                                 <div>
                                     <p className="font-bold text-sm">Modtag Nyhedsbrev</p>
-                                    <p className="text-xs text-muted-foreground mt-1">Få en samlet opdatering med de vigtigste nyheder og spændende historier fra platformen direkte i din indbakke.</p>
+                                    <p className="text-xs text-muted-foreground mt-1">Få en samlet opdatering én gang om ugen med de vigtigste nyheder og spændende historier fra platformen direkte i din indbakke.</p>
                                 </div>
                             </div>
 
