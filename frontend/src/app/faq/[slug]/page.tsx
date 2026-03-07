@@ -19,10 +19,11 @@ async function getFaq(slug: string) {
     }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
     let faq = null;
     try {
-        faq = await getFaq(params.slug);
+        const resolvedParams = await Promise.resolve(params);
+        faq = await getFaq(resolvedParams.slug);
     } catch (e) {
         console.error('Metadata fetch fejet:', e);
     }
@@ -48,10 +49,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
 }
 
-export default async function FaqArticlePage({ params }: { params: { slug: string } }) {
+export default async function FaqArticlePage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
     let faq = null;
     try {
-        faq = await getFaq(params.slug);
+        const resolvedParams = await Promise.resolve(params);
+        faq = await getFaq(resolvedParams.slug);
     } catch (e) {
         console.error('Page fetch fejlet:', e);
     }
