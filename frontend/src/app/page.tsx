@@ -110,7 +110,7 @@ export default async function Home() {
 
             <Link href={`/posts/${featured.slug}`}>
               <h2 className="text-4xl md:text-5xl lg:text-5xl font-merriweather font-bold leading-tight mb-5 hover:text-primary transition-colors cursor-pointer">
-                {featured.title || 'Opdatering fra Havet'}
+                {featured.title || 'Seneste nyt'}
               </h2>
             </Link>
 
