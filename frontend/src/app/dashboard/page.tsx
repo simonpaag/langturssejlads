@@ -1,18 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool, Mail } from 'lucide-react';
+import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool, Mail, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import PostManager from '@/components/dashboard/PostManager';
 import ImageUpload from '@/components/ImageUpload';
 import MultiImageUpload from '@/components/MultiImageUpload';
 import Inbox from '@/components/dashboard/Inbox';
+import CrewManager from '@/components/dashboard/CrewManager';
 import RichTextEditor from '@/components/RichTextEditor';
 
 export default function Dashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox'>('write');
+    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox' | 'crew'>('write');
     const [user, setUser] = useState<any>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
 
@@ -108,6 +109,7 @@ export default function Dashboard() {
     }, [user]);
 
     const currentBoat = user?.crewMemberships[0]?.boat;
+    const myRole = user?.crewMemberships[0]?.role || 'CREW';
 
     // Load initial boat data into state when boat loads
     useEffect(() => {
@@ -403,6 +405,16 @@ export default function Dashboard() {
                         >
                             <Mail className="h-5 w-5" />
                             <span className="font-medium">Indbakke</span>
+                        </button>
+                    )}
+
+                    {currentBoat && (
+                        <button
+                            onClick={() => setActiveTab('crew')}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'crew' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
+                        >
+                            <Users className="h-5 w-5" />
+                            <span className="font-medium">Besætning</span>
                         </button>
                     )}
 
@@ -861,6 +873,8 @@ export default function Dashboard() {
                         />
                     ) : activeTab === 'inbox' && currentBoat ? (
                         <Inbox boatId={currentBoat.id} />
+                    ) : activeTab === 'crew' && currentBoat ? (
+                        <CrewManager boatId={currentBoat.id} myRole={myRole} />
                     ) : null}
                 </div>
             </main>

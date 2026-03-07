@@ -13,7 +13,7 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Create the boat and assign the creator as BOAT_ADMIN safely in a transaction
+        // Create the boat and assign the creator as OWNER safely in a transaction
         const newBoat = await prisma.$transaction(async (tx) => {
             const boat = await tx.boat.create({
                 data: {
@@ -34,7 +34,7 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
                 data: {
                     userId,
                     boatId: boat.id,
-                    role: 'BOAT_ADMIN',
+                    role: 'OWNER',
                 },
             });
 
@@ -118,7 +118,7 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
             where: {
                 boatId: boatId,
                 userId: userId,
-                role: 'BOAT_ADMIN'
+                role: 'OWNER'
             }
         });
 
@@ -176,7 +176,7 @@ export const updateBoardStatus = async (req: AuthRequest, res: Response): Promis
             where: {
                 userId,
                 boatId,
-                role: 'BOAT_ADMIN'
+                role: 'OWNER'
             }
         });
 

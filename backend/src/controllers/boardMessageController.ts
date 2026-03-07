@@ -105,7 +105,7 @@ export const deleteMessage = async (req: AuthRequest, res: Response): Promise<vo
                 boat: {
                     include: {
                         crewMemberships: {
-                            where: { userId: userId, role: 'BOAT_ADMIN' }
+                            where: { userId: userId, role: { in: ['OWNER', 'ADMIN'] } }
                         }
                     }
                 }
@@ -120,7 +120,7 @@ export const deleteMessage = async (req: AuthRequest, res: Response): Promise<vo
         const isAdmin = message.boat.crewMemberships.length > 0;
         const isAuthor = message.authorId === userId;
 
-        // Either the author themselves or the BOAT_ADMIN can delete it
+        // Either the author themselves or the OWNER/ADMIN can delete it
         if (!isAdmin && !isAuthor) {
             res.status(403).json({ error: 'Du har ikke rettigheder til at slette dette' });
             return;

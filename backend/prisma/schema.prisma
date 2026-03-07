@@ -53,6 +53,7 @@ model Boat {
   boardMessages   BoardMessage[]
   contactMessages ContactMessage[]
   subscribers     NotificationSubscription[]
+  invitations     BoatInvitation[]
 }
 
 model CrewMember {
@@ -60,7 +61,7 @@ model CrewMember {
   userId   Int
   boat     Boat     @relation(fields: [boatId], references: [id])
   boatId   Int
-  role     String   // 'BOAT_ADMIN' | 'BOAT_AUTHOR'
+  role     String   // 'OWNER' | 'ADMIN' | 'CONTENT_MANAGER' | 'CREW'
 
   @@id([userId, boatId])
 }
@@ -76,6 +77,18 @@ model NotificationSubscription {
   boatId    Int
 
   @@unique([userId, boatId]) // En bruger kan kun abonnere på samme båd én gang
+}
+
+model BoatInvitation {
+  id        Int      @id @default(autoincrement())
+  email     String
+  role      String   @default("CREW") // 'OWNER' | 'ADMIN' | 'CONTENT_MANAGER' | 'CREW'
+  boatId    Int
+  boat      Boat     @relation(fields: [boatId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  createdAt DateTime @default(now())
+  
+  @@unique([email, boatId])
 }
 
 enum PostType {
