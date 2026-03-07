@@ -57,7 +57,7 @@ export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise
         const rolesMap: any = { 'OWNER': 'Ejer', 'ADMIN': 'Admin', 'CONTENT_MANAGER': 'Content Manager', 'CREW': 'Gast' };
 
         try {
-            const emailResult = await sendCrewInviteEmail(email, boat.name, rolesMap[role || 'CREW'], token);
+            const emailResult = await sendCrewInviteEmail(email, token, boat.name, rolesMap[role || 'CREW']);
             // Log til SentEmail for debugging
             await prisma.sentEmail.create({
                 data: {
@@ -264,7 +264,7 @@ export const resendInvitation = async (req: AuthRequest, res: Response): Promise
         }
 
         // Send email
-        const emailResult = await sendCrewInviteEmail(invite.email, invite.boat.name, invite.role, invite.token);
+        const emailResult = await sendCrewInviteEmail(invite.email, invite.token, invite.boat.name, invite.role);
 
         // Log to SentEmail
         await prisma.sentEmail.create({
