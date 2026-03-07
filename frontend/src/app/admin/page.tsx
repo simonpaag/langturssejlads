@@ -1047,6 +1047,40 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
 
 // ----------------------------------------------------
 function IdeasTab({ ideas, setIdeas }: { ideas: any[], setIdeas: any }) {
+    const [newIdeaText, setNewIdeaText] = useState('');
+    const [isSubmittingIdea, setIsSubmittingIdea] = useState(false);
+
+    const handleCreateIdea = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newIdeaText.trim()) return;
+
+        setIsSubmittingIdea(true);
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/admin/ideas`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: newIdeaText })
+            });
+
+            if (res.ok) {
+                const newIdea = await res.json();
+                setIdeas([newIdea, ...ideas]);
+                setNewIdeaText('');
+            } else {
+                alert('Fejl ved oprettelse af idé');
+            }
+        } catch (error) {
+            console.error('Create idea error:', error);
+        } finally {
+            setIsSubmittingIdea(false);
+        }
+    };
 
     const handleDelete = async (id: number) => {
         if (!confirm('Er du sikker på du vil slette denne idé?')) return;
@@ -1116,6 +1150,25 @@ function IdeasTab({ ideas, setIdeas }: { ideas: any[], setIdeas: any }) {
                 </div>
                 <span className="text-sm text-muted-foreground font-bold">{ideas.length} indsendte idéer</span>
             </div>
+
+            {/* Opret intern idé */}
+            <form onSubmit={handleCreateIdea} className="bg-primary/5 border border-primary/20 rounded-2xl p-6 mb-8 flex flex-col sm:flex-row gap-4">
+                <input
+                    type="text"
+                    value={newIdeaText}
+                    onChange={(e) => setNewIdeaText(e.target.value)}
+                    placeholder="Indskriv en idé der mangler udvikling (intern)..."
+                    className="flex-1 bg-background border border-border/50 rounded-xl px-4 py-3 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground"
+                    disabled={isSubmittingIdea}
+                />
+                <button
+                    type="submit"
+                    disabled={isSubmittingIdea || !newIdeaText.trim()}
+                    className="bg-primary text-primary-foreground font-bold px-6 py-3 rounded-xl hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                >
+                    {isSubmittingIdea ? 'Opretter...' : 'Opret Idé'}
+                </button>
+            </form>
 
             <div className="space-y-4">
                 {ideas.map((idea) => (
