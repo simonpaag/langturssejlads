@@ -129,9 +129,9 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
                                         {voyage.posts.map((post: any) => (
                                             <Link key={post.id} href={`/posts/${post.slug || post.id}`} className="block group">
                                                 <div className="bg-white border flex items-center gap-6 rounded-2xl border-border shadow-sm p-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                                                    {post.imageUrl && (
+                                                    {(post.imageUrl || (post.imageUrls && post.imageUrls.length > 0)) && (
                                                         <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden shrink-0 relative">
-                                                            <img src={post.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                            <img src={post.imageUrl || (post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls[0] : undefined)} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                                         </div>
                                                     )}
                                                     <div>

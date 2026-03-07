@@ -27,6 +27,7 @@ export interface Post {
   postType: string;
   youtubeUrl: string | null;
   imageUrl: string | null;
+  imageUrls: string[] | null;
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -82,7 +83,7 @@ export default async function Home() {
           <Link href={`/posts/${featured.slug}`} className="relative h-64 md:h-full min-h-[400px] w-full lg:col-span-8 overflow-hidden rounded-3xl shadow-2xl group flex-shrink-0">
             <div className="absolute inset-0 relative w-full h-full">
               <ImageWithFallback
-                src={featured.imageUrl || featured.boat.coverImage || featured.boat.profileImage || getFallbackImage(featured.boat.id, 'cover')}
+                src={featured.imageUrl || (featured.imageUrls && featured.imageUrls.length > 0 ? featured.imageUrls[0] : null) || featured.boat.coverImage || featured.boat.profileImage || getFallbackImage(featured.boat.id, 'cover')}
                 fallbackSrc={getFallbackImage(featured.boat.id, 'cover')}
                 alt={`Opdatering fra ${featured.boat.name}: ${featured.title || 'Ingen titel'}`}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
@@ -189,7 +190,7 @@ export default async function Home() {
                     <article className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
                       <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
                         <ImageWithFallback
-                          src={post.imageUrl || post.boat.coverImage || post.boat.profileImage || getFallbackImage(post.id, 'cover')}
+                          src={post.imageUrl || (post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls[0] : null) || post.boat.coverImage || post.boat.profileImage || getFallbackImage(post.id, 'cover')}
                           fallbackSrc={getFallbackImage(post.id, 'cover')}
                           alt={`Glimt fra havet: ${post.title || post.boat.name}`}
                           className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"

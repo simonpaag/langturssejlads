@@ -11,6 +11,7 @@ export interface Post {
     postType: string;
     youtubeUrl: string | null;
     imageUrl: string | null;
+    imageUrls: string[] | null;
     status: string;
     createdAt: string;
     author: { name: string; profileImage: string | null; };
@@ -301,7 +302,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                         {post.postType === 'PHOTO' && (
                                             <div>
                                                 <div className="w-full aspect-[4/3] md:aspect-[16/9] bg-muted mb-6 border border-border/40 overflow-hidden rounded-2xl relative shadow-inner">
-                                                    <img src={post.imageUrl || 'https://via.placeholder.com/800'} alt="Bådbillede" className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out" />
+                                                    <img src={post.imageUrl || (post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls[0] : null) || 'https://via.placeholder.com/800'} alt="Bådbillede" className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out" />
                                                 </div>
                                                 <p className="text-lg text-foreground leading-relaxed px-2">
                                                     {post.content}
