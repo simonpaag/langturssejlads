@@ -9,7 +9,7 @@ export const metadata = {
 async function getFaqs() {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/faq`, { next: { revalidate: 60 } });
+        const res = await fetch(`${apiUrl}/api/faq`, { next: { revalidate: 5 } });
         if (!res.ok) {
             throw new Error(`API returned status: ${res.status}`);
         }
@@ -48,7 +48,7 @@ export default async function LearnAboutSailing() {
                                 const plainText = faq.content?.replace(/<[^>]+>/g, ' ') || '';
                                 return (
                                     <Link
-                                        href={`/laer-om-langturssejlads/${faq.slug}`}
+                                        href={`/faq/${faq.slug}`}
                                         key={faq.id}
                                         className="group bg-card border border-border shadow-sm rounded-3xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col justify-between"
                                     >

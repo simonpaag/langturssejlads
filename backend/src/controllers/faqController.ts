@@ -9,6 +9,7 @@ interface AuthRequest extends Request {
 export const getFaqs: RequestHandler = async (req, res) => {
     try {
         const faqs = await prisma.faqArticle.findMany({
+            where: { status: 'PUBLISHED' },
             orderBy: { order: 'asc' }
         });
         res.status(200).json(faqs);
@@ -26,7 +27,7 @@ export const getFaqBySlug: RequestHandler = async (req, res) => {
             where: { slug }
         });
 
-        if (!faq) {
+        if (!faq || faq.status === 'DRAFT') {
             res.status(404).json({ error: 'FAQ not found' });
             return;
         }
@@ -40,7 +41,7 @@ export const getFaqBySlug: RequestHandler = async (req, res) => {
 // Opret en ny FAQ (Kun Admin)
 export const createFaq: RequestHandler = async (req, res) => {
     try {
-        const { title, slug, content, imageUrl, order } = req.body;
+        const { title, slug, content, imageUrl, status, order } = req.body;
 
         const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
@@ -50,6 +51,7 @@ export const createFaq: RequestHandler = async (req, res) => {
                 slug: finalSlug,
                 content,
                 imageUrl,
+                status: status || 'PUBLISHED',
                 order: order || 0
             }
         });
@@ -64,11 +66,11 @@ export const createFaq: RequestHandler = async (req, res) => {
 export const updateFaq: RequestHandler = async (req, res) => {
     try {
         const id = req.params.id as string;
-        const { title, slug, content, imageUrl, order } = req.body;
+        const { title, slug, content, imageUrl, status, order } = req.body;
 
         const faq = await prisma.faqArticle.update({
             where: { id: parseInt(id) },
-            data: { title, slug, content, imageUrl, order }
+            data: { title, slug, content, imageUrl, status, order }
         });
         res.status(200).json(faq);
     } catch (error) {

@@ -44,7 +44,7 @@ export default function AdminDashboard() {
             fetch(`${apiUrl}/api/admin/ads`, { headers })
                 .then(r => r.json()).then(setAds).catch(() => { });
             // Faqs
-            fetch(`${apiUrl}/api/faq`, { headers })
+            fetch(`${apiUrl}/api/admin/faqs`, { headers })
                 .then(r => r.json()).then(setFaqs).catch(() => { });
         } catch (e) {
             console.error("Failed fetching admin data", e);
@@ -751,11 +751,11 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
 function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
     const [editingFaq, setEditingFaq] = useState<any | null>(null);
     const [isCreating, setIsCreating] = useState(false);
-    const [formData, setFormData] = useState({ title: '', slug: '', content: '', imageUrl: '', order: 0 });
+    const [formData, setFormData] = useState({ title: '', slug: '', content: '', imageUrl: '', order: 0, status: 'PUBLISHED' });
     const [isSaving, setIsSaving] = useState(false);
 
     const handleCreateNew = () => {
-        setFormData({ title: '', slug: '', content: '', imageUrl: '', order: faqs.length });
+        setFormData({ title: '', slug: '', content: '', imageUrl: '', order: faqs.length, status: 'PUBLISHED' });
         setEditingFaq(null);
         setIsCreating(true);
     };
@@ -766,7 +766,8 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
             slug: faq.slug || '',
             content: faq.content,
             imageUrl: faq.imageUrl || '',
-            order: faq.order || 0
+            order: faq.order || 0,
+            status: faq.status || 'PUBLISHED'
         });
         setEditingFaq(faq);
         setIsCreating(false);
@@ -871,6 +872,18 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
                                 onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Status</label>
+                            <select
+                                className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50"
+                                value={formData.status}
+                                onChange={e => setFormData({ ...formData, status: e.target.value })}
+                            >
+                                <option value="PUBLISHED">Udgivet (Offentlig)</option>
+                                <option value="DRAFT">Kladde (Skjult)</option>
+                                <option value="HIDDEN">Skjult (Kan kun læses via link)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div>
@@ -933,7 +946,11 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
                         {faqs.sort((a, b) => a.order - b.order).map(faq => (
                             <tr key={faq.id} className="hover:bg-muted/10 transition-colors">
                                 <td className="py-4 px-4 text-center font-mono text-xs font-bold text-muted-foreground">{faq.order}</td>
-                                <td className="py-4 pr-4 font-semibold text-foreground">{faq.title}</td>
+                                <td className="py-4 pr-4 font-semibold text-foreground">
+                                    {faq.title}
+                                    {faq.status === 'DRAFT' && <span className="ml-2 text-[10px] bg-amber-500/20 text-amber-600 px-2 py-1 rounded-full uppercase tracking-wider">Kladde</span>}
+                                    {faq.status === 'HIDDEN' && <span className="ml-2 text-[10px] bg-muted border border-border text-muted-foreground px-2 py-1 rounded-full uppercase tracking-wider">Skjult</span>}
+                                </td>
                                 <td className="py-4 px-4 text-muted-foreground">/{faq.slug}</td>
                                 <td className="py-4 px-4 text-muted-foreground">
                                     {faq.imageUrl ? <span className="text-green-600 font-bold">Ja</span> : <span className="opacity-50">Nej</span>}

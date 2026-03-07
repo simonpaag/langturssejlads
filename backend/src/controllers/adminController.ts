@@ -199,6 +199,18 @@ export const getSentEmails = async (req: Request, res: Response): Promise<void> 
 };
 
 // --- NATIVE ADS ---
+export const getAdminFaqs = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const faqs = await prisma.faqArticle.findMany({
+            orderBy: { order: 'asc' }
+        });
+        res.json(faqs);
+    } catch (error) {
+        console.error('Error fetching admin faqs:', error);
+        res.status(500).json({ error: 'Failed' });
+    }
+};
+
 export const getNativeAdsAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
         const ads = await prisma.nativeAd.findMany({

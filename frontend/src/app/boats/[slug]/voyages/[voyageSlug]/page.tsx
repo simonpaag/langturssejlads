@@ -92,7 +92,7 @@ export default async function VoyagePage({ params }: { params: Promise<{ slug: s
                                         {/* Hover Tooltip - Hidden by default, absolute positioned */}
                                         <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-72 p-4 bg-background text-foreground border border-border shadow-2xl rounded-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 z-50 transform scale-95 group-hover:scale-100 text-sm text-left font-normal leading-snug">
                                             Køjepenge er det solidariske bidrag til bådens drift og kan ikke betragtes som egentlig betaling for en rejse.
-                                            <Link href="/laer-om-langturssejlads" className="text-primary font-bold mt-2 block hover:underline">
+                                            <Link href="/faq" className="text-primary font-bold mt-2 block hover:underline">
                                                 Læs mere om reglerne &rarr;
                                             </Link>
                                         </div>

@@ -168,14 +168,21 @@ model Voyage {
 }
 
 model FaqArticle {
-  id        Int      @id @default(autoincrement())
-  slug      String   @unique
+  id        Int       @id @default(autoincrement())
+  slug      String    @unique
   title     String
   content   String
   imageUrl  String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status    FaqStatus @default(PUBLISHED)
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum FaqStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
 }
 
 model ContactMessage {

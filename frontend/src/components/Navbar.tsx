@@ -222,7 +222,7 @@ export default function Navbar() {
                         <Link href="/togter" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
                             Togter
                         </Link>
-                        <Link href="/laer-om-langturssejlads" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
+                        <Link href="/faq" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
                             Lær om Langturssejlads
                         </Link>
                         {(isLoggedIn || isAdmin) && (

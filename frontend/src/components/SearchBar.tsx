@@ -160,7 +160,7 @@ export default function SearchBar() {
                                     <div className="mb-2">
                                         <div className="px-3 py-1 text-xs font-bold uppercase tracking-wider text-muted-foreground bg-muted/30">Viden & FAQ</div>
                                         {results.faqs.map((faq: any) => (
-                                            <Link key={faq.id} href={`/laer-om-langturssejlads#${faq.slug}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors">
+                                            <Link key={faq.id} href={`/faq#${faq.slug}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors">
                                                 <div className="bg-emerald-500/10 p-2 rounded-lg text-emerald-600">
                                                     <BookOpen className="w-4 h-4" />
                                                 </div>

@@ -157,7 +157,7 @@ function SearchResults() {
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {results.faqs.map((faq: any) => (
-                                    <Link key={faq.id} href={`/laer-om-langturssejlads#${faq.slug}`} className="flex items-center gap-4 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 transition-colors group">
+                                    <Link key={faq.id} href={`/faq#${faq.slug}`} className="flex items-center gap-4 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 transition-colors group">
                                         <div className="bg-emerald-500/20 p-3 rounded-xl text-emerald-700">
                                             <BookOpen className="w-5 h-5" />
                                         </div>

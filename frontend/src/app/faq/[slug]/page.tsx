@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 async function getFaq(slug: string) {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/faq/${slug}`, { next: { revalidate: 60 } });
+        const res = await fetch(`${apiUrl}/api/faq/${slug}`, { next: { revalidate: 5 } });
         if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
             throw new Error(`API Offline eller Server Fejl: ${res.status}`);
         }
@@ -71,7 +71,7 @@ export default async function FaqArticlePage({ params }: { params: { slug: strin
 
                     <div className="max-w-4xl mx-auto px-4 relative z-10 w-full mt-10">
                         <Link
-                            href="/laer-om-langturssejlads"
+                            href="/faq"
                             className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary hover:text-primary/80 transition-colors mb-6 drop-shadow-sm bg-background/50 px-4 py-2 rounded-full backdrop-blur-md"
                         >
                             <ArrowLeft className="w-4 h-4" /> Tilbage til oversigten
@@ -127,7 +127,7 @@ export default async function FaqArticlePage({ params }: { params: { slug: strin
 
                     <div className="mt-12 text-center">
                         <Link
-                            href="/laer-om-langturssejlads"
+                            href="/faq"
                             className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 py-4 rounded-xl shadow-md transition-all uppercase tracking-wider text-sm"
                         >
                             Flere artikler fra vidensbasen

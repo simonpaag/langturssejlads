@@ -5,7 +5,8 @@ import {
     getLogs,
     getAdminPosts, updatePostModeration,
     getEmailTemplates, updateEmailTemplate, getSentEmails,
-    getNativeAdsAdmin, createNativeAd, updateNativeAd, deleteNativeAd
+    getNativeAdsAdmin, createNativeAd, updateNativeAd, deleteNativeAd,
+    getAdminFaqs
 } from '../controllers/adminController';
 
 const router = Router();
@@ -37,5 +38,8 @@ router.get('/ads', getNativeAdsAdmin);
 router.post('/ads', createNativeAd);
 router.put('/ads/:id', updateNativeAd);
 router.delete('/ads/:id', deleteNativeAd);
+
+// Faqs
+router.get('/faqs', getAdminFaqs);
 
 export default router;
