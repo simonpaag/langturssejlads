@@ -7,6 +7,7 @@ import { format, isFuture, isPast } from 'date-fns';
 import AnimatedLoader from '@/components/AnimatedLoader';
 import { da } from 'date-fns/locale';
 import { getFallbackImage } from '@/utils/fallbackImage';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 interface Boat {
     id: number;
@@ -61,10 +62,11 @@ export default function VoyagesOverviewPage() {
         <Link href={`/boats/${voyage.boat.slug}/voyages/${voyage.slug}`} className="group block h-full">
             <div className="bg-card border border-border rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
                 <div className="relative h-64 overflow-hidden">
-                    <img
+                    <ImageWithFallback
                         src={voyage.imageUrl || getFallbackImage(voyage.id, 'cover')}
+                        fallbackSrc={getFallbackImage(voyage.id, 'cover')}
                         alt={voyage.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                     <div className="absolute top-4 left-4 flex gap-2">
@@ -89,8 +91,9 @@ export default function VoyagesOverviewPage() {
 
                 <div className="p-6 flex flex-col flex-1">
                     <div className="flex items-center gap-3 mb-4">
-                        <img
+                        <ImageWithFallback
                             src={voyage.boat.profileImage || getFallbackImage(voyage.boat.id, 'avatar')}
+                            fallbackSrc={getFallbackImage(voyage.boat.id, 'avatar')}
                             alt={voyage.boat.name}
                             className="w-10 h-10 rounded-full object-cover border-2 border-primary shadow-sm bg-background/50"
                         />
