@@ -15,7 +15,8 @@ async function checkRole(userId: number, boatId: number) {
 // 1. Invite a crew member
 export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { boatId, email, role } = req.body;
+        const { boatId, email: rawEmail, role } = req.body;
+        const email = rawEmail?.toLowerCase().trim();
         const myId = req.user?.userId;
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
@@ -54,7 +55,21 @@ export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise
         });
 
         const rolesMap: any = { 'OWNER': 'Ejer', 'ADMIN': 'Admin', 'CONTENT_MANAGER': 'Content Manager', 'CREW': 'Gast' };
-        await sendCrewInviteEmail(email, token, boat.name, rolesMap[role || 'CREW']);
+
+        try {
+            const emailResult = await sendCrewInviteEmail(email, boat.name, rolesMap[role || 'CREW'], token);
+            // Log til SentEmail for debugging
+            await prisma.sentEmail.create({
+                data: {
+                    toEmail: email,
+                    subject: `Du er inviteret som ${rolesMap[role || 'CREW']} på ${boat.name} ⛵`,
+                    status: emailResult.success ? 'DELIVERED' : 'FAILED',
+                    errorMsg: emailResult.error ? JSON.stringify(emailResult.error) : null,
+                }
+            });
+        } catch (emailError) {
+            console.error('Kritisk fejl under udsendelse af email, men invitation er oprettet i databasen:', emailError);
+        }
 
         res.status(201).json({ message: 'Invitation sendt!' });
     } catch (error) {
