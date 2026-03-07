@@ -2,6 +2,8 @@ import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 import Image from 'next/image';
 import Link from 'next/link';
+import { getFallbackImage } from '@/utils/fallbackImage';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 interface Author {
   id: number;
@@ -79,12 +81,11 @@ export default async function Home() {
         <article className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-20 items-center">
           <Link href={`/posts/${featured.slug}`} className="relative h-64 md:h-full min-h-[400px] w-full lg:col-span-8 overflow-hidden rounded-3xl shadow-2xl group flex-shrink-0">
             <div className="absolute inset-0 relative w-full h-full">
-              <Image
-                src={featured.imageUrl || featured.boat.coverImage || featured.boat.profileImage || `https://images.unsplash.com/photo-1544331046-ad6498b846bf?q=80&w=1200&auto=format&fit=crop`}
+              <ImageWithFallback
+                src={featured.imageUrl || featured.boat.coverImage || featured.boat.profileImage || getFallbackImage(featured.boat.id, 'cover')}
+                fallbackSrc={getFallbackImage(featured.boat.id, 'cover')}
                 alt={`Opdatering fra ${featured.boat.name}: ${featured.title || 'Ingen titel'}`}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                priority
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
               />
             </div>
             {/* Subtle overlay gradient to frame the image and highlight UI elements inside */}
@@ -118,16 +119,12 @@ export default async function Home() {
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
               <span className="font-semibold text-sm flex items-center gap-2">
-                {featured.author?.profileImage ? (
-                  <Image
-                    src={featured.author.profileImage}
-                    alt={`Profilbillede af Kaptajn ${featured.author.name}`}
-                    width={24} height={24}
-                    className="rounded-full object-cover w-6 h-6"
-                  />
-                ) : (
-                  <User className="w-5 h-5 text-muted-foreground mr-1" />
-                )}
+                <ImageWithFallback
+                  src={featured.author?.profileImage || getFallbackImage(featured.author?.id, 'avatar')}
+                  fallbackSrc={getFallbackImage(featured.author?.id, 'avatar')}
+                  alt={`Profilbillede af Kaptajn ${featured.author?.name || 'Ukendt'}`}
+                  className="rounded-full object-cover w-6 h-6 bg-background/50 border border-primary/20"
+                />
                 Af {featured.author?.name || 'Slettet Bruger'}
               </span>
               <Link href={`/posts/${featured.slug}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
@@ -191,12 +188,11 @@ export default async function Home() {
                     )}
                     <article className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
                       <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
-                        <Image
-                          src={post.imageUrl || post.boat.coverImage || post.boat.profileImage || `https://images.unsplash.com/photo-1500455806655-2cde2ff969c3?q=80&w=800&auto=format&fit=crop&sig=${post.id}`}
+                        <ImageWithFallback
+                          src={post.imageUrl || post.boat.coverImage || post.boat.profileImage || getFallbackImage(post.id, 'cover')}
+                          fallbackSrc={getFallbackImage(post.id, 'cover')}
                           alt={`Glimt fra havet: ${post.title || post.boat.name}`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                         />
                         {post.youtubeUrl && (
                           <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase flex items-center gap-1.5 shadow-md">
@@ -208,16 +204,14 @@ export default async function Home() {
                       <div className="flex flex-col flex-grow p-6">
                         <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-primary">
                           <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-1.5 items-center">
-                            {post.boat.profileImage && (
-                              <div className="w-5 h-5 relative">
-                                <Image
-                                  src={post.boat.profileImage}
-                                  alt={`Logo for ${post.boat.name}`}
-                                  fill
-                                  className="rounded-full object-cover"
-                                />
-                              </div>
-                            )}
+                            <div className="w-5 h-5 relative shrink-0">
+                              <ImageWithFallback
+                                src={post.boat.profileImage || getFallbackImage(post.boat.id, 'avatar')}
+                                fallbackSrc={getFallbackImage(post.boat.id, 'avatar')}
+                                alt={`Logo for ${post.boat.name}`}
+                                className="absolute inset-0 w-full h-full rounded-full object-cover border border-primary/20 bg-background/50"
+                              />
+                            </div>
                             {post.boat.name}
                           </Link>
                           <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(post.createdAt), 'd. MMM yyyy', { locale: da })}</span>
@@ -235,16 +229,12 @@ export default async function Home() {
 
                         <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
                           <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
-                            {post.author?.profileImage ? (
-                              <Image
-                                src={post.author.profileImage}
-                                alt={`Profilbillede af forfatter ${post.author.name}`}
-                                width={24} height={24}
-                                className="rounded-full object-cover w-6 h-6"
-                              />
-                            ) : (
-                              <User className="w-4 h-4 text-muted-foreground mr-1" />
-                            )}
+                            <ImageWithFallback
+                              src={post.author?.profileImage || getFallbackImage(post.author?.id, 'avatar')}
+                              fallbackSrc={getFallbackImage(post.author?.id, 'avatar')}
+                              alt={`Profilbillede af forfatter ${post.author?.name || 'Slettet'}`}
+                              className="rounded-full object-cover w-6 h-6 bg-background/50 border border-primary/20"
+                            />
                             Af {post.author?.name || 'Slettet Bruger'}
                           </span>
                         </div>
