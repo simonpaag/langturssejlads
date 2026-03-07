@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import imageCompression from 'browser-image-compression';
 import { supabase } from '@/lib/supabaseClient';
-import { UploadCloud, CheckCircle2, AlertCircle, Loader2, X } from 'lucide-react';
+import { UploadCloud, CheckCircle2, AlertCircle, Loader2, X, Star } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface MultiImageUploadProps {
@@ -91,6 +91,16 @@ export default function MultiImageUpload({ onUploadSuccess, currentImages = [], 
         onUploadSuccess(updatedPreviews); // Fjern også fra hoved-statet
     };
 
+    const setAsCover = (indexToCover: number) => {
+        if (indexToCover === 0) return; // Allerede cover
+        const updatedPreviews = [...previews];
+        const [coverImage] = updatedPreviews.splice(indexToCover, 1);
+        updatedPreviews.unshift(coverImage);
+
+        setPreviews(updatedPreviews);
+        onUploadSuccess(updatedPreviews);
+    };
+
     const triggerFileSelect = () => {
         if (!isUploading && fileInputRef.current) {
             fileInputRef.current.click();
@@ -124,16 +134,35 @@ export default function MultiImageUpload({ onUploadSuccess, currentImages = [], 
                 {previews.length > 0 ? (
                     <div className="flex flex-wrap gap-4 items-center">
                         {previews.map((previewUrl, index) => (
-                            <div key={index} className="image-preview-item relative group w-24 h-24 rounded-xl overflow-hidden shadow-sm shrink-0 border border-border bg-white">
+                            <div key={index} className={`image-preview-item relative group w-24 h-24 rounded-xl overflow-hidden shadow-sm shrink-0 border-2 bg-white ${index === 0 ? 'border-amber-400' : 'border-border'}`}>
                                 <img src={previewUrl} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+
+                                {index === 0 && (
+                                    <div className="absolute bottom-0 left-0 right-0 bg-amber-400/90 text-amber-950 text-[9px] font-black uppercase text-center py-0.5 tracking-wider">
+                                        Cover
+                                    </div>
+                                )}
+
                                 {!isUploading && (
-                                    <button
-                                        type="button"
-                                        onClick={(e) => { e.stopPropagation(); removeImage(index); }}
-                                        className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                                    >
-                                        <X className="w-3 h-3" />
-                                    </button>
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                                        <button
+                                            type="button"
+                                            title="Brug som forsidebillede for dette opslag"
+                                            onClick={(e) => { e.stopPropagation(); setAsCover(index); }}
+                                            className={`p-1.5 rounded-full transition-colors ${index === 0 ? 'bg-amber-400 text-amber-950' : 'bg-white/20 text-white hover:bg-amber-400 hover:text-amber-950 hover:scale-110'}`}
+                                        >
+                                            <Star className={`w-4 h-4 ${index === 0 ? 'fill-current' : ''}`} />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            title="Slet billede"
+                                            onClick={(e) => { e.stopPropagation(); removeImage(index); }}
+                                            className="p-1 rounded-full bg-destructive/80 text-white hover:bg-destructive hover:scale-110 transition-all absolute top-1 right-1"
+                                        >
+                                            <X className="w-3 h-3" />
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         ))}
