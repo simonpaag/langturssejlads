@@ -54,7 +54,7 @@ export default function CreateBoatPage() {
 
             if (!res.ok) throw new Error(data.error || 'Kunne ikke oprette båden');
 
-            // Båden er nu oprettet, og Kaptajn-rollenn (`BOAT_ADMIN`) er blevet tildelt i backenden
+            // Båden er nu oprettet, og Ejer-rollen (`OWNER`) er blevet tildelt i backenden
             // Vi sender brugeren direkte i kahytten!
             router.push('/dashboard');
         } catch (err: any) {
