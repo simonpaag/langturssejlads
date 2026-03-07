@@ -7,7 +7,7 @@ export const revalidate = 60;
 async function getFaq(slug: string) {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/faq/${slug}`, { next: { revalidate: 5 } });
+        const res = await fetch(`${apiUrl}/api/faq/${encodeURIComponent(slug)}`, { next: { revalidate: 5 } });
         if (res.headers.get('x-render-routing') === 'no-server' || res.status >= 500) {
             throw new Error(`API Offline eller Server Fejl: ${res.status}`);
         }
