@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink } from 'lucide-react';
+import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
 import AnimatedLoader from '@/components/AnimatedLoader';
 
 export default function AdminDashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'logs' | 'posts' | 'emails' | 'ads' | 'users'>('logs');
+    const [activeTab, setActiveTab] = useState<'logs' | 'faqs' | 'posts' | 'emails' | 'ads' | 'users'>('logs');
     const [isLoading, setIsLoading] = useState(true);
 
     // Data States
@@ -19,6 +19,7 @@ export default function AdminDashboard() {
     const [sentEmails, setSentEmails] = useState<any[]>([]);
     const [ads, setAds] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]);
+    const [faqs, setFaqs] = useState<any[]>([]);
 
     async function fetchAllData(token: string) {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
@@ -42,6 +43,9 @@ export default function AdminDashboard() {
             // Ads
             fetch(`${apiUrl}/api/admin/ads`, { headers })
                 .then(r => r.json()).then(setAds).catch(() => { });
+            // Faqs
+            fetch(`${apiUrl}/api/faq`, { headers })
+                .then(r => r.json()).then(setFaqs).catch(() => { });
         } catch (e) {
             console.error("Failed fetching admin data", e);
         }
@@ -107,6 +111,7 @@ export default function AdminDashboard() {
                             <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity className="w-5 h-5" />} label="Aktivitetslog" />
                             <TabButton active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users className="w-5 h-5" />} label="Brugere" />
                             <TabButton active={activeTab === 'posts'} onClick={() => setActiveTab('posts')} icon={<FileText className="w-5 h-5" />} label="Moderation" />
+                            <TabButton active={activeTab === 'faqs'} onClick={() => setActiveTab('faqs')} icon={<BookOpen className="w-5 h-5" />} label="Artikler (FAQ)" />
                             <TabButton active={activeTab === 'emails'} onClick={() => setActiveTab('emails')} icon={<Mail className="w-5 h-5" />} label="Notification Center" />
                             <TabButton active={activeTab === 'ads'} onClick={() => setActiveTab('ads')} icon={<Megaphone className="w-5 h-5" />} label="Native Ads" />
                         </div>
@@ -117,6 +122,7 @@ export default function AdminDashboard() {
                         {activeTab === 'logs' && <LogsTab logs={logs} sentEmails={sentEmails} />}
                         {activeTab === 'users' && <UsersTab users={users} setUsers={setUsers} />}
                         {activeTab === 'posts' && <PostsTab posts={posts} setPosts={setPosts} />}
+                        {activeTab === 'faqs' && <FaqsTab faqs={faqs} setFaqs={setFaqs} />}
                         {activeTab === 'emails' && <EmailsTab templates={templates} />}
                         {activeTab === 'ads' && <AdsTab ads={ads} setAds={setAds} />}
                     </div>
@@ -737,6 +743,220 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
                     </tbody>
                 </table>
                 {users.length === 0 && <p className="text-muted-foreground mt-4 text-sm">Ingen brugere fundet.</p>}
+            </div>
+        </div>
+    );
+}
+
+function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
+    const [editingFaq, setEditingFaq] = useState<any | null>(null);
+    const [isCreating, setIsCreating] = useState(false);
+    const [formData, setFormData] = useState({ title: '', slug: '', content: '', imageUrl: '', order: 0 });
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleCreateNew = () => {
+        setFormData({ title: '', slug: '', content: '', imageUrl: '', order: faqs.length });
+        setEditingFaq(null);
+        setIsCreating(true);
+    };
+
+    const handleEdit = (faq: any) => {
+        setFormData({
+            title: faq.title,
+            slug: faq.slug || '',
+            content: faq.content,
+            imageUrl: faq.imageUrl || '',
+            order: faq.order || 0
+        });
+        setEditingFaq(faq);
+        setIsCreating(false);
+    };
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('Er du helt sikker på du vil slette denne artikel?')) return;
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        try {
+            const res = await fetch(`${apiUrl}/api/faq/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setFaqs(faqs.filter(f => f.id !== id));
+            } else {
+                alert('Kunne ikke slette artiklen.');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleSave = async () => {
+        if (!formData.title || !formData.content) {
+            alert('Titel og indhold er påkrævet.');
+            return;
+        }
+        setIsSaving(true);
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const url = editingFaq ? `${apiUrl}/api/faq/${editingFaq.id}` : `${apiUrl}/api/faq`;
+            const method = editingFaq ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(formData)
+            });
+
+            if (res.ok) {
+                const savedFaq = await res.json();
+                if (editingFaq) {
+                    setFaqs(faqs.map(f => f.id === savedFaq.id ? savedFaq : f));
+                } else {
+                    setFaqs([...faqs, savedFaq]);
+                }
+                setIsCreating(false);
+                setEditingFaq(null);
+            } else {
+                alert('Kunne ikke gemme artiklen.');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Der opstod en fejl under gemning.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    if (isCreating || editingFaq) {
+        return (
+            <div>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-merriweather font-bold">{editingFaq ? 'Rediger Artikel' : 'Ny Artikel'}</h2>
+                    <button onClick={() => { setIsCreating(false); setEditingFaq(null); }} className="text-sm font-bold text-muted-foreground hover:text-foreground">
+                        Annuller
+                    </button>
+                </div>
+
+                <div className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Titel</label>
+                        <input
+                            type="text"
+                            className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3"
+                            value={formData.title}
+                            onChange={e => setFormData({ ...formData, title: e.target.value })}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Slug (URL)</label>
+                            <input
+                                type="text"
+                                placeholder="Auto-genereres hvis tom"
+                                className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3"
+                                value={formData.slug}
+                                onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Rækkefølge (0 er først)</label>
+                            <input
+                                type="number"
+                                className="w-full bg-muted/30 border border-border rounded-xl px-4 py-3"
+                                value={formData.order}
+                                onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Cover Billede</label>
+                        <ImageUpload
+                            currentImage={formData.imageUrl}
+                            onUploadSuccess={(url) => setFormData({ ...formData, imageUrl: url })}
+                            label="Upload Hero Billede"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-bold uppercase tracking-widest text-muted-foreground mb-2">Indhold (Tekst)</label>
+                        <div className="prose-editor-wrapper bg-background rounded-xl border border-border overflow-hidden">
+                            <RichTextEditor
+                                content={formData.content}
+                                onChange={(c) => setFormData({ ...formData, content: c })}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="pt-4 flex justify-end gap-4 border-t border-border">
+                        <button
+                            disabled={isSaving}
+                            onClick={handleSave}
+                            className="bg-primary text-primary-foreground font-bold py-3 px-8 rounded-full hover:bg-primary/90 flex items-center gap-2"
+                        >
+                            {isSaving ? <AnimatedLoader className="scale-50 inline" /> : <Save className="w-5 h-5" />} Gem Artikel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-merriweather font-bold">Vidensbase & FAQ</h2>
+                <button
+                    onClick={handleCreateNew}
+                    className="bg-primary text-primary-foreground px-4 py-2 flex items-center gap-2 rounded-full font-bold text-sm hover:scale-105 transition-transform"
+                >
+                    <Plus className="w-4 h-4" /> Opret Ny Artikel
+                </button>
+            </div>
+
+            <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm whitespace-nowrap">
+                    <thead>
+                        <tr className="border-b border-border/50 text-muted-foreground uppercase tracking-widest text-[10px] font-bold">
+                            <th className="pb-3 px-4 w-12 text-center">Rækkefølge</th>
+                            <th className="pb-3 pr-4">Titel</th>
+                            <th className="pb-3 px-4">URL Slug</th>
+                            <th className="pb-3 px-4">Billede</th>
+                            <th className="pb-3 pl-4 text-right">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/50">
+                        {faqs.sort((a, b) => a.order - b.order).map(faq => (
+                            <tr key={faq.id} className="hover:bg-muted/10 transition-colors">
+                                <td className="py-4 px-4 text-center font-mono text-xs font-bold text-muted-foreground">{faq.order}</td>
+                                <td className="py-4 pr-4 font-semibold text-foreground">{faq.title}</td>
+                                <td className="py-4 px-4 text-muted-foreground">/{faq.slug}</td>
+                                <td className="py-4 px-4 text-muted-foreground">
+                                    {faq.imageUrl ? <span className="text-green-600 font-bold">Ja</span> : <span className="opacity-50">Nej</span>}
+                                </td>
+                                <td className="py-4 pl-4 text-right space-x-2">
+                                    <button
+                                        onClick={() => handleEdit(faq)}
+                                        className="text-primary hover:underline transition-colors text-xs font-semibold px-2"
+                                    >
+                                        Rediger
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(faq.id)}
+                                        className="text-red-500 hover:text-red-700 transition-colors text-xs font-semibold px-2"
+                                    >
+                                        Slet
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {faqs.length === 0 && <p className="text-muted-foreground mt-8 text-center text-sm">Der er ikke oprettet nogen artikler endnu.</p>}
             </div>
         </div>
     );

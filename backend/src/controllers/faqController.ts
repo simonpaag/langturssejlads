@@ -40,7 +40,7 @@ export const getFaqBySlug: RequestHandler = async (req, res) => {
 // Opret en ny FAQ (Kun Admin)
 export const createFaq: RequestHandler = async (req, res) => {
     try {
-        const { title, slug, content, order } = req.body;
+        const { title, slug, content, imageUrl, order } = req.body;
 
         const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
@@ -49,6 +49,7 @@ export const createFaq: RequestHandler = async (req, res) => {
                 title,
                 slug: finalSlug,
                 content,
+                imageUrl,
                 order: order || 0
             }
         });
@@ -63,11 +64,11 @@ export const createFaq: RequestHandler = async (req, res) => {
 export const updateFaq: RequestHandler = async (req, res) => {
     try {
         const id = req.params.id as string;
-        const { title, slug, content, order } = req.body;
+        const { title, slug, content, imageUrl, order } = req.body;
 
         const faq = await prisma.faqArticle.update({
             where: { id: parseInt(id) },
-            data: { title, slug, content, order }
+            data: { title, slug, content, imageUrl, order }
         });
         res.status(200).json(faq);
     } catch (error) {
