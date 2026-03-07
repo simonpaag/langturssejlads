@@ -1,13 +1,27 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
+import { AuthRequest } from '../middlewares/authMiddleware';
+import { checkBoatAccess } from '../utils/authHelpers';
 import slugify from 'slugify';
 
-export const createVoyage = async (req: Request, res: Response): Promise<void> => {
+export const createVoyage = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const { title, description, startDate, endDate, boatId, fromLocation, toLocation, imageUrl, availableSeats, bunkFee } = req.body;
+        const userId = req.user?.userId;
 
         if (!title || !startDate || !boatId) {
             res.status(400).json({ error: 'Titel, Startdato og Båd-ID er påkrævet.' });
+            return;
+        }
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const access = await checkBoatAccess(userId, Number(boatId), req.user?.isSystemAdmin || false);
+        if (!access.hasAccess || (access.role !== 'OWNER' && access.role !== 'ADMIN')) {
+            res.status(403).json({ error: 'Du har ikke rettigheder til at oprette togter for denne båd.' });
             return;
         }
 
@@ -101,11 +115,31 @@ export const getAllVoyages = async (req: Request, res: Response): Promise<void> 
     }
 };
 
-export const updateVoyage = async (req: Request, res: Response): Promise<void> => {
+export const updateVoyage = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
+        const voyageId = Number(req.params.id);
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const existingVoyage = await prisma.voyage.findUnique({ where: { id: voyageId } });
+        if (!existingVoyage) {
+            res.status(404).json({ error: 'Togt ikke fundet' });
+            return;
+        }
+
+        const access = await checkBoatAccess(userId, existingVoyage.boatId, req.user?.isSystemAdmin || false);
+        if (!access.hasAccess || (access.role !== 'OWNER' && access.role !== 'ADMIN')) {
+            res.status(403).json({ error: 'Du har ikke rettigheder til at redigere dette togt.' });
+            return;
+        }
+
         const { title, description, startDate, endDate, fromLocation, toLocation, imageUrl, availableSeats, bunkFee } = req.body;
         const updated = await prisma.voyage.update({
-            where: { id: Number(req.params.id) },
+            where: { id: voyageId },
             data: {
                 ...(title && { title }),
                 ...(description !== undefined && { description }),
@@ -124,9 +158,29 @@ export const updateVoyage = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-export const deleteVoyage = async (req: Request, res: Response): Promise<void> => {
+export const deleteVoyage = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        await prisma.voyage.delete({ where: { id: Number(req.params.id) } });
+        const voyageId = Number(req.params.id);
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const existingVoyage = await prisma.voyage.findUnique({ where: { id: voyageId } });
+        if (!existingVoyage) {
+            res.status(404).json({ error: 'Togt ikke fundet' });
+            return;
+        }
+
+        const access = await checkBoatAccess(userId, existingVoyage.boatId, req.user?.isSystemAdmin || false);
+        if (!access.hasAccess || (access.role !== 'OWNER' && access.role !== 'ADMIN')) {
+            res.status(403).json({ error: 'Du har ikke rettigheder til at slette dette togt.' });
+            return;
+        }
+
+        await prisma.voyage.delete({ where: { id: voyageId } });
         res.status(204).send();
     } catch (error) {
         res.status(500).json({ error: 'Kunne ikke slette togt' });

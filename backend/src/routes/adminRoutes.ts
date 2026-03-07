@@ -2,12 +2,14 @@ import { Router } from 'express';
 import { authenticateToken, authorizeSystemAdmin } from '../middlewares/authMiddleware';
 import {
     getUsers, promoteUser, blockUser, deleteUser,
+    getAdminBoats,
     getLogs,
     getAdminPosts, updatePostModeration,
     getEmailTemplates, updateEmailTemplate, getSentEmails,
     getNativeAdsAdmin, createNativeAd, updateNativeAd, deleteNativeAd,
     getAdminFaqs
 } from '../controllers/adminController';
+import { getAllIdeasAdmin, updateIdeaStatus, deleteIdea } from '../controllers/ideaController';
 
 const router = Router();
 
@@ -20,6 +22,9 @@ router.get('/users', getUsers);
 router.put('/users/:id/promote', promoteUser);
 router.put('/users/:id/block', blockUser);
 router.delete('/users/:id', deleteUser);
+
+// Boats
+router.get('/boats', getAdminBoats);
 
 // Logs
 router.get('/logs', getLogs);
@@ -41,5 +46,10 @@ router.delete('/ads/:id', deleteNativeAd);
 
 // Faqs
 router.get('/faqs', getAdminFaqs);
+
+// Ideas
+router.get('/ideas', getAllIdeasAdmin);
+router.put('/ideas/:id', updateIdeaStatus);
+router.delete('/ideas/:id', deleteIdea);
 
 export default router;

@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { checkBoatAccess } from '../utils/authHelpers';
 import slugify from 'slugify';
 
 export const createBoat = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -113,16 +114,10 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Verify that the user is an admin for this boat
-        const crewMembership = await prisma.crewMember.findFirst({
-            where: {
-                boatId: boatId,
-                userId: userId,
-                role: 'OWNER'
-            }
-        });
+        // Verify that the user is an admin for this boat (eller SuperAdmin)
+        const access = await checkBoatAccess(userId, boatId, req.user?.isSystemAdmin || false);
 
-        if (!crewMembership) {
+        if (!access.hasAccess || (access.role !== 'OWNER' && access.role !== 'ADMIN')) {
             res.status(403).json({ error: 'Forbidden: You are not an admin of this boat' });
             return;
         }
@@ -172,15 +167,9 @@ export const updateBoardStatus = async (req: AuthRequest, res: Response): Promis
             return;
         }
 
-        const crewMember = await prisma.crewMember.findFirst({
-            where: {
-                userId,
-                boatId,
-                role: 'OWNER'
-            }
-        });
+        const access = await checkBoatAccess(userId, boatId, req.user?.isSystemAdmin || false);
 
-        if (!crewMember && !req.user?.isSystemAdmin) {
+        if (!access.hasAccess || access.role !== 'OWNER') {
             res.status(403).json({ error: 'Du har ikke rettigheder til at ændre opslagstavlens synlighed' });
             return;
         }

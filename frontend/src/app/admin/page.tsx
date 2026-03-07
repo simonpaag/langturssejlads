@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus } from 'lucide-react';
+import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus, Lightbulb } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import ImageUpload from '@/components/ImageUpload';
 import AnimatedLoader from '@/components/AnimatedLoader';
 
 export default function AdminDashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'logs' | 'faqs' | 'posts' | 'emails' | 'ads' | 'users'>('logs');
+    const [activeTab, setActiveTab] = useState<'logs' | 'faqs' | 'posts' | 'emails' | 'ads' | 'users' | 'boats' | 'ideas'>('logs');
     const [isLoading, setIsLoading] = useState(true);
 
     // Data States
@@ -19,37 +19,38 @@ export default function AdminDashboard() {
     const [sentEmails, setSentEmails] = useState<any[]>([]);
     const [ads, setAds] = useState<any[]>([]);
     const [users, setUsers] = useState<any[]>([]);
+    const [boats, setBoats] = useState<any[]>([]);
     const [faqs, setFaqs] = useState<any[]>([]);
+    const [ideas, setIdeas] = useState<any[]>([]);
 
-    async function fetchAllData(token: string) {
+    useEffect(() => {
+        if (isLoading) return; // Vent på auth
+
+        const token = localStorage.getItem('user_token');
+        if (!token) return;
+
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const headers = { 'Authorization': `Bearer ${token}` };
 
-        try {
-            // Logs
-            fetch(`${apiUrl}/api/admin/logs`, { headers })
-                .then(r => r.json()).then(setLogs).catch(() => { });
-            // Users
-            fetch(`${apiUrl}/api/admin/users`, { headers })
-                .then(r => r.json()).then(setUsers).catch(() => { });
-            // Posts
-            fetch(`${apiUrl}/api/admin/posts`, { headers })
-                .then(r => r.json()).then(setPosts).catch(() => { });
-            // Emails
-            fetch(`${apiUrl}/api/admin/emails/templates`, { headers })
-                .then(r => r.json()).then(setTemplates).catch(() => { });
-            fetch(`${apiUrl}/api/admin/emails/sent`, { headers })
-                .then(r => r.json()).then(setSentEmails).catch(() => { });
-            // Ads
-            fetch(`${apiUrl}/api/admin/ads`, { headers })
-                .then(r => r.json()).then(setAds).catch(() => { });
-            // Faqs
-            fetch(`${apiUrl}/api/admin/faqs`, { headers })
-                .then(r => r.json()).then(setFaqs).catch(() => { });
-        } catch (e) {
-            console.error("Failed fetching admin data", e);
+        if (activeTab === 'logs' && logs.length === 0) {
+            fetch(`${apiUrl}/api/admin/logs`, { headers }).then(r => r.json()).then(setLogs).catch(() => { });
+            fetch(`${apiUrl}/api/admin/emails/sent`, { headers }).then(r => r.json()).then(setSentEmails).catch(() => { });
+        } else if (activeTab === 'users' && users.length === 0) {
+            fetch(`${apiUrl}/api/admin/users`, { headers }).then(r => r.json()).then(setUsers).catch(() => { });
+        } else if (activeTab === 'boats' && boats.length === 0) {
+            fetch(`${apiUrl}/api/admin/boats`, { headers }).then(r => r.json()).then(setBoats).catch(() => { });
+        } else if (activeTab === 'posts' && posts.length === 0) {
+            fetch(`${apiUrl}/api/admin/posts`, { headers }).then(r => r.json()).then(setPosts).catch(() => { });
+        } else if (activeTab === 'faqs' && faqs.length === 0) {
+            fetch(`${apiUrl}/api/admin/faqs`, { headers }).then(r => r.json()).then(setFaqs).catch(() => { });
+        } else if (activeTab === 'emails' && templates.length === 0) {
+            fetch(`${apiUrl}/api/admin/emails/templates`, { headers }).then(r => r.json()).then(setTemplates).catch(() => { });
+        } else if (activeTab === 'ads' && ads.length === 0) {
+            fetch(`${apiUrl}/api/admin/ads`, { headers }).then(r => r.json()).then(setAds).catch(() => { });
+        } else if (activeTab === 'ideas' && ideas.length === 0) {
+            fetch(`${apiUrl}/api/admin/ideas`, { headers }).then(r => r.json()).then(setIdeas).catch(() => { });
         }
-    };
+    }, [activeTab, isLoading]);
 
     useEffect(() => {
         const verifyAdmin = async () => {
@@ -71,7 +72,6 @@ export default function AdminDashboard() {
                         router.push('/');
                     } else {
                         setIsLoading(false);
-                        fetchAllData(token);
                     }
                 } else {
                     router.push('/');
@@ -110,10 +110,12 @@ export default function AdminDashboard() {
                         <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 hide-scrollbar sticky top-24">
                             <TabButton active={activeTab === 'logs'} onClick={() => setActiveTab('logs')} icon={<Activity className="w-5 h-5" />} label="Aktivitetslog" />
                             <TabButton active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users className="w-5 h-5" />} label="Brugere" />
+                            <TabButton active={activeTab === 'boats'} onClick={() => setActiveTab('boats')} icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17c0-2-1.5-2-1.5-2S19 14 16 14s-3.5 1-3.5 1S11 14 8 14 4.5 15 4.5 15 3 15 3 17" /><path d="M12 14v4" /><path d="M12 2v10" /><path d="M18 10L12 2l-6 8h12z" /></svg>} label="Både" />
                             <TabButton active={activeTab === 'posts'} onClick={() => setActiveTab('posts')} icon={<FileText className="w-5 h-5" />} label="Moderation" />
                             <TabButton active={activeTab === 'faqs'} onClick={() => setActiveTab('faqs')} icon={<BookOpen className="w-5 h-5" />} label="Artikler (FAQ)" />
                             <TabButton active={activeTab === 'emails'} onClick={() => setActiveTab('emails')} icon={<Mail className="w-5 h-5" />} label="Notification Center" />
                             <TabButton active={activeTab === 'ads'} onClick={() => setActiveTab('ads')} icon={<Megaphone className="w-5 h-5" />} label="Native Ads" />
+                            <TabButton active={activeTab === 'ideas'} onClick={() => setActiveTab('ideas')} icon={<Lightbulb className="w-5 h-5" />} label="Brugeridéer" />
                         </div>
                     </div>
 
@@ -121,10 +123,12 @@ export default function AdminDashboard() {
                     <div className="flex-1 min-w-0 bg-background rounded-3xl p-6 lg:p-10 shadow-xl border border-border/50">
                         {activeTab === 'logs' && <LogsTab logs={logs} sentEmails={sentEmails} />}
                         {activeTab === 'users' && <UsersTab users={users} setUsers={setUsers} />}
+                        {activeTab === 'boats' && <BoatsTab boats={boats} setBoats={setBoats} />}
                         {activeTab === 'posts' && <PostsTab posts={posts} setPosts={setPosts} />}
                         {activeTab === 'faqs' && <FaqsTab faqs={faqs} setFaqs={setFaqs} />}
                         {activeTab === 'emails' && <EmailsTab templates={templates} />}
                         {activeTab === 'ads' && <AdsTab ads={ads} setAds={setAds} />}
+                        {activeTab === 'ideas' && <IdeasTab ideas={ideas} setIdeas={setIdeas} />}
                     </div>
                 </div>
             </div>
@@ -148,6 +152,64 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
 
 // ----------------------------------------------------
 // TABS COMPONENTS
+
+function BoatsTab({ boats, setBoats }: { boats: any[], setBoats: any }) {
+    return (
+        <div>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-merriweather font-bold">Bådkatalog</h2>
+                <span className="text-sm text-muted-foreground font-bold">{boats.length} registrerede både</span>
+            </div>
+
+            <div className="overflow-x-auto rounded-xl border border-border/50 shadow-sm">
+                <table className="w-full text-sm text-left">
+                    <thead className="bg-muted uppercase text-[10px] font-black tracking-widest text-muted-foreground">
+                        <tr>
+                            <th className="px-6 py-4">Bådnavn</th>
+                            <th className="px-6 py-4">Medlemmer</th>
+                            <th className="px-6 py-4">Senest Opdateret</th>
+                            <th className="px-6 py-4 text-right">Handlinger</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border bg-background">
+                        {boats.map((b) => (
+                            <tr key={b.id} className="hover:bg-muted/30 transition-colors">
+                                <td className="px-6 py-4 font-bold text-foreground flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-muted overflow-hidden shrink-0">
+                                        {b.profileImage ? <img src={b.profileImage} className="w-full h-full object-cover" /> : null}
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span>{b.name}</span>
+                                        <span className="text-[10px] text-muted-foreground font-mono">{b.slug}</span>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-bold">
+                                        {b.crewMemberships?.length || 0} besætning
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 text-muted-foreground">
+                                    {new Date(b.updatedAt).toLocaleDateString('da-DK')}
+                                </td>
+                                <td className="px-6 py-4 text-right">
+                                    <a
+                                        href={`/dashboard?boatId=${b.id}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 text-xs font-bold uppercase tracking-wider rounded-md transition-colors"
+                                        title="Låner adgang til båden midlertidigt som SystemAdmin"
+                                    >
+                                        <ExternalLink className="w-3.5 h-3.5" /> Rediger Skib
+                                    </a>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
 // ----------------------------------------------------
 
 function LogsTab({ logs, sentEmails }: { logs: any[], sentEmails: any[] }) {
@@ -251,9 +313,13 @@ function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
                 <tbody className="text-sm">
                     {posts.map(post => {
                         let contentLink = '#';
-                        const baseUrl = 'https://langturssejlads.dk';
-                        if (post.postType === 'ARTICLE') contentLink = `${baseUrl}/post/${post.slug}`;
-                        if (post.postType === 'VOYAGE') contentLink = `${baseUrl}/boats/unknown/voyages/${post.slug}`; // Note: Ideal URL would have boat slug, but we don't fetch related boat slug here currently
+                        if (post.slug) {
+                            if (post.postType === 'VOYAGE') {
+                                contentLink = `/boats/${post.boat?.slug || 'unknown'}/voyages/${post.slug}`;
+                            } else {
+                                contentLink = `/posts/${post.slug}`;
+                            }
+                        }
 
                         return (
                             <tr key={post.id} className="border-b border-border/30 hover:bg-muted/30 transition-colors">
@@ -974,6 +1040,126 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
                     </tbody>
                 </table>
                 {faqs.length === 0 && <p className="text-muted-foreground mt-8 text-center text-sm">Der er ikke oprettet nogen artikler endnu.</p>}
+            </div>
+        </div>
+    );
+}
+
+// ----------------------------------------------------
+function IdeasTab({ ideas, setIdeas }: { ideas: any[], setIdeas: any }) {
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('Er du sikker på du vil slette denne idé?')) return;
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/admin/ideas/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                setIdeas(ideas.filter(idea => idea.id !== id));
+            } else {
+                alert('Fejl ved sletning af idé');
+            }
+        } catch (e) {
+            console.error('Delete idea error', e);
+        }
+    };
+
+    const handleStatusChange = async (id: number, newStatus: string) => {
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/admin/ideas/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (res.ok) {
+                const updatedIdea = await res.json();
+                setIdeas(ideas.map(idea => idea.id === id ? updatedIdea : idea));
+            } else {
+                alert('Fejl ved opdatering af status');
+            }
+        } catch (e) {
+            console.error('Update idea error', e);
+        }
+    };
+
+    const statusColors: any = {
+        'IDEA': 'bg-blue-100 text-blue-800',
+        'IN_PROCESS': 'bg-amber-100 text-amber-800',
+        'IN_TEST': 'bg-purple-100 text-purple-800',
+        'LIVE': 'bg-green-100 text-green-800'
+    };
+
+    const statusLabels: any = {
+        'IDEA': 'Ny Idé',
+        'IN_PROCESS': 'I Process',
+        'IN_TEST': 'I Test',
+        'LIVE': 'Live'
+    };
+
+    return (
+        <div>
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h2 className="text-2xl font-merriweather font-bold">Brugeridéer</h2>
+                    <p className="text-sm text-muted-foreground mt-1">Styr det offentlige Trello-board på Om-siden</p>
+                </div>
+                <span className="text-sm text-muted-foreground font-bold">{ideas.length} indsendte idéer</span>
+            </div>
+
+            <div className="space-y-4">
+                {ideas.map((idea) => (
+                    <div key={idea.id} className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row gap-6 items-start md:items-center justify-between relative overflow-hidden group">
+                        {/* Decorative side bar matching status */}
+                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${statusColors[idea.status].split(' ')[0]}`}></div>
+
+                        <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-3">
+                                <h3 className="font-bold text-foreground capitalize">{idea.name}</h3>
+                                <span className="text-xs text-muted-foreground">&lt;{idea.email}&gt;</span>
+                                <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest bg-muted px-2 py-0.5 rounded-full">
+                                    {new Date(idea.createdAt).toLocaleDateString('da-DK')}
+                                </span>
+                            </div>
+                            <p className="text-sm text-foreground/80 leading-relaxed font-serif bg-muted/20 p-4 rounded-xl border border-border/30">"{idea.message}"</p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full md:w-auto">
+                            <select
+                                value={idea.status}
+                                onChange={(e) => handleStatusChange(idea.id, e.target.value)}
+                                className={`text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-xl outline-none cursor-pointer appearance-none ${statusColors[idea.status]}`}
+                                style={{ WebkitAppearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23111%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right .7em top 50%', backgroundSize: '.65em auto', paddingRight: '2em' }}
+                            >
+                                <option value="IDEA">{statusLabels['IDEA']}</option>
+                                <option value="IN_PROCESS">{statusLabels['IN_PROCESS']}</option>
+                                <option value="IN_TEST">{statusLabels['IN_TEST']}</option>
+                                <option value="LIVE">{statusLabels['LIVE']}</option>
+                            </select>
+
+                            <button
+                                onClick={() => handleDelete(idea.id)}
+                                className="w-full sm:w-auto text-destructive hover:bg-destructive/10 p-2 rounded-lg transition-colors flex items-center justify-center"
+                                title="Slet Idé"
+                            >
+                                <Trash2 className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                {ideas.length === 0 && (
+                    <p className="text-muted-foreground text-center py-10 bg-muted/10 rounded-xl border border-dashed border-border">Der indkommet nogen idéer til logbogen endnu.</p>
+                )}
             </div>
         </div>
     );

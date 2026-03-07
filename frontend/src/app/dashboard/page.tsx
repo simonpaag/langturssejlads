@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool, Mail, Users } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import PostManager from '@/components/dashboard/PostManager';
 import ImageUpload from '@/components/ImageUpload';
@@ -14,8 +14,11 @@ import RichTextEditor from '@/components/RichTextEditor';
 
 export default function Dashboard() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const queryBoatId = searchParams.get('boatId');
     const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox' | 'crew'>('write');
     const [user, setUser] = useState<any>(null);
+    const [adminBoat, setAdminBoat] = useState<any>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
 
     // Form states
@@ -77,23 +80,37 @@ export default function Dashboard() {
 
                 const data = await res.json();
                 setUser(data.user);
+
+                if (data.user?.isSystemAdmin && queryBoatId) {
+                    try {
+                        const boatRes = await fetch(`${apiUrl}/api/boats/${queryBoatId}`);
+                        if (boatRes.ok) {
+                            const bData = await boatRes.json();
+                            setAdminBoat(bData);
+                        }
+                    } catch (e) {
+                        console.error("Kunne ikke hente admin-båd", e);
+                    }
+                }
             } catch (err) {
                 console.error(err);
-                localStorage.removeItem('user_token');
-                router.push('/login');
+                if (!queryBoatId) {
+                    localStorage.removeItem('user_token');
+                    router.push('/login');
+                }
             } finally {
                 setIsLoadingUser(false);
             }
         };
 
         fetchUser();
-    }, [router]);
+    }, [router, queryBoatId]);
 
     // Fetch Voyages when user/boat is loaded
     useEffect(() => {
         const fetchVoyages = async () => {
-            if (user && user.crewMemberships.length > 0) {
-                const boatId = user.crewMemberships[0].boat.id;
+            if (activeBoatId) {
+                const boatId = activeBoatId;
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
                 try {
                     const res = await fetch(`${apiUrl}/api/voyages/boat/${boatId}`);
@@ -107,10 +124,11 @@ export default function Dashboard() {
             }
         };
         fetchVoyages();
-    }, [user]);
+    }, [user, adminBoat]);
 
-    const currentBoat = user?.crewMemberships[0]?.boat;
-    const myRole = user?.crewMemberships[0]?.role || 'CREW';
+    const currentBoat = adminBoat || user?.crewMemberships?.[0]?.boat;
+    const myRole = adminBoat ? 'OWNER' : (user?.crewMemberships?.[0]?.role || 'CREW');
+    const activeBoatId = currentBoat?.id;
 
     // Load initial boat data into state when boat loads
     useEffect(() => {
@@ -156,14 +174,14 @@ export default function Dashboard() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!user || user.crewMemberships.length === 0) {
+        if (!activeBoatId) {
             alert("Du er ikke tilknyttet nogen båd!");
             return;
         }
 
         setIsSubmitting(true);
         const token = localStorage.getItem('user_token');
-        const boatId = user.crewMemberships[0].boat.id; // Taking the first boat
+        const boatId = activeBoatId; // Taking the active boat
 
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
@@ -221,11 +239,11 @@ export default function Dashboard() {
 
     const handleVoyageSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || user.crewMemberships.length === 0) return;
+        if (!activeBoatId) return;
 
         setIsSubmittingVoyage(true);
         const token = localStorage.getItem('user_token');
-        const boatId = user.crewMemberships[0].boat.id;
+        const boatId = activeBoatId;
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
         try {
@@ -332,14 +350,18 @@ export default function Dashboard() {
 
             if (res.ok) {
                 setIsBoardPublic(!isBoardPublic);
-                // Also update the local user object so it persists across tab switches
-                setUser((prev: any) => {
-                    const newUser = { ...prev };
-                    if (newUser.crewMemberships && newUser.crewMemberships[0]) {
-                        newUser.crewMemberships[0].boat.isBoardPublic = !isBoardPublic;
-                    }
-                    return newUser;
-                });
+                // Also update the local state so it persists across tab switches
+                if (adminBoat) {
+                    setAdminBoat({ ...adminBoat, isBoardPublic: !isBoardPublic });
+                } else {
+                    setUser((prev: any) => {
+                        const newUser = { ...prev };
+                        if (newUser.crewMemberships && newUser.crewMemberships[0]) {
+                            newUser.crewMemberships[0].boat.isBoardPublic = !isBoardPublic;
+                        }
+                        return newUser;
+                    });
+                }
             } else {
                 alert('Kunne ikke ændre indstillingen');
             }

@@ -14,6 +14,25 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const getAdminBoats = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const boats = await prisma.boat.findMany({
+            orderBy: { id: 'desc' },
+            include: {
+                crewMemberships: {
+                    include: {
+                        user: { select: { id: true, name: true, email: true } }
+                    }
+                }
+            }
+        });
+        res.json(boats);
+    } catch (error) {
+        console.error('Error fetching admin boats:', error);
+        res.status(500).json({ error: 'Kunne ikke hente både' });
+    }
+};
+
 export const promoteUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = parseInt(req.params.id as string);
@@ -117,7 +136,7 @@ export const getAdminPosts = async (req: Request, res: Response): Promise<void> 
             orderBy: { createdAt: 'desc' },
             include: {
                 author: { select: { name: true } },
-                boat: { select: { name: true } }
+                boat: { select: { name: true, slug: true } }
             }
         });
         res.json(posts);

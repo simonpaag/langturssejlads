@@ -87,8 +87,8 @@ export default function AnnoncorPage() {
                     <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
                         Skriv direkte til projektledelsen for at høre nærmere om mulighederne for at bygge et stærkt partnerskab mellem jeres virksomhed og Langturssejlads.dk.
                     </p>
-                    <a href="mailto:simon@paag.dk" className="inline-block bg-primary text-primary-foreground font-bold font-sans py-4 px-10 rounded-full hover:bg-primary/90 transition-all shadow-md text-lg tracking-wide">
-                        Kontakt os i dag
+                    <a href="https://calendar.app.google/o2CJnC1ispck2ZAw9" target="_blank" rel="noopener noreferrer" className="inline-block bg-primary text-primary-foreground font-bold font-sans py-4 px-10 rounded-full hover:bg-primary/90 transition-all shadow-md text-lg tracking-wide">
+                        Book et møde med os
                     </a>
                 </section>
 

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Resend } from 'resend';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { checkBoatAccess } from '../utils/authHelpers';
 
 export const submitContact = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -20,10 +21,21 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
 
         const apiKey = process.env.RESEND_API_KEY;
 
+        // GEM IDÉEN I DATABASEN
+        const newIdea = await prisma.idea.create({
+            data: {
+                name,
+                email,
+                message,
+                status: 'IDEA'
+            }
+        });
+
         let data: any = null;
         if (!apiKey) {
-            console.error('BEMÆRK: RESEND_API_KEY mangler. Beskeden kunne ikke sendes.');
-            res.status(500).json({ error: 'Systemfejl: Kunne ikke afsende mail lige nu.' });
+            console.error('BEMÆRK: RESEND_API_KEY mangler. Beskeden kunne ikke sendes via mail, men er gemt i systemet.');
+            // Vi returnerer succes alligevel, da ideen ligger i databasen.
+            res.json({ message: 'Din besked er modtaget i logbogen!', idea: newIdea });
             return;
         }
 
@@ -44,7 +56,7 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
             `,
         });
 
-        res.json({ message: 'Din besked er modtaget! Vi vender tilbage hurtigst muligt.', data });
+        res.json({ message: 'Din besked er modtaget! Vi vender tilbage hurtigst muligt.', data, idea: newIdea });
     } catch (error) {
         console.error('Contact controller error:', error);
         res.status(500).json({ error: 'Intern server fejl under afsendelse.' });
@@ -104,16 +116,9 @@ export const getMessagesForBoat = async (req: AuthRequest, res: Response): Promi
         }
 
         // Tjek om brugeren er besætning på denne båd
-        const membership = await prisma.crewMember.findUnique({
-            where: {
-                userId_boatId: {
-                    userId,
-                    boatId: Number(boatId)
-                }
-            }
-        });
+        const access = await checkBoatAccess(userId, Number(boatId), req.user?.isSystemAdmin || false);
 
-        if (!membership && !req.user?.isSystemAdmin) {
+        if (!access.hasAccess) {
             res.status(403).json({ error: 'Forbidden. Du har ikke adgang til denne båds beskeder.' });
             return;
         }
@@ -159,16 +164,9 @@ export const markMessageAsRead = async (req: AuthRequest, res: Response): Promis
             return;
         }
 
-        const membership = await prisma.crewMember.findUnique({
-            where: {
-                userId_boatId: {
-                    userId,
-                    boatId: messageRecord.boatId
-                }
-            }
-        });
+        const access = await checkBoatAccess(userId, messageRecord.boatId, req.user?.isSystemAdmin || false);
 
-        if (!membership && !req.user?.isSystemAdmin) {
+        if (!access.hasAccess) {
             res.status(403).json({ error: 'Forbidden. Du har ikke adgang til at redigere denne besked.' });
             return;
         }

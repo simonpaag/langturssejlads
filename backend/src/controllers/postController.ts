@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { checkBoatAccess } from '../utils/authHelpers';
 import slugify from 'slugify';
 
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -13,17 +14,10 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Verify user is part of the boat crew
-        const membership = await prisma.crewMember.findUnique({
-            where: {
-                userId_boatId: {
-                    userId: authorId,
-                    boatId: Number(boatId),
-                },
-            },
-        });
+        // Verify user is part of the boat crew (eller SuperAdmin)
+        const access = await checkBoatAccess(authorId, Number(boatId), req.user?.isSystemAdmin || false);
 
-        if (!membership) {
+        if (!access.hasAccess) {
             res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
             return;
         }
@@ -178,16 +172,9 @@ export const getPostsByBoatId = async (req: AuthRequest, res: Response): Promise
             return;
         }
 
-        const membership = await prisma.crewMember.findUnique({
-            where: {
-                userId_boatId: {
-                    userId,
-                    boatId: Number(boatId),
-                },
-            },
-        });
+        const access = await checkBoatAccess(userId, Number(boatId), req.user?.isSystemAdmin || false);
 
-        if (!membership) {
+        if (!access.hasAccess) {
             res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
             return;
         }
@@ -227,16 +214,9 @@ export const togglePostStatus = async (req: AuthRequest, res: Response): Promise
             return;
         }
 
-        const membership = await prisma.crewMember.findUnique({
-            where: {
-                userId_boatId: {
-                    userId,
-                    boatId: post.boatId,
-                },
-            },
-        });
+        const access = await checkBoatAccess(userId, post.boatId, req.user?.isSystemAdmin || false);
 
-        if (!membership) {
+        if (!access.hasAccess) {
             res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
             return;
         }
@@ -328,16 +308,9 @@ export const updatePost = async (req: AuthRequest, res: Response): Promise<void>
 
         // Vurder om bruger er forfatter, eller admin på båden
         const isAuthor = post.authorId === userId;
-        const membership = await prisma.crewMember.findUnique({
-            where: {
-                userId_boatId: {
-                    userId,
-                    boatId: post.boatId,
-                },
-            },
-        });
+        const access = await checkBoatAccess(userId, post.boatId, req.user?.isSystemAdmin || false);
 
-        if (!isAuthor && !membership) {
+        if (!isAuthor && !access.hasAccess) {
             res.status(403).json({ error: 'Forbidden. Du har ikke rettigheder til at redigere dette indlæg.' });
             return;
         }

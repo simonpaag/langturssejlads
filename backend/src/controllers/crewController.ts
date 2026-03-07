@@ -2,14 +2,13 @@ import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import { sendCrewInviteEmail, sendJoinRequestEmail } from '../utils/emailService';
+import { checkBoatAccess } from '../utils/authHelpers';
 import crypto from 'crypto';
 
 // Helper for check
-async function checkRole(userId: number, boatId: number) {
-    const mem = await prisma.crewMember.findUnique({
-        where: { userId_boatId: { userId, boatId } }
-    });
-    return mem?.role;
+async function checkRole(userId: number, boatId: number, isSystemAdmin: boolean = false) {
+    const access = await checkBoatAccess(userId, boatId, isSystemAdmin);
+    return access.role;
 }
 
 // 1. Invite a crew member
@@ -20,7 +19,7 @@ export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise
         const myId = req.user?.userId;
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, Number(boatId));
+        const myRole = await checkRole(myId, Number(boatId), req.user?.isSystemAdmin || false);
         if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
             res.status(403).json({ error: 'Forbidden. Du skal være Admin eller Ejer.' }); return;
         }
@@ -163,7 +162,7 @@ export const updateCrewRole = async (req: AuthRequest, res: Response): Promise<v
 
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, boatId);
+        const myRole = await checkRole(myId, boatId, req.user?.isSystemAdmin || false);
         const targetRole = await checkRole(targetUserId, boatId);
 
         if (!myRole || !targetRole) { res.status(404).json({ error: 'Member not found' }); return; }
@@ -196,7 +195,7 @@ export const removeCrewMember = async (req: AuthRequest, res: Response): Promise
 
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, boatId);
+        const myRole = await checkRole(myId, boatId, req.user?.isSystemAdmin || false);
         const targetRole = await checkRole(targetUserId, boatId);
 
         if (!myRole || !targetRole) { res.status(404).json({ error: 'Member not found' }); return; }
@@ -228,7 +227,7 @@ export const deleteInvitation = async (req: AuthRequest, res: Response): Promise
         const myId = req.user?.userId;
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, boatId);
+        const myRole = await checkRole(myId, boatId, req.user?.isSystemAdmin || false);
         if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
             res.status(403).json({ error: 'Forbidden' }); return;
         }
@@ -249,7 +248,7 @@ export const resendInvitation = async (req: AuthRequest, res: Response): Promise
 
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, boatId);
+        const myRole = await checkRole(myId, boatId, req.user?.isSystemAdmin || false);
         if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
             res.status(403).json({ error: 'Forbidden' }); return;
         }
@@ -347,7 +346,7 @@ export const acceptJoinRequest = async (req: AuthRequest, res: Response): Promis
         const myId = req.user?.userId;
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, boatId);
+        const myRole = await checkRole(myId, boatId, req.user?.isSystemAdmin || false);
         if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
             res.status(403).json({ error: 'Forbidden' }); return;
         }
@@ -375,7 +374,7 @@ export const rejectJoinRequest = async (req: AuthRequest, res: Response): Promis
         const myId = req.user?.userId;
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const myRole = await checkRole(myId, boatId);
+        const myRole = await checkRole(myId, boatId, req.user?.isSystemAdmin || false);
         if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
             res.status(403).json({ error: 'Forbidden' }); return;
         }

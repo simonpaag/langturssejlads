@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Send, Lightbulb, Anchor, CheckCircle2, AlertCircle } from 'lucide-react';
+import IdeaBoard from '@/components/IdeaBoard';
 
 export default function OmPage() {
     const [name, setName] = useState('');
@@ -160,7 +161,8 @@ export default function OmPage() {
                         </div>
                     </section>
 
-
+                    {/* Trello Board */}
+                    <IdeaBoard />
 
                 </div>
             </main>
