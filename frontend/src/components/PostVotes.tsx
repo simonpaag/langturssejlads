@@ -30,7 +30,7 @@ export default function PostVotes({ postId, initialVotes }: PostVotesProps) {
             const token = localStorage.getItem('user_token');
             if (token) {
                 try {
-                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
                     const res = await fetch(`${apiUrl}/api/auth/me`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
@@ -56,7 +56,7 @@ export default function PostVotes({ postId, initialVotes }: PostVotesProps) {
         }
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/posts/${postId}/vote`, {
                 method: 'POST',
                 headers: {

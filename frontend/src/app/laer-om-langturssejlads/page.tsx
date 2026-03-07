@@ -8,7 +8,7 @@ export const metadata = {
 
 async function getFaqs() {
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/faq`, { next: { revalidate: 60 } });
         if (!res.ok) {
             throw new Error(`API returned status: ${res.status}`);

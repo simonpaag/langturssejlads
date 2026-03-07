@@ -25,7 +25,7 @@ export default function ProfilePage() {
             }
 
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
                 // Fetch User data including subscriptions
                 const res = await fetch(`${apiUrl}/api/auth/me`, {
@@ -64,7 +64,7 @@ export default function ProfilePage() {
         const token = localStorage.getItem('user_token');
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
             // 1. Gem profilinfo
             const resProfile = await fetch(`${apiUrl}/api/auth/profile`, {

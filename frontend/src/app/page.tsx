@@ -45,7 +45,7 @@ export default async function Home() {
   let allPosts: Post[] = [];
   let activeAds: any[] = [];
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
     const [postsRes, adsRes] = await Promise.all([
       fetch(`${apiUrl}/api/posts`, { cache: 'no-store' }),
       fetch(`${apiUrl}/api/posts/ads`, { cache: 'no-store' })

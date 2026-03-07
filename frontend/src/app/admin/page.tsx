@@ -21,7 +21,7 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState<any[]>([]);
 
     async function fetchAllData(token: string) {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const headers = { 'Authorization': `Bearer ${token}` };
 
         try {
@@ -56,7 +56,7 @@ export default function AdminDashboard() {
             }
 
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
                 const res = await fetch(`${apiUrl}/api/auth/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -200,7 +200,7 @@ function LogsTab({ logs, sentEmails }: { logs: any[], sentEmails: any[] }) {
 function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
     const handleToggleFrontpage = async (id: number, currentStatus: boolean) => {
         const token = localStorage.getItem('user_token');
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         try {
             const res = await fetch(`${apiUrl}/api/admin/posts/${id}`, {
                 method: 'PUT',
@@ -216,7 +216,7 @@ function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
     const handleReject = async (id: number) => {
         if (!confirm('Er du sikker på at du vil afvise dette indlæg helt?')) return;
         const token = localStorage.getItem('user_token');
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         try {
             const res = await fetch(`${apiUrl}/api/admin/posts/${id}`, {
                 method: 'PUT',
@@ -326,7 +326,7 @@ function EditableTemplate({ template, displayName }: { template: any, displayNam
         setIsSaving(true);
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/admin/emails/templates/${template.id}`, {
                 method: 'PUT',
                 headers: {
@@ -431,7 +431,7 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
         setIsSaving(true);
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
             const method = editingAdId ? 'PUT' : 'POST';
             const endpoint = editingAdId ? `/api/admin/ads/${editingAdId}` : '/api/admin/ads';
@@ -464,7 +464,7 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
         if (!confirm('Sikker på du vil slette denne annonce?')) return;
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/admin/ads/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -480,7 +480,7 @@ function AdsTab({ ads, setAds }: { ads: any[], setAds: any }) {
     const handleToggleActive = async (id: number, current: boolean) => {
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/admin/ads/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -615,7 +615,7 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
 
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/admin/users/${userId}/promote`, {
                 method: 'PUT',
                 headers: {
@@ -638,7 +638,7 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
 
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/admin/users/${userId}/block`, {
                 method: 'PUT',
                 headers: {
@@ -661,7 +661,7 @@ function UsersTab({ users, setUsers }: { users: any[], setUsers: any }) {
 
         try {
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
             const res = await fetch(`${apiUrl}/api/admin/users/${userId}`, {
                 method: 'DELETE',
                 headers: {

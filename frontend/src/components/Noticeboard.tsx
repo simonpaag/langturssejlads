@@ -32,7 +32,7 @@ export default function Noticeboard({ boatId, boatName, isPublic, isAdmin }: Not
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
     useEffect(() => {
         const storedToken = localStorage.getItem('user_token');

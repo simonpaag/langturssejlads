@@ -20,7 +20,7 @@ export const revalidate = 60; // Cachet i 60 sekunder på Vercel
 export default async function BoatsPage() {
     let boats: Boat[] = [];
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const res = await fetch(`${apiUrl}/api/boats`, { next: { revalidate: 60 } });
         if (!res.ok) {
             throw new Error(`API error: ${res.status}`);

@@ -66,7 +66,7 @@ export default function Dashboard() {
             }
 
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
                 const res = await fetch(`${apiUrl}/api/auth/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -92,7 +92,7 @@ export default function Dashboard() {
         const fetchVoyages = async () => {
             if (user && user.crewMemberships.length > 0) {
                 const boatId = user.crewMemberships[0].boat.id;
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
                 try {
                     const res = await fetch(`${apiUrl}/api/voyages/boat/${boatId}`);
                     if (res.ok) {
@@ -163,7 +163,7 @@ export default function Dashboard() {
         const boatId = user.crewMemberships[0].boat.id; // Taking the first boat
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
             const method = editingPostId ? 'PUT' : 'POST';
             const endpoint = editingPostId ? `${apiUrl}/api/posts/${editingPostId}` : `${apiUrl}/api/posts`;
@@ -223,7 +223,7 @@ export default function Dashboard() {
         setIsSubmittingVoyage(true);
         const token = localStorage.getItem('user_token');
         const boatId = user.crewMemberships[0].boat.id;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
         try {
             const res = await fetch(`${apiUrl}/api/voyages`, {
@@ -266,7 +266,7 @@ export default function Dashboard() {
 
         setIsSubmittingBoat(true);
         const token = localStorage.getItem('user_token');
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
         try {
             const res = await fetch(`${apiUrl}/api/boats/${currentBoat.id}`, {
@@ -315,7 +315,7 @@ export default function Dashboard() {
 
         setIsTogglingBoard(true);
         const token = localStorage.getItem('user_token');
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
         try {
             const res = await fetch(`${apiUrl}/api/boats/${currentBoat.id}/board-status`, {

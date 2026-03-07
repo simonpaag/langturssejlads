@@ -17,7 +17,7 @@ export default function Inbox({ boatId }: InboxProps) {
         const fetchMessages = async () => {
             setIsLoading(true);
             const token = localStorage.getItem('user_token');
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
             try {
                 const res = await fetch(`${apiUrl}/api/contact/boat/${boatId}`, {
@@ -42,7 +42,7 @@ export default function Inbox({ boatId }: InboxProps) {
 
     const handleMarkAsRead = async (messageId: number) => {
         const token = localStorage.getItem('user_token');
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
         try {
             const res = await fetch(`${apiUrl}/api/contact/boat/${messageId}/read`, {
