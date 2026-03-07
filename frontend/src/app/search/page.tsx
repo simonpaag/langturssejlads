@@ -131,7 +131,7 @@ function SearchResults() {
                             </div>
                             <div className="space-y-4">
                                 {results.posts.map((post: any) => (
-                                    <Link key={post.id} href={`/post/${post.slug}`} className="block bg-card hover:bg-muted/30 border border-border rounded-2xl p-6 transition-colors group">
+                                    <Link key={post.id} href={`/posts/${post.slug}`} className="block bg-card hover:bg-muted/30 border border-border rounded-2xl p-6 transition-colors group">
                                         <h3 className="font-bold text-lg mb-1 group-hover:text-blue-600 transition-colors">{post.title || 'Logbog opdatering'}</h3>
                                         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
                                             {format(new Date(post.createdAt), 'd. MMMM yyyy', { locale: da })}
@@ -157,7 +157,7 @@ function SearchResults() {
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {results.faqs.map((faq: any) => (
-                                    <Link key={faq.id} href={`/faq#${faq.slug}`} className="flex items-center gap-4 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 transition-colors group">
+                                    <Link key={faq.id} href={`/faq/${faq.slug}`} className="flex items-center gap-4 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 transition-colors group">
                                         <div className="bg-emerald-500/20 p-3 rounded-xl text-emerald-700">
                                             <BookOpen className="w-5 h-5" />
                                         </div>
