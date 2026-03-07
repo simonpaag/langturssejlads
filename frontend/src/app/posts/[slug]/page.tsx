@@ -3,6 +3,7 @@ import { da } from 'date-fns/locale';
 import Link from 'next/link';
 import { CalendarDays, Navigation, MapPin, UserCircle2, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { getFallbackImage } from '@/utils/fallbackImage';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 interface Post {
     id: number;
@@ -50,7 +51,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         );
     }
 
-    const fallbackImage = 'https://images.unsplash.com/photo-1544331002-c940ce98a8da?q=80&w=2000&auto=format&fit=crop';
+    const fallbackImage = getFallbackImage(post.boat.id, 'cover');
     let displayImage = post.imageUrl || post.boat.coverImage || fallbackImage;
 
     // Hvis det er en Billedopdatering (PHOTO), prioriter Bådens Cover som Hero image over selve postens billeder.
@@ -69,8 +70,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
             {/* Hero Image Section (if present) or Typographic Header */}
             <div className="relative w-full h-[60vh] min-h-[500px] mb-12 lg:mb-20 overflow-hidden border-b border-border/40">
-                <img
+                <ImageWithFallback
                     src={displayImage}
+                    fallbackSrc={fallbackImage}
                     alt="Hero Billede"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -94,8 +96,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
                         <div className="flex items-center justify-center md:justify-start gap-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider backdrop-blur-sm p-3 inline-flex rounded-2xl bg-muted/10">
                             <Link href={`/boats/${post.boat.slug}`} className="shrink-0 hover:scale-105 transition-transform">
-                                <img
+                                <ImageWithFallback
                                     src={post.boat.profileImage || getFallbackImage(post.boat.id, 'avatar')}
+                                    fallbackSrc={getFallbackImage(post.boat.id, 'avatar')}
                                     alt={post.boat.name}
                                     className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-primary/20 bg-background/50"
                                 />

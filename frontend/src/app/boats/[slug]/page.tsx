@@ -52,6 +52,7 @@ import PostVotes from '@/components/PostVotes';
 import Noticeboard from '@/components/Noticeboard';
 import ContactForm from '@/components/ContactForm';
 import { getFallbackImage } from '@/utils/fallbackImage';
+import ImageWithFallback from '@/components/ImageWithFallback';
 
 export const revalidate = 60; // Cache i et minut for superhastighed
 
@@ -104,17 +105,22 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
             {/* Editorial Header / Cover */}
             <div className="mb-20 pb-12 border-b-[2px] border-border/50">
                 <div className="relative w-full h-64 md:h-[500px] bg-muted mb-20 md:mb-24 rounded-[2rem] shadow-2xl overflow-visible border border-border/40">
-                    <img
+                    <ImageWithFallback
                         src={boat.coverImage || getFallbackImage(boat.id, 'cover')}
+                        fallbackSrc={getFallbackImage(boat.id, 'cover')}
                         alt={`Coverbillede af ${boat.name}`}
                         className="w-full h-full object-cover rounded-[2rem]"
                     />
                     {/* Subtle inner overlay for depth */}
-                    < div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/10 rounded-[2rem] pointer-events-none" ></div >
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-black/10 rounded-[2rem] pointer-events-none"></div>
 
-                    {/* Profile Image overlapping the cover */}
                     < div className="absolute -bottom-16 md:-bottom-20 left-1/2 -translate-x-1/2 md:left-16 md:translate-x-0 w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] border-background overflow-hidden bg-muted shadow-2xl z-10 transition-transform hover:scale-105 duration-300" >
-                        <img src={boat.profileImage || getFallbackImage(boat.id, 'avatar')} alt={boat.name} className="w-full h-full object-cover" />
+                        <ImageWithFallback
+                            src={boat.profileImage || getFallbackImage(boat.id, 'avatar')}
+                            fallbackSrc={getFallbackImage(boat.id, 'avatar')}
+                            alt={boat.name}
+                            className="w-full h-full object-cover"
+                        />
                     </div >
                 </div >
 
