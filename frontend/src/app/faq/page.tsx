@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BookOpen, AlertCircle, TrendingUp, Anchor, Compass, ChevronRight } from 'lucide-react';
+import { BookOpen, AlertCircle, TrendingUp, Anchor, Compass, ChevronRight, PenTool } from 'lucide-react';
 
 export const metadata = {
     title: 'Lær om langfart | FAQ og Nyttig Viden',
@@ -40,6 +40,19 @@ export default async function LearnAboutSailing() {
                 </div>
 
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+                    {/* Frivillige Skribenter Info Boks */}
+                    <div className="mb-12 bg-primary/5 border border-primary/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-sm mt-4">
+                        <div className="bg-primary/10 p-4 rounded-full text-primary shrink-0">
+                            <PenTool className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Vi søger frivillige skribenter! ✍️</h3>
+                            <p className="text-muted-foreground leading-relaxed font-medium">
+                                Langturssejlads.dk er skabt af og for sejlere. Vi arbejder løbende på at udvide denne gratis vidensbase for almen afbenyttelse, så færre nybegyndere skal opfinde den dybe tallerken i Atlanterhavet. Brænder du for et sejlads-relateret emne – stort som småt – og vil du hjælpe fællesskabet ved at skrive en kort artikel, vi kan udgive her? Så tøv ikke med at række ud til os på <a href="mailto:simon@paag.dk" className="text-primary hover:underline font-bold break-all">simon@paag.dk</a> eller smid os en besked i logbogen på Om-siden. Vi tager imod alt med kyshånd!
+                            </p>
+                        </div>
+                    </div>
+
                     {/* Oversigts Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {faqs.length > 0 ? (
@@ -78,7 +91,7 @@ export default async function LearnAboutSailing() {
                         )}
                     </div>
                 </div>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 }
