@@ -66,8 +66,9 @@ export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise
 // 2. Get invitation (For accept page)
 export const getInvitation = async (req: Request, res: Response): Promise<void> => {
     try {
+        const token = req.params.token as string;
         const invite = await prisma.boatInvitation.findUnique({
-            where: { token: req.params.token },
+            where: { token: token },
             include: { boat: { select: { name: true, coverImage: true, slug: true } } }
         });
         if (!invite) { res.status(404).json({ error: 'Ugyldigt eller udløbet link.' }); return; }
@@ -84,7 +85,8 @@ export const acceptInvitation = async (req: AuthRequest, res: Response): Promise
         const myId = req.user?.userId;
         if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
 
-        const invite = await prisma.boatInvitation.findUnique({ where: { token: req.params.token } });
+        const token = req.params.token as string;
+        const invite = await prisma.boatInvitation.findUnique({ where: { token: token } });
         if (!invite) { res.status(404).json({ error: 'Ugyldigt eller udløbet link.' }); return; }
 
         const me = await prisma.user.findUnique({ where: { id: myId } });
@@ -100,7 +102,7 @@ export const acceptInvitation = async (req: AuthRequest, res: Response): Promise
             }
         });
 
-        await prisma.boatInvitation.delete({ where: { token: req.params.token } });
+        await prisma.boatInvitation.delete({ where: { token: token } });
 
         res.status(200).json({ message: 'Velkommen ombord!' });
     } catch (error) {
@@ -218,6 +220,53 @@ export const deleteInvitation = async (req: AuthRequest, res: Response): Promise
 
         await prisma.boatInvitation.delete({ where: { id: inviteId } });
         res.json({ message: 'Invitation slettet' });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// 7.b Resend invitation
+export const resendInvitation = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const inviteId = Number(req.params.id);
+        const boatId = Number(req.params.boatId);
+        const myId = req.user?.userId;
+
+        if (!myId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+
+        const myRole = await checkRole(myId, boatId);
+        if (myRole !== 'OWNER' && myRole !== 'ADMIN') {
+            res.status(403).json({ error: 'Forbidden' }); return;
+        }
+
+        const invite = await prisma.boatInvitation.findUnique({
+            where: { id: inviteId },
+            include: { boat: true }
+        });
+
+        if (!invite || invite.boatId !== boatId) {
+            res.status(404).json({ error: 'Invitation blev ikke fundet' }); return;
+        }
+
+        // Send email
+        const emailResult = await sendCrewInviteEmail(invite.email, invite.boat.name, invite.role, invite.token);
+
+        // Log to SentEmail
+        await prisma.sentEmail.create({
+            data: {
+                toEmail: invite.email,
+                subject: `Du er inviteret som ${invite.role} på ${invite.boat.name} ⛵`,
+                status: emailResult.success ? 'DELIVERED' : 'FAILED',
+                errorMsg: emailResult.error ? JSON.stringify(emailResult.error) : null,
+            }
+        });
+
+        if (!emailResult.success) {
+            res.status(500).json({ error: 'Kunne ikke udsende email netop nu.' });
+            return;
+        }
+
+        res.json({ message: 'Invitation blev gensendt succesfuldt' });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }

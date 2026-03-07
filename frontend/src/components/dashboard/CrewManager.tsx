@@ -85,6 +85,25 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
         }
     };
 
+    const handleResendInvite = async (inviteId: number) => {
+        const token = localStorage.getItem('user_token');
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/crew/invite/${inviteId}/resend/boat/${boatId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                alert('Invitation gensendt!');
+                fetchCrewData();
+            } else {
+                const err = await res.json();
+                alert(err.error || 'Kunne ikke gensende invitation');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const handleAcceptRequest = async (reqId: number) => {
         const token = localStorage.getItem('user_token');
         try {
@@ -293,7 +312,13 @@ export default function CrewManager({ boatId, myRole }: { boatId: number, myRole
                                     </p>
                                     <p className="text-sm text-muted-foreground mt-1">Inviteret som <strong className="text-foreground/80">{translateRole(inv.role)}</strong></p>
                                 </div>
-                                <div className="flex items-center gap-3">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                    <button
+                                        onClick={() => handleResendInvite(inv.id)}
+                                        className="text-primary hover:text-primary/80 bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors flex items-center gap-1.5"
+                                    >
+                                        <Mail className="w-4 h-4" /> Gensend
+                                    </button>
                                     <button
                                         onClick={() => handleDeleteInvite(inv.id)}
                                         className="text-red-500 hover:text-red-700 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors flex items-center gap-1.5"

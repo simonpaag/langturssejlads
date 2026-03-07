@@ -7,6 +7,7 @@ import {
     updateCrewRole,
     removeCrewMember,
     deleteInvitation,
+    resendInvitation,
     createJoinRequest,
     getMyJoinRequests,
     acceptJoinRequest,
@@ -38,6 +39,9 @@ router.delete('/:userId/boat/:boatId', authenticateToken, removeCrewMember);
 
 // Delete an invitation
 router.delete('/invite/:id/boat/:boatId', authenticateToken, deleteInvitation);
+
+// Resend an invitation
+router.post('/invite/:id/resend/boat/:boatId', authenticateToken, resendInvitation);
 
 // Create a join request
 router.post('/join-request', authenticateToken, createJoinRequest);
