@@ -38,6 +38,11 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          {process.env.NEXT_PUBLIC_BUILD_TIME && (
+            <div className="fixed bottom-2 right-4 z-[100] text-[10px] font-medium text-muted-foreground/40 pointer-events-none select-none text-right">
+              Sidst opdateret: {process.env.NEXT_PUBLIC_BUILD_TIME}
+            </div>
+          )}
         </ThemeProvider>
       </body>
     </html>
