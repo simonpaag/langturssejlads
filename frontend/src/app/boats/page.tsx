@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Ship } from 'lucide-react';
-import Image from 'next/image';
+import ImageWithFallback from '@/components/ImageWithFallback';
 import { getFallbackImage } from '@/utils/fallbackImage';
 
 interface Boat {
@@ -51,13 +51,11 @@ export default async function BoatsPage() {
                     <Link href={`/boats/${boat.slug}`} key={boat.id} className="block group">
                         <div className="flex flex-col h-full hover-lift">
                             <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
-                                {/* Visuel prioritet: Cover -> Profilbillede -> Placeholder */}
-                                <Image
-                                    src={boat.coverImage || boat.profileImage || getFallbackImage(boat.id, 'cover')}
+                                <ImageWithFallback
+                                    src={boat.coverImage || boat.profileImage}
+                                    fallbackSrc={getFallbackImage(boat.id, 'cover')}
                                     alt={`Sejlbåden ${boat.name} - Danske Sejlere`}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
+                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
                                 />
                             </div>
                             <div className="flex-1 border-t border-border pt-4">
