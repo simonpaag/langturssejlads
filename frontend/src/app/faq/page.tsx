@@ -33,17 +33,25 @@ export default async function LearnAboutSailing() {
         <div className="flex flex-col bg-background font-inter">
             <main className="flex-1 pb-24">
                 {/* Hero Header */}
-                <div className="bg-muted py-20 px-4 sm:px-6 lg:px-8 border-b border-border text-center">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="inline-flex justify-center items-center p-4 bg-background border border-border rounded-full shadow-sm mb-6 text-primary">
+                <header className="relative py-32 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] border-b border-border/10 text-center">
+                    <img
+                        src="/images/faq-hero.jpg"
+                        alt="Solnedgang over sejlskibet"
+                        className="absolute inset-0 w-full h-full object-cover opacity-60"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
+
+                    <div className="max-w-3xl mx-auto relative z-10">
+                        <div className="inline-flex justify-center items-center p-4 bg-background/80 backdrop-blur-md border border-border/50 rounded-full shadow-lg mb-6 text-primary">
                             <BookOpen className="w-8 h-8" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-merriweather font-black text-foreground mb-6">Lær om langfart</h1>
-                        <p className="text-xl text-muted-foreground leading-relaxed">
+                        <h1 className="text-5xl md:text-7xl font-merriweather font-black text-white drop-shadow-xl tracking-tight mb-6">Lær om langfart</h1>
+                        <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-medium drop-shadow-lg">
                             Din primære kilde til uskrevne regler, faste aftaler og livet ombord på sejlbådene. Udforsk viden før du står til søs eller inviterer ombord.
                         </p>
                     </div>
-                </div>
+                </header>
 
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
                     {/* Frivillige Skribenter Info Boks */}
