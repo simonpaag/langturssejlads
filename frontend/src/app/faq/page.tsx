@@ -1,27 +1,33 @@
 import Link from 'next/link';
 import { BookOpen, AlertCircle, TrendingUp, Anchor, Compass, ChevronRight, PenTool } from 'lucide-react';
+import AdCard from '@/components/AdCard';
 
 export const metadata = {
     title: 'Lær om langfart | FAQ og Nyttig Viden',
     description: 'Bliv klogere på langtursslivet. Læs om køjepenge, regler, og hvordan du forbereder dig på at stævne ud.'
 };
 
-async function getFaqs() {
+async function getFaqsAndAds() {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/faq`, { next: { revalidate: 5 } });
-        if (!res.ok) {
-            throw new Error(`API returned status: ${res.status}`);
+        const [faqRes, adsRes] = await Promise.all([
+            fetch(`${apiUrl}/api/faq`, { next: { revalidate: 5 } }),
+            fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
+        ]);
+        if (!faqRes.ok) {
+            throw new Error(`API returned status: ${faqRes.status}`);
         }
-        return await res.json();
+        const faqs = await faqRes.json();
+        const ads = adsRes.ok ? await adsRes.json() : [];
+        return { faqs, ads };
     } catch (e) {
-        console.error('Failed to fetch FAQs:', e);
+        console.error('Failed to fetch FAQs or ads:', e);
         throw e;
     }
 }
 
 export default async function LearnAboutSailing() {
-    const faqs = await getFaqs();
+    const { faqs, ads } = await getFaqsAndAds();
 
     return (
         <div className="flex flex-col bg-background font-inter">
@@ -59,27 +65,30 @@ export default async function LearnAboutSailing() {
                             faqs.map((faq: any, idx: number) => {
                                 // Strip HTML tags to get raw text for snippet
                                 const plainText = faq.content?.replace(/<[^>]+>/g, ' ') || '';
+                                const ad = ads.find((a: any) => a.placement === idx);
                                 return (
-                                    <Link
-                                        href={`/faq/${faq.slug}`}
-                                        key={faq.id}
-                                        className="group bg-card border border-border shadow-sm rounded-3xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col justify-between"
-                                    >
-                                        <div>
-                                            <div className="flex items-center gap-4 mb-4">
-                                                <div className="p-3 bg-primary/10 text-primary rounded-xl group-hover:scale-110 transition-transform">
-                                                    {idx % 3 === 0 ? <TrendingUp className="w-6 h-6" /> : idx % 3 === 1 ? <Anchor className="w-6 h-6" /> : <Compass className="w-6 h-6" />}
+                                    <div className="contents" key={faq.id}>
+                                        {ad && <AdCard ad={ad} />}
+                                        <Link
+                                            href={`/faq/${faq.slug}`}
+                                            className="group bg-card border border-border shadow-sm rounded-3xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col justify-between"
+                                        >
+                                            <div>
+                                                <div className="flex items-center gap-4 mb-4">
+                                                    <div className="p-3 bg-primary/10 text-primary rounded-xl group-hover:scale-110 transition-transform">
+                                                        {idx % 3 === 0 ? <TrendingUp className="w-6 h-6" /> : idx % 3 === 1 ? <Anchor className="w-6 h-6" /> : <Compass className="w-6 h-6" />}
+                                                    </div>
+                                                    <h2 className="text-xl font-bold font-merriweather text-foreground group-hover:text-primary transition-colors">{faq.title}</h2>
                                                 </div>
-                                                <h2 className="text-xl font-bold font-merriweather text-foreground group-hover:text-primary transition-colors">{faq.title}</h2>
+                                                <p className="text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
+                                                    {plainText}
+                                                </p>
                                             </div>
-                                            <p className="text-muted-foreground line-clamp-3 mb-6 leading-relaxed">
-                                                {plainText}
-                                            </p>
-                                        </div>
-                                        <div className="inline-flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase">
-                                            Læs hele artiklen <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                        </div>
-                                    </Link>
+                                            <div className="inline-flex items-center gap-2 text-primary font-bold text-sm tracking-widest uppercase">
+                                                Læs hele artiklen <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                            </div>
+                                        </Link>
+                                    </div>
                                 );
                             })
                         ) : (

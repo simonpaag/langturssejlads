@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Ship } from 'lucide-react';
 import ImageWithFallback from '@/components/ImageWithFallback';
 import { getFallbackImage } from '@/utils/fallbackImage';
+import AdCard from '@/components/AdCard';
 
 interface Boat {
     id: number;
@@ -20,13 +21,18 @@ export const revalidate = 60; // Cachet i 60 sekunder på Vercel
 
 export default async function BoatsPage() {
     let boats: Boat[] = [];
+    let activeAds: any[] = [];
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
-        const res = await fetch(`${apiUrl}/api/boats`, { next: { revalidate: 60 } });
-        if (!res.ok) {
-            throw new Error(`API error: ${res.status}`);
+        const [boatsRes, adsRes] = await Promise.all([
+            fetch(`${apiUrl}/api/boats`, { next: { revalidate: 60 } }),
+            fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
+        ]);
+        if (!boatsRes.ok) {
+            throw new Error(`API error: ${boatsRes.status}`);
         }
-        boats = await res.json();
+        boats = await boatsRes.json();
+        if (adsRes.ok) activeAds = await adsRes.json();
     } catch (error) {
         console.error('Failed to fetch boats:', error);
         throw error;
@@ -61,36 +67,44 @@ export default async function BoatsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-                {boats.map((boat) => (
-                    <Link href={`/boats/${boat.slug}`} key={boat.id} className="block group">
-                        <div className="flex flex-col h-full hover-lift">
-                            <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
-                                <ImageWithFallback
-                                    src={boat.coverImage || boat.profileImage}
-                                    fallbackSrc={getFallbackImage(boat.id, 'cover')}
-                                    alt={`Sejlbåden ${boat.name} - Danske Sejlere`}
-                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
-                                />
-                            </div>
-                            <div className="flex-1 border-t border-border pt-4">
-                                <h2 className="text-3xl font-merriweather font-bold mb-3 group-hover:text-primary transition-colors">
-                                    {boat.name}
-                                </h2>
-                                <p className="text-muted-foreground line-clamp-2 mb-6 leading-relaxed">
-                                    {boat.description || 'Ingen officiel logbogs-beskrivelse endnu.'}
-                                </p>
+                {boats.map((boat, idx) => {
+                    const ad = activeAds.find(a => a.placement === idx);
+                    return (
+                        <div className="contents" key={boat.id}>
+                            {ad && (
+                                <AdCard ad={ad} />
+                            )}
+                            <Link href={`/boats/${boat.slug}`} className="block group">
+                                <div className="flex flex-col h-full hover-lift">
+                                    <div className="relative w-full aspect-[4/3] bg-muted mb-6 overflow-hidden border border-border">
+                                        <ImageWithFallback
+                                            src={boat.coverImage || boat.profileImage}
+                                            fallbackSrc={getFallbackImage(boat.id, 'cover')}
+                                            alt={`Sejlbåden ${boat.name} - Danske Sejlere`}
+                                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out grayscale-[15%]"
+                                        />
+                                    </div>
+                                    <div className="flex-1 border-t border-border pt-4">
+                                        <h2 className="text-3xl font-merriweather font-bold mb-3 group-hover:text-primary transition-colors">
+                                            {boat.name}
+                                        </h2>
+                                        <p className="text-muted-foreground line-clamp-2 mb-6 leading-relaxed">
+                                            {boat.description || 'Ingen officiel logbogs-beskrivelse endnu.'}
+                                        </p>
 
-                                <div className="text-xs font-bold uppercase tracking-widest text-primary">
-                                    {boat.crewMemberships.length > 0 ? (
-                                        <p>Mandskab: <span className="text-foreground">{boat.crewMemberships.map(c => c.user.name).join(', ')}</span></p>
-                                    ) : (
-                                        <p className="text-muted-foreground">Mangler mandskab</p>
-                                    )}
+                                        <div className="text-xs font-bold uppercase tracking-widest text-primary">
+                                            {boat.crewMemberships.length > 0 ? (
+                                                <p>Mandskab: <span className="text-foreground">{boat.crewMemberships.map(c => c.user.name).join(', ')}</span></p>
+                                            ) : (
+                                                <p className="text-muted-foreground">Mangler mandskab</p>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </div>
-                    </Link>
-                ))}
+                    );
+                })}
 
                 {boats.length === 0 && (
                     <div className="col-span-full py-32 text-center border-b-[2px] border-foreground">

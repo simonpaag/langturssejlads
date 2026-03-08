@@ -8,6 +8,7 @@ import AnimatedLoader from '@/components/AnimatedLoader';
 import { da } from 'date-fns/locale';
 import { getFallbackImage } from '@/utils/fallbackImage';
 import ImageWithFallback from '@/components/ImageWithFallback';
+import AdCard, { Ad } from '@/components/AdCard';
 
 interface Boat {
     id: number;
@@ -32,24 +33,34 @@ interface Voyage {
 
 export default function VoyagesOverviewPage() {
     const [voyages, setVoyages] = useState<Voyage[]>([]);
+    const [ads, setAds] = useState<Ad[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchVoyages = async () => {
+        const fetchVoyagesAndAds = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/voyages`, { cache: 'no-store' });
-                if (res.ok) {
-                    const data = await res.json();
+                const [voyagesRes, adsRes] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com'}/api/voyages`, { cache: 'no-store' }),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com'}/api/posts/ads`, { cache: 'no-store' })
+                ]);
+
+                if (voyagesRes.ok) {
+                    const data = await voyagesRes.json();
                     setVoyages(data);
                 }
+
+                if (adsRes.ok) {
+                    const adsData = await adsRes.json();
+                    setAds(adsData);
+                }
             } catch (error) {
-                console.error('Kunne ikke hente togter', error);
+                console.error('Kunne ikke hente togter eller annoncer', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchVoyages();
+        fetchVoyagesAndAds();
     }, []);
 
     const now = new Date();
@@ -185,9 +196,15 @@ export default function VoyagesOverviewPage() {
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {openVoyages.map(voyage => (
-                                <VoyageCard key={voyage.id} voyage={voyage} showSeats={true} />
-                            ))}
+                            {openVoyages.map((voyage, idx) => {
+                                const ad = ads.find(a => a.placement === idx);
+                                return (
+                                    <div className="contents" key={voyage.id}>
+                                        {ad && <AdCard ad={ad} />}
+                                        <VoyageCard voyage={voyage} showSeats={true} />
+                                    </div>
+                                );
+                            })}
                         </div>
                     </section>
                 )}
