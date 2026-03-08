@@ -33,7 +33,7 @@ export default async function LearnAboutSailing() {
         <div className="flex flex-col bg-background font-inter">
             <main className="flex-1 pb-24">
                 {/* Hero Header */}
-                <header className="relative py-32 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] border-b border-border/10 text-center">
+                <header className="relative py-16 md:py-20 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[25vh] border-b border-border/10 text-center">
                     <img
                         src="/images/faq-hero.jpg"
                         alt="Solnedgang over sejlskibet"

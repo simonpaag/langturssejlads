@@ -152,7 +152,7 @@ export default function VoyagesOverviewPage() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="relative py-32 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] border-b border-border/10">
+            <header className="relative py-16 md:py-20 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[25vh] border-b border-border/10">
                 <img
                     src="/images/togter-hero.jpg"
                     alt="Styrmand på havet"
