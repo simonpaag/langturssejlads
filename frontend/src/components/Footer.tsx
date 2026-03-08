@@ -29,9 +29,9 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm font-medium text-muted-foreground">
                             <li><Link href="/om" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Projektet / Om os</Link></li>
                             <li><Link href="/faq" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Lær om langfart (FAQ)</Link></li>
-                            <li><a href="mailto:kontakt@langturssejlads.dk?subject=Annonc%C3%B8r" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Bliv annoncør</a></li>
-                            <li><a href="mailto:kontakt@langturssejlads.dk?subject=Vilka%C3%A5r" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Rettigheder & Vilkår</a></li>
-                            <li><a href="mailto:kontakt@langturssejlads.dk?subject=Moderation" className="hover:text-primary hover:translate-x-1 inline-block transition-transform text-destructive/80 font-bold">Retningslinjer</a></li>
+                            <li><Link href="/annoncor" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Bliv annoncør</Link></li>
+                            <li><Link href="/rettigheder" className="hover:text-primary hover:translate-x-1 inline-block transition-transform">Rettigheder & Vilkår</Link></li>
+                            <li><Link href="/rettigheder" className="hover:text-primary hover:translate-x-1 inline-block transition-transform text-destructive/80 font-bold">Retningslinjer</Link></li>
                         </ul>
                     </div>
                     <div>
