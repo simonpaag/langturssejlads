@@ -23,7 +23,7 @@ export default function Footer() {
                             <a href="https://www.instagram.com/langturssejlads/" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-background rounded-full text-muted-foreground hover:text-primary hover:scale-110 transition-all shadow-sm border border-border" aria-label="Instagram">
                                 <Instagram className="w-4 h-4" />
                             </a>
-                            <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-background rounded-full text-muted-foreground hover:text-primary hover:scale-110 transition-all shadow-sm border border-border" aria-label="YouTube">
+                            <a href="https://www.youtube.com/@Langturssejlads" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-background rounded-full text-muted-foreground hover:text-primary hover:scale-110 transition-all shadow-sm border border-border" aria-label="YouTube">
                                 <Youtube className="w-4 h-4" />
                             </a>
                         </div>
