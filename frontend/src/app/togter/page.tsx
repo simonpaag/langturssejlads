@@ -163,7 +163,7 @@ export default function VoyagesOverviewPage() {
 
                 <div className="max-w-7xl mx-auto relative z-10 text-center flex flex-col items-center">
                     <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 block drop-shadow-md bg-black/30 px-4 py-1.5 rounded-full border border-primary/20 backdrop-blur-sm">Eventyr Venter</span>
-                    <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white drop-shadow-xl tracking-tight">Togter til Søs</h1>
+                    <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white drop-shadow-xl tracking-tight">Vil du til søs?</h1>
                     <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg font-medium">
                         Find din næste drømmerejse over de store oceaner, eller dyk ned i sejlerhistorier fra hele verden.
                     </p>
