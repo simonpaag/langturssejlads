@@ -141,12 +141,19 @@ export default function VoyagesOverviewPage() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="relative py-24 px-4 bg-muted overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-background"></div>
-                <div className="max-w-7xl mx-auto relative z-10 text-center">
-                    <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 block">Eventyr Venter</span>
-                    <h1 className="text-5xl md:text-6xl font-bold font-merriweather mb-6">Togter til Søs</h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <header className="relative py-32 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] border-b border-border/10">
+                <img
+                    src="/images/togter-hero.jpg"
+                    alt="Styrmand på havet"
+                    className="absolute inset-0 w-full h-full object-cover opacity-50"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
+
+                <div className="max-w-7xl mx-auto relative z-10 text-center flex flex-col items-center">
+                    <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 block drop-shadow-md bg-black/30 px-4 py-1.5 rounded-full border border-primary/20 backdrop-blur-sm">Eventyr Venter</span>
+                    <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white drop-shadow-xl tracking-tight">Togter til Søs</h1>
+                    <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg font-medium">
                         Find din næste drømmerejse over de store oceaner, eller dyk ned i sejlerhistorier fra hele verden.
                     </p>
                 </div>
