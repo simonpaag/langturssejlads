@@ -134,7 +134,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 {/* Main Content Body */}
                 {post.content && (
                     <div
-                        className={`prose prose-lg md:prose-xl max-w-none font-merriweather text-foreground/90 leading-relaxed dark:prose-invert prose-p:mb-8 prose-h2:text-3xl prose-h2:font-black prose-h2:mb-6 prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-2xl prose-img:shadow-xl ${galleryImages.length > 0 ? 'mb-12' : ''}`}
+                        className={`prose prose-lg md:prose-xl max-w-none font-merriweather text-foreground/90 leading-relaxed dark:prose-invert prose-p:my-5 prose-h2:text-3xl prose-h2:font-black prose-h2:mt-10 prose-h2:mb-6 prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-2xl prose-img:shadow-xl ${galleryImages.length > 0 ? 'mb-12' : ''}`}
                         dangerouslySetInnerHTML={{
                             __html: post.content.includes('<p>')
                                 ? post.content
