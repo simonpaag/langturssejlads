@@ -332,7 +332,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                         {post.postType === 'ARTICLE' && (
                                             <div className="border border-border/50 rounded-2xl p-8 bg-muted/20 group-hover:bg-muted/40 transition-colors">
                                                 <Link href={`/posts/${post.slug}`} className="block">
-                                                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary mb-3 block">Dybdegående Artikel</span>
+                                                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary mb-3 block">Artikel</span>
                                                     <h3 className="text-3xl md:text-4xl font-merriweather font-bold mb-4 leading-snug group-hover:text-primary transition-colors">
                                                         {post.title}
                                                     </h3>
