@@ -337,7 +337,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                                                         {post.title}
                                                     </h3>
                                                     <p className="text-muted-foreground text-lg leading-relaxed line-clamp-3 mb-6">
-                                                        {post.content}
+                                                        {post.content?.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ')}
                                                     </p>
                                                     <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest hover:translate-x-2 transition-transform text-primary">Læs hele historien &rarr;</span>
                                                 </Link>
