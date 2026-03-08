@@ -16,7 +16,7 @@ import AnimatedLoader from '@/components/AnimatedLoader';
 export default function Dashboard() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const queryBoatId = searchParams.get('boatId');
+    const queryBoatSlug = searchParams.get('boatSlug');
     const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox' | 'crew'>('write');
     const [user, setUser] = useState<any>(null);
     const [adminBoat, setAdminBoat] = useState<any>(null);
@@ -82,9 +82,9 @@ export default function Dashboard() {
                 const data = await res.json();
                 setUser(data.user);
 
-                if (data.user?.isSystemAdmin && queryBoatId) {
+                if (data.user?.isSystemAdmin && queryBoatSlug) {
                     try {
-                        const boatRes = await fetch(`${apiUrl}/api/boats/${queryBoatId}`);
+                        const boatRes = await fetch(`${apiUrl}/api/boats/${queryBoatSlug}`);
                         if (boatRes.ok) {
                             const bData = await boatRes.json();
                             setAdminBoat(bData);
@@ -95,7 +95,7 @@ export default function Dashboard() {
                 }
             } catch (err) {
                 console.error(err);
-                if (!queryBoatId) {
+                if (!queryBoatSlug) {
                     localStorage.removeItem('user_token');
                     router.push('/login');
                 }
@@ -105,7 +105,7 @@ export default function Dashboard() {
         };
 
         fetchUser();
-    }, [router, queryBoatId]);
+    }, [router, queryBoatSlug]);
 
     // Fetch Voyages when user/boat is loaded
     useEffect(() => {

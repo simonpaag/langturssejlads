@@ -193,7 +193,7 @@ function BoatsTab({ boats, setBoats }: { boats: any[], setBoats: any }) {
                                 </td>
                                 <td className="px-6 py-4 text-right">
                                     <a
-                                        href={`/dashboard?boatId=${b.id}`}
+                                        href={`/dashboard?boatSlug=${b.slug}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 text-xs font-bold uppercase tracking-wider rounded-md transition-colors"
