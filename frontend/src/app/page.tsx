@@ -115,7 +115,7 @@ export default async function Home() {
             </Link>
 
             <p className="text-muted-foreground text-lg leading-relaxed mb-8 line-clamp-4">
-              {featured.content}
+              {featured.content?.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ')}
             </p>
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
@@ -225,7 +225,7 @@ export default async function Home() {
                         </Link>
 
                         <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">
-                          {post.content}
+                          {post.content?.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ')}
                         </p>
 
                         <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
