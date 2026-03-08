@@ -88,12 +88,12 @@ export default function Navbar() {
                     </div>
 
                     {/* Right: Auth */}
-                    <div className="flex items-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                        <div className="hidden md:block">
+                    <div className="flex items-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-widest flex-1 justify-end">
+                        <div className="w-[140px] xs:w-[180px] sm:w-auto">
                             <SearchBar />
                         </div>
                         {(isLoggedIn) ? (
-                            <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
                                 {user?.isSystemAdmin && (
                                     <Link href="/admin" className="hidden sm:flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors" title="PosseidonAdmin">
                                         <span className="bg-primary/10 p-1.5 rounded-md">
@@ -119,19 +119,19 @@ export default function Navbar() {
                                 </Link>
                             </div>
                         ) : isAdmin ? (
-                            <button onClick={handleLogout} className="flex items-center gap-1.5 px-4 py-2 bg-muted/50 hover:bg-destructive/10 hover:text-destructive rounded-full transition-all">
+                            <button onClick={handleLogout} className="flex items-center gap-1.5 px-4 py-2 bg-muted/50 hover:bg-destructive/10 hover:text-destructive rounded-full transition-all shrink-0">
                                 <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Log ud</span>
                             </button>
                         ) : (
-                            <>
+                            <div className="flex gap-2 items-center shrink-0">
                                 <Link href="/register" className="hidden sm:flex items-center text-muted-foreground hover:text-foreground transition-colors">
                                     Opret konto
                                 </Link>
-                                <Link href="/login" className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full hover:bg-primary/90 hover:scale-105 transition-all shadow-md">
+                                <Link href="/login" className="flex items-center gap-2 bg-primary text-white px-3 py-2 sm:px-5 sm:py-2.5 rounded-full hover:bg-primary/90 hover:scale-105 transition-all shadow-md">
                                     <UserCircle className="h-[18px] w-[18px]" />
-                                    <span>Log ind</span>
+                                    <span className="hidden sm:inline">Log ind</span>
                                 </Link>
-                            </>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -140,9 +140,6 @@ export default function Navbar() {
                 <div className="relative z-[50]">
                     {isMenuOpen && (
                         <div className="md:hidden absolute top-0 left-0 w-full bg-background border-b border-border p-6 shadow-2xl flex flex-col gap-5 animate-in slide-in-from-top-4 fade-in duration-200">
-                            <div className="mb-2">
-                                <SearchBar />
-                            </div>
                             {pathname !== "/" && (
                                 <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                                     <Compass className="w-5 h-5 text-primary" /> Forside
