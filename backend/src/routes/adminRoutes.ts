@@ -3,7 +3,7 @@ import { authenticateToken, authorizeSystemAdmin } from '../middlewares/authMidd
 import {
     getUsers, promoteUser, blockUser, deleteUser,
     getAdminBoats,
-    getLogs,
+    getLogs, getGitLogs,
     getAdminPosts, updatePostModeration,
     getEmailTemplates, updateEmailTemplate, getSentEmails,
     getNativeAdsAdmin, createNativeAd, updateNativeAd, deleteNativeAd,
@@ -28,6 +28,7 @@ router.get('/boats', getAdminBoats);
 
 // Logs
 router.get('/logs', getLogs);
+router.get('/git-logs', getGitLogs);
 
 // Posts
 router.get('/posts', getAdminPosts);

@@ -14,6 +14,7 @@ export default function AdminDashboard() {
 
     // Data States
     const [logs, setLogs] = useState<any[]>([]);
+    const [gitLogs, setGitLogs] = useState<any[]>([]);
     const [posts, setPosts] = useState<any[]>([]);
     const [templates, setTemplates] = useState<any[]>([]);
     const [sentEmails, setSentEmails] = useState<any[]>([]);
@@ -32,9 +33,10 @@ export default function AdminDashboard() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const headers = { 'Authorization': `Bearer ${token}` };
 
-        if (activeTab === 'logs' && logs.length === 0) {
-            fetch(`${apiUrl}/api/admin/logs`, { headers }).then(r => r.json()).then(setLogs).catch(() => { });
-            fetch(`${apiUrl}/api/admin/emails/sent`, { headers }).then(r => r.json()).then(setSentEmails).catch(() => { });
+        if (activeTab === 'logs') {
+            if (logs.length === 0) fetch(`${apiUrl}/api/admin/logs`, { headers }).then(r => r.json()).then(setLogs).catch(() => { });
+            if (sentEmails.length === 0) fetch(`${apiUrl}/api/admin/emails/sent`, { headers }).then(r => r.json()).then(setSentEmails).catch(() => { });
+            if (gitLogs.length === 0) fetch(`${apiUrl}/api/admin/git-logs`, { headers }).then(r => r.json()).then(setGitLogs).catch(() => { });
         } else if (activeTab === 'users' && users.length === 0) {
             fetch(`${apiUrl}/api/admin/users`, { headers }).then(r => r.json()).then(setUsers).catch(() => { });
         } else if (activeTab === 'boats' && boats.length === 0) {
@@ -121,7 +123,7 @@ export default function AdminDashboard() {
 
                     {/* Content Area */}
                     <div className="flex-1 min-w-0 bg-background rounded-3xl p-6 lg:p-10 shadow-xl border border-border/50">
-                        {activeTab === 'logs' && <LogsTab logs={logs} sentEmails={sentEmails} />}
+                        {activeTab === 'logs' && <LogsTab logs={logs} sentEmails={sentEmails} gitLogs={gitLogs} />}
                         {activeTab === 'users' && <UsersTab users={users} setUsers={setUsers} />}
                         {activeTab === 'boats' && <BoatsTab boats={boats} setBoats={setBoats} />}
                         {activeTab === 'posts' && <PostsTab posts={posts} setPosts={setPosts} />}
@@ -212,12 +214,12 @@ function BoatsTab({ boats, setBoats }: { boats: any[], setBoats: any }) {
 }
 // ----------------------------------------------------
 
-function LogsTab({ logs, sentEmails }: { logs: any[], sentEmails: any[] }) {
+function LogsTab({ logs, sentEmails, gitLogs }: { logs: any[], sentEmails: any[], gitLogs: any[] }) {
     return (
         <div>
             <h2 className="text-2xl font-merriweather font-bold mb-6">Aktivitetslog</h2>
 
-            <div className="grid lg:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-3 gap-8">
                 {/* System Logs */}
                 <div>
                     <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">System Hændelser</h3>
@@ -260,6 +262,38 @@ function LogsTab({ logs, sentEmails }: { logs: any[], sentEmails: any[] }) {
                         ))}
                     </div>
                 </div>
+
+                {/* Git Push Logs */}
+                <div>
+                    <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">Pushes fra Git</h3>
+                    <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                        {gitLogs.length === 0 ? <p className="text-muted-foreground text-sm">Ingen Git commits fundet.</p> : null}
+                        {gitLogs.map(commit => (
+                            <div key={commit.hash} className="flex flex-col p-3 bg-card rounded-xl border border-border/50 text-sm shadow-sm">
+                                <div className="flex justify-between items-start gap-2 mb-2">
+                                    <p className="font-bold leading-tight line-clamp-2">{commit.message}</p>
+                                    <a
+                                        href={`https://github.com/simonpaag/langturssejlads/commit/${commit.hash}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="shrink-0 text-[10px] font-mono font-bold px-2 py-1 rounded bg-muted/50 hover:bg-muted transition-colors text-muted-foreground"
+                                        title="Vis commit på GitHub"
+                                    >
+                                        {commit.hash.substring(0, 7)}
+                                    </a>
+                                </div>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                                        {commit.authorName.charAt(0).toUpperCase()}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground truncate flex-1">{commit.authorName}</p>
+                                    <span className="text-[10px] text-muted-foreground">{new Date(commit.date).toLocaleDateString('da-DK')}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
             </div>
         </div>
     );

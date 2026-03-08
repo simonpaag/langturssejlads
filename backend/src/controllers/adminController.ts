@@ -129,6 +129,37 @@ export const getLogs = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+export const getGitLogs = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { exec } = require('child_process');
+        exec('git log -n 50 --pretty=format:"%H|%an|%ae|%ad|%s" --date=iso', (error: any, stdout: string, stderr: string) => {
+            if (error) {
+                console.error(`Error executing git log: ${error.message}`);
+                return res.status(500).json({ error: 'Fejl under indlæsning af git logs' });
+            }
+            if (stderr) {
+                console.warn(`Git log stderr: ${stderr}`);
+            }
+
+            const logs = stdout.trim().split('\n').filter(line => line).map((line) => {
+                const parts = line.split('|');
+                return {
+                    hash: parts[0] || '',
+                    authorName: parts[1] || '',
+                    authorEmail: parts[2] || '',
+                    date: parts[3] || '',
+                    message: parts.slice(4).join('|') || '' // In case message contains '|'
+                };
+            });
+
+            res.json(logs);
+        });
+    } catch (error) {
+        console.error('Error in getGitLogs:', error);
+        res.status(500).json({ error: 'Kunne ikke hente git logs' });
+    }
+};
+
 // --- POSTS MODERATION ---
 export const getAdminPosts = async (req: Request, res: Response): Promise<void> => {
     try {
