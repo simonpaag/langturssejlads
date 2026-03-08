@@ -55,7 +55,7 @@ export default function IdeaBoard() {
     return (
         <div className="mt-24 w-full">
             <div className="text-center mb-12">
-                <h3 className="text-3xl font-merriweather font-black text-foreground mb-4">Projektets Udviklings-Log</h3>
+                <h3 id="projektets-udviklings-log" className="text-3xl font-merriweather font-black text-foreground mb-4">Projektets Udviklings-Log</h3>
                 <p className="text-muted-foreground max-w-2xl mx-auto">Følg med i maskinrummet! Her kan du se hvilke idéer fællesskabet har sendt ind, og hvor langt vi er med at bygge dem ind i platformen.</p>
             </div>
 
