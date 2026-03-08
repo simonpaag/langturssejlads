@@ -40,15 +40,24 @@ export default async function BoatsPage() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <header className="mb-16 border-b-[2px] border-foreground pb-8 flex flex-col md:flex-row justify-between items-end gap-6">
-                <div>
-                    <h1 className="text-5xl md:text-6xl font-merriweather font-black mb-4">Mød Bådene</h1>
-                    <p className="text-xl text-muted-foreground max-w-2xl font-medium tracking-wide">
+            <header className="relative py-32 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
+                <img
+                    src="/images/boats-hero.jpg"
+                    alt="Sejlbåd fra masten"
+                    className="absolute inset-0 w-full h-full object-cover opacity-60"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
+
+                <div className="max-w-7xl mx-auto relative z-10 w-full flex flex-col items-center">
+                    <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 block drop-shadow-md bg-black/30 px-4 py-1.5 rounded-full border border-primary/20 backdrop-blur-sm">Sejlere i verden</span>
+                    <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white drop-shadow-xl tracking-tight">Mød Bådene</h1>
+                    <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg font-medium">
                         Opdag de danske både, der lige nu befinder sig på verdenshavene.
                     </p>
-                </div>
-                <div className="text-sm font-bold uppercase tracking-widest bg-primary text-white px-4 py-2">
-                    Registeret: {boats.length} både
+                    <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-primary/90 text-white px-6 py-3 rounded-full backdrop-blur shadow-xl border border-white/10">
+                        Registeret: {boats.length} både
+                    </div>
                 </div>
             </header>
 
