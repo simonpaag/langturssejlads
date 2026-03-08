@@ -184,8 +184,7 @@ export default function Navbar() {
                         alt="Hero solnedgang"
                         className="absolute inset-0 w-full h-full object-cover object-[80%_75%] md:object-[center_65%] opacity-[0.65]"
                     />
-                    {/* Subtle Gradient Overlay for Text Readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
 
                     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-48 mt-[15%] md:mt-12 flex flex-col items-center justify-center text-center">
                         <FifthElement className="mb-6 text-white/90 drop-shadow-md" />

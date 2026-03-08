@@ -39,7 +39,7 @@ export default async function LearnAboutSailing() {
                         alt="Solnedgang over sejlskibet"
                         className="absolute inset-0 w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
                     <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
 
                     <div className="max-w-3xl mx-auto relative z-10">
