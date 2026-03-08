@@ -11,6 +11,7 @@ import Inbox from '@/components/dashboard/Inbox';
 import CrewManager from '@/components/dashboard/CrewManager';
 import NoBoatDashboard from '@/components/dashboard/NoBoatDashboard';
 import RichTextEditor from '@/components/RichTextEditor';
+import AnimatedLoader from '@/components/AnimatedLoader';
 
 export default function Dashboard() {
     const router = useRouter();
@@ -373,7 +374,11 @@ export default function Dashboard() {
     };
 
     if (isLoadingUser) {
-        return <div className="h-screen flex items-center justify-center">Henter Kaptajnens kahyt...</div>;
+        return (
+            <div className="h-screen flex items-center justify-center">
+                <AnimatedLoader text="Henter Kaptajnens kahyt..." className="scale-125 md:scale-150" />
+            </div>
+        );
     }
 
     if (!currentBoat) {
