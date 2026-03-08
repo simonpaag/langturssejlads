@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Anchor } from 'lucide-react';
+import { Anchor, Facebook, Instagram, Youtube } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
 export default function Footer() {
@@ -12,10 +12,21 @@ export default function Footer() {
                             <Anchor className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
                             <span className="font-merriweather font-black text-2xl tracking-tighter uppercase text-foreground">Langturssejlads</span>
                         </Link>
-                        <p className="text-muted-foreground text-sm max-w-sm leading-relaxed font-medium">
+                        <p className="text-muted-foreground text-sm max-w-sm leading-relaxed font-medium mb-8">
                             Følg de danske sejlere på langfart på de syv verdenshave.
                             Vi samler logbøger, videoer og historier fra uafhængige både og besætninger over hele kloden.
                         </p>
+                        <div className="flex items-center gap-4">
+                            <a href="https://www.facebook.com/groups/Langturssejlads/" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-background rounded-full text-muted-foreground hover:text-primary hover:scale-110 transition-all shadow-sm border border-border" aria-label="Facebook Gruppe">
+                                <Facebook className="w-4 h-4 fill-current" />
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-background rounded-full text-muted-foreground hover:text-primary hover:scale-110 transition-all shadow-sm border border-border" aria-label="Instagram">
+                                <Instagram className="w-4 h-4" />
+                            </a>
+                            <a href="#" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-background rounded-full text-muted-foreground hover:text-primary hover:scale-110 transition-all shadow-sm border border-border" aria-label="YouTube">
+                                <Youtube className="w-4 h-4" />
+                            </a>
+                        </div>
                     </div>
                     <div>
                         <h3 className="font-bold text-sm uppercase tracking-widest text-foreground border-b border-foreground pb-2 mb-6 inline-block">Ombord</h3>
