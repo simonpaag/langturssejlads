@@ -74,6 +74,10 @@ export const updatePostStatus = async (req: AuthRequest, res: Response): Promise
 
 export const getPublicPosts = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 20;
+        const skip = (page - 1) * limit;
+
         const posts = await prisma.post.findMany({
             where: { status: 'PUBLISHED', showOnFrontpage: true },
             include: {
@@ -83,7 +87,11 @@ export const getPublicPosts = async (req: AuthRequest, res: Response): Promise<v
                 votes: { select: { type: true, userId: true } }
             },
             orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit,
         });
+
+        res.set('Cache-Control', 'public, max-age=60');
         res.json(posts);
     } catch (error) {
         console.error('Get posts error:', error);

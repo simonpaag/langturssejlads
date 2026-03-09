@@ -66,6 +66,7 @@ model CrewMember {
   role     String   // 'OWNER' | 'ADMIN' | 'CONTENT_MANAGER' | 'CREW'
 
   @@id([userId, boatId])
+  @@index([boatId])
 }
 
 model NotificationSubscription {
@@ -140,6 +141,11 @@ model Post {
   voyageId    Int?
 
   votes       Vote[]
+
+  // Indexes for faster lookups and newsfeed sorting
+  @@index([status, showOnFrontpage, createdAt(sort: Desc)])
+  @@index([boatId])
+  @@index([authorId])
 }
 
 enum VoteType {
@@ -195,6 +201,8 @@ model Voyage {
   updatedAt   DateTime      @updatedAt
 
   contactMessages ContactMessage[]
+
+  @@index([boatId])
 }
 
 model FaqArticle {
@@ -229,6 +237,9 @@ model ContactMessage {
   voyageId    Int?
 
   createdAt   DateTime @default(now())
+
+  @@index([boatId])
+  @@index([voyageId])
 }
 
 model Idea {

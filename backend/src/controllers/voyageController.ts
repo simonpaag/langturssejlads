@@ -109,6 +109,7 @@ export const getAllVoyages = async (req: Request, res: Response): Promise<void> 
                 boat: true
             }
         });
+        res.set('Cache-Control', 'public, max-age=60');
         res.json(voyages);
     } catch (error) {
         res.status(500).json({ error: 'Fejl ved hentning af alle togter' });

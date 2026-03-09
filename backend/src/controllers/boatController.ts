@@ -51,6 +51,11 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
 
 export const getBoats = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limitStr = req.query.limit as string;
+        const limit = limitStr ? parseInt(limitStr) : 1000; // Large default limit so frontend doesn't break
+        const skip = (page - 1) * limit;
+
         const boats = await prisma.boat.findMany({
             include: {
                 crewMemberships: {
@@ -59,10 +64,12 @@ export const getBoats = async (req: AuthRequest, res: Response): Promise<void> =
                             select: { id: true, name: true, email: true, profileImage: true }
                         }
                     }
-                },
-                voyages: true
-            }
+                }
+            },
+            skip,
+            take: limit,
         });
+        res.set('Cache-Control', 'public, max-age=60');
         res.json(boats);
     } catch (error) {
         console.error('Get boats error:', error);
