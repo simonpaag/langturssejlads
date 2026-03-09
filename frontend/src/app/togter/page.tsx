@@ -90,12 +90,14 @@ export default async function VoyagesOverviewPage() {
 
                 <div className="p-6 flex flex-col flex-1">
                     <div className="flex items-center gap-3 mb-4">
-                        <ImageWithFallback
-                            src={voyage.boat.profileImage || getFallbackImage(voyage.boat.id, 'avatar')}
-                            fallbackSrc={getFallbackImage(voyage.boat.id, 'avatar')}
-                            alt={voyage.boat.name}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-primary shadow-sm bg-background/50"
-                        />
+                        <div className="relative w-10 h-10 shrink-0">
+                            <ImageWithFallback
+                                src={voyage.boat.profileImage || getFallbackImage(voyage.boat.id, 'avatar')}
+                                fallbackSrc={getFallbackImage(voyage.boat.id, 'avatar')}
+                                alt={voyage.boat.name}
+                                className="rounded-full object-cover border-2 border-primary shadow-sm bg-background/50"
+                            />
+                        </div>
                         <div>
                             <p className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Båd</p>
                             <p className="text-sm font-semibold">{voyage.boat.name}</p>

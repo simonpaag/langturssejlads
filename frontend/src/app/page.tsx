@@ -119,12 +119,14 @@ export default async function Home() {
 
             <div className="flex items-center justify-between border-t border-border pt-4 mt-auto">
               <span className="font-semibold text-sm flex items-center gap-2">
-                <ImageWithFallback
-                  src={featured.author?.profileImage || getFallbackImage(featured.author?.id, 'avatar')}
-                  fallbackSrc={getFallbackImage(featured.author?.id, 'avatar')}
-                  alt={`Profilbillede af Kaptajn ${featured.author?.name || 'Ukendt'}`}
-                  className="rounded-full object-cover w-6 h-6 bg-background/50 border border-primary/20"
-                />
+                <div className="relative w-6 h-6 shrink-0">
+                  <ImageWithFallback
+                    src={featured.author?.profileImage || getFallbackImage(featured.author?.id, 'avatar')}
+                    fallbackSrc={getFallbackImage(featured.author?.id, 'avatar')}
+                    alt={`Profilbillede af Kaptajn ${featured.author?.name || 'Ukendt'}`}
+                    className="rounded-full object-cover bg-background/50 border border-primary/20"
+                  />
+                </div>
                 Af {featured.author?.name || 'Slettet Bruger'}
               </span>
               <Link href={`/posts/${featured.slug}`} className="text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors hover:underline underline-offset-4">
@@ -199,12 +201,14 @@ export default async function Home() {
 
                         <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
                           <span className="text-xs font-semibold text-muted-foreground flex items-center gap-2">
-                            <ImageWithFallback
-                              src={post.author?.profileImage || getFallbackImage(post.author?.id, 'avatar')}
-                              fallbackSrc={getFallbackImage(post.author?.id, 'avatar')}
-                              alt={`Profilbillede af forfatter ${post.author?.name || 'Slettet'}`}
-                              className="rounded-full object-cover w-6 h-6 bg-background/50 border border-primary/20"
-                            />
+                            <div className="relative w-6 h-6 shrink-0">
+                              <ImageWithFallback
+                                src={post.author?.profileImage || getFallbackImage(post.author?.id, 'avatar')}
+                                fallbackSrc={getFallbackImage(post.author?.id, 'avatar')}
+                                alt={`Profilbillede af forfatter ${post.author?.name || 'Slettet'}`}
+                                className="rounded-full object-cover bg-background/50 border border-primary/20"
+                              />
+                            </div>
                             Af {post.author?.name || 'Slettet Bruger'}
                           </span>
                         </div>
