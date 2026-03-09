@@ -12,11 +12,13 @@ interface ImageWithFallbackProps extends Omit<ImgHTMLAttributes<HTMLImageElement
 }
 
 export default function ImageWithFallback({ src, fallbackSrc, alt, className, sizes, ...rest }: ImageWithFallbackProps) {
+    const [prevSrc, setPrevSrc] = useState(src);
     const [imgSrc, setImgSrc] = useState<string | undefined>(src || undefined);
 
-    // Sync state with props directly in render or just use standard derived state
-    if (src && src !== imgSrc) {
-        setImgSrc(src);
+    // Sync state with props directly in render but ONLY when the prop actually changes
+    if (src !== prevSrc) {
+        setPrevSrc(src);
+        setImgSrc(src || undefined);
     }
 
     return (
