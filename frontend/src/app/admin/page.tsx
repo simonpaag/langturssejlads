@@ -35,24 +35,29 @@ export default function AdminDashboard() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
         const headers = { 'Authorization': `Bearer ${token}` };
 
+        const handleData = (setter: any) => (data: any) => {
+            if (Array.isArray(data)) setter(data);
+            else console.error('API returnerede ikke et array for:', data);
+        };
+
         if (activeTab === 'logs') {
-            if (logs.length === 0) fetch(`${apiUrl}/api/admin/logs`, { headers }).then(r => r.json()).then(setLogs).catch(() => { });
-            if (sentEmails.length === 0) fetch(`${apiUrl}/api/admin/emails/sent`, { headers }).then(r => r.json()).then(setSentEmails).catch(() => { });
-            if (gitLogs.length === 0) fetch(`${apiUrl}/api/admin/git-logs`, { headers }).then(r => r.json()).then(setGitLogs).catch(() => { });
+            if (logs.length === 0) fetch(`${apiUrl}/api/admin/logs`, { headers }).then(r => r.json()).then(handleData(setLogs)).catch(() => { });
+            if (sentEmails.length === 0) fetch(`${apiUrl}/api/admin/emails/sent`, { headers }).then(r => r.json()).then(handleData(setSentEmails)).catch(() => { });
+            if (gitLogs.length === 0) fetch(`${apiUrl}/api/admin/git-logs`, { headers }).then(r => r.json()).then(handleData(setGitLogs)).catch(() => { });
         } else if (activeTab === 'users' && users.length === 0) {
-            fetch(`${apiUrl}/api/admin/users`, { headers }).then(r => r.json()).then(setUsers).catch(() => { });
+            fetch(`${apiUrl}/api/admin/users`, { headers }).then(r => r.json()).then(handleData(setUsers)).catch(() => { });
         } else if (activeTab === 'boats' && boats.length === 0) {
-            fetch(`${apiUrl}/api/admin/boats`, { headers }).then(r => r.json()).then(setBoats).catch(() => { });
+            fetch(`${apiUrl}/api/admin/boats`, { headers }).then(r => r.json()).then(handleData(setBoats)).catch(() => { });
         } else if (activeTab === 'posts' && posts.length === 0) {
-            fetch(`${apiUrl}/api/admin/posts`, { headers }).then(r => r.json()).then(setPosts).catch(() => { });
+            fetch(`${apiUrl}/api/admin/posts`, { headers }).then(r => r.json()).then(handleData(setPosts)).catch(() => { });
         } else if (activeTab === 'faqs' && faqs.length === 0) {
-            fetch(`${apiUrl}/api/admin/faqs`, { headers }).then(r => r.json()).then(setFaqs).catch(() => { });
+            fetch(`${apiUrl}/api/admin/faqs`, { headers }).then(r => r.json()).then(handleData(setFaqs)).catch(() => { });
         } else if (activeTab === 'emails' && templates.length === 0) {
-            fetch(`${apiUrl}/api/admin/emails/templates`, { headers }).then(r => r.json()).then(setTemplates).catch(() => { });
+            fetch(`${apiUrl}/api/admin/emails/templates`, { headers }).then(r => r.json()).then(handleData(setTemplates)).catch(() => { });
         } else if (activeTab === 'ads' && ads.length === 0) {
-            fetch(`${apiUrl}/api/admin/ads`, { headers }).then(r => r.json()).then(setAds).catch(() => { });
+            fetch(`${apiUrl}/api/admin/ads`, { headers }).then(r => r.json()).then(handleData(setAds)).catch(() => { });
         } else if (activeTab === 'ideas' && ideas.length === 0) {
-            fetch(`${apiUrl}/api/admin/ideas`, { headers }).then(r => r.json()).then(setIdeas).catch(() => { });
+            fetch(`${apiUrl}/api/admin/ideas`, { headers }).then(r => r.json()).then(handleData(setIdeas)).catch(() => { });
         }
     }, [activeTab, isLoading]);
 

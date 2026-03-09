@@ -22,6 +22,7 @@ const MenuBar = ({ editor, isUploading, onSelectImage }: { editor: any, isUpload
     }
 
     const toggleLink = () => {
+        if (typeof window === 'undefined') return;
         const previousUrl = editor.getAttributes('link').href;
         const url = window.prompt('Indtast URL', previousUrl);
 
