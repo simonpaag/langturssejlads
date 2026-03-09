@@ -37,22 +37,20 @@ export interface Post {
   voyage: { id: number; title: string } | null;
 }
 
-import { unstable_noStore as noStore } from 'next/cache';
 import { Ship, Sailboat, ChevronRight, User } from 'lucide-react';
 import InviteCard from '@/components/InviteCard';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function Home() {
-  noStore();
   // Fetch from our Node.js backend
   let allPosts: Post[] = [];
   let activeAds: any[] = [];
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
     const [postsRes, adsRes] = await Promise.all([
-      fetch(`${apiUrl}/api/posts`, { cache: 'no-store' }),
-      fetch(`${apiUrl}/api/posts/ads`, { cache: 'no-store' })
+      fetch(`${apiUrl}/api/posts`, { next: { revalidate: 60 } }),
+      fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
     ]);
 
     if (postsRes.ok) allPosts = await postsRes.json();

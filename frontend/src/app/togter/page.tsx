@@ -1,10 +1,6 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Calendar, Anchor, ArrowRight, Ship, Users } from 'lucide-react';
-import { format, isFuture, isPast } from 'date-fns';
-import AnimatedLoader from '@/components/AnimatedLoader';
+import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 import { getFallbackImage } from '@/utils/fallbackImage';
 import ImageWithFallback from '@/components/ImageWithFallback';
@@ -31,37 +27,29 @@ interface Voyage {
     boat: Boat;
 }
 
-export default function VoyagesOverviewPage() {
-    const [voyages, setVoyages] = useState<Voyage[]>([]);
-    const [ads, setAds] = useState<Ad[]>([]);
-    const [loading, setLoading] = useState(true);
+export const revalidate = 60; // Cachet i 60 sekunder på Vercel
 
-    useEffect(() => {
-        const fetchVoyagesAndAds = async () => {
-            try {
-                const [voyagesRes, adsRes] = await Promise.all([
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com'}/api/voyages`, { cache: 'no-store' }),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com'}/api/posts/ads`, { cache: 'no-store' })
-                ]);
+export default async function VoyagesOverviewPage() {
+    let voyages: Voyage[] = [];
+    let ads: Ad[] = [];
 
-                if (voyagesRes.ok) {
-                    const data = await voyagesRes.json();
-                    setVoyages(data);
-                }
+    try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        const [voyagesRes, adsRes] = await Promise.all([
+            fetch(`${apiUrl}/api/voyages`, { next: { revalidate: 60 } }),
+            fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
+        ]);
 
-                if (adsRes.ok) {
-                    const adsData = await adsRes.json();
-                    setAds(adsData);
-                }
-            } catch (error) {
-                console.error('Kunne ikke hente togter eller annoncer', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        if (voyagesRes.ok) {
+            voyages = await voyagesRes.json();
+        }
 
-        fetchVoyagesAndAds();
-    }, []);
+        if (adsRes.ok) {
+            ads = await adsRes.json();
+        }
+    } catch (error) {
+        console.error('Kunne ikke hente togter eller annoncer', error);
+    }
 
     const now = new Date();
 
@@ -140,14 +128,6 @@ export default function VoyagesOverviewPage() {
             </div>
         </Link>
     );
-
-    if (loading) {
-        return (
-            <div className="min-h-screen pt-32 pb-24 flex justify-center items-center">
-                <AnimatedLoader className="scale-125" text="Henter Togter..." />
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-background">

@@ -67,7 +67,7 @@ export default async function BoatsPage() {
                     <Ship className="w-6 h-6" />
                 </div>
                 <div>
-                    <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Hjælp os med at bygge platformen! ⚓️</h3>
+                    <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Hjælp os med at få flere både med! ⚓️</h3>
                     <p className="text-muted-foreground leading-relaxed font-medium">
                         Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
                         Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-primary hover:underline font-bold">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen. Sammen skaber vi Danmarks fedeste mødested for langturssejlere!
