@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus, Lightbulb } from 'lucide-react';
-import RichTextEditor from '@/components/RichTextEditor';
+import dynamic from 'next/dynamic';
 import ImageUpload from '@/components/ImageUpload';
 import AnimatedLoader from '@/components/AnimatedLoader';
+
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
 export default function AdminDashboard() {
     const router = useRouter();

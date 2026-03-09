@@ -10,8 +10,10 @@ import MultiImageUpload from '@/components/MultiImageUpload';
 import Inbox from '@/components/dashboard/Inbox';
 import CrewManager from '@/components/dashboard/CrewManager';
 import NoBoatDashboard from '@/components/dashboard/NoBoatDashboard';
-import RichTextEditor from '@/components/RichTextEditor';
+import dynamic from 'next/dynamic';
 import AnimatedLoader from '@/components/AnimatedLoader';
+
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
 export default function Dashboard() {
     const router = useRouter();
