@@ -43,11 +43,11 @@ export default async function GasterPage() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <header className="relative py-16 md:py-20 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[35vh] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
+            <header className="relative py-20 lg:py-24 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] lg:min-h-[450px] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
                 <img
                     src="/images/gaster-hero-team.png"
                     alt="Gaster og sejlere på dækket"
-                    className="absolute inset-0 w-full h-full object-cover opacity-60"
+                    className="absolute inset-0 w-full h-full object-cover object-[center_25%] opacity-60"
                 />
                 <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
