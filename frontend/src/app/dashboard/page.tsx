@@ -12,6 +12,7 @@ import CrewManager from '@/components/dashboard/CrewManager';
 import NoBoatDashboard from '@/components/dashboard/NoBoatDashboard';
 import dynamic from 'next/dynamic';
 import AnimatedLoader from '@/components/AnimatedLoader';
+import WpConnectorModal from '@/components/WpConnectorModal';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
@@ -39,6 +40,9 @@ export default function Dashboard() {
     const [voyages, setVoyages] = useState<any[]>([]);
     const [voyageTitle, setVoyageTitle] = useState('');
     const [voyageDescription, setVoyageDescription] = useState('');
+
+    // Modal states
+    const [isWpModalOpen, setIsWpModalOpen] = useState(false);
     const [voyageFrom, setVoyageFrom] = useState('');
     const [voyageTo, setVoyageTo] = useState('');
     const [voyageImage, setVoyageImage] = useState('');
@@ -484,9 +488,20 @@ export default function Dashboard() {
                 <div className="max-w-3xl mx-auto">
                     {activeTab === 'write' ? (
                         <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
-                            <div className="p-6 border-b border-border bg-muted/30">
-                                <h1 className="text-2xl font-bold font-merriweather">{editingPostId ? 'Rediger Logbog' : 'Offentliggør på Logbogen'}</h1>
-                                <p className="text-muted-foreground mt-1">{editingPostId ? 'Ret i din udgivelse herunder' : `Hvad har ${currentBoat?.name || 'I'} oplevet for nylig?`}</p>
+                            <div className="p-6 border-b border-border bg-muted/30 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                                <div>
+                                    <h1 className="text-2xl font-bold font-merriweather">{editingPostId ? 'Rediger Logbog' : 'Offentliggør på Logbogen'}</h1>
+                                    <p className="text-muted-foreground mt-1">{editingPostId ? 'Ret i din udgivelse herunder' : `Hvad har ${currentBoat?.name || 'I'} oplevet for nylig?`}</p>
+                                </div>
+                                {!editingPostId && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsWpModalOpen(true)}
+                                        className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#0066cc] bg-[#0066cc]/10 hover:bg-[#0066cc]/20 px-4 py-2 sm:py-2.5 rounded-full transition-colors border border-[#0066cc]/20 whitespace-nowrap"
+                                    >
+                                        NB: Har du Wordpress?
+                                    </button>
+                                )}
                             </div>
 
                             <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-6">
@@ -920,6 +935,11 @@ export default function Dashboard() {
                     ) : null}
                 </div>
             </main>
+
+            <WpConnectorModal
+                isOpen={isWpModalOpen}
+                onClose={() => setIsWpModalOpen(false)}
+            />
         </div>
     );
 }
