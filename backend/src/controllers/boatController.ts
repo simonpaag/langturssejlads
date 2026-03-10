@@ -136,13 +136,32 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
+        // Format the URL to automatically include https:// if forgotten
+        const formattedWebsiteUrl = websiteUrl 
+            ? (websiteUrl.startsWith('http://') || websiteUrl.startsWith('https://') ? websiteUrl : `https://${websiteUrl}`) 
+            : websiteUrl;
+
+        // Format social links
+        let formattedSocialLinks = socialLinks;
+        if (Array.isArray(socialLinks)) {
+            formattedSocialLinks = socialLinks.map((link: any) => {
+                if (link && link.url && typeof link.url === 'string') {
+                    const lUrl = link.url.trim();
+                    if (lUrl && !lUrl.startsWith('http://') && !lUrl.startsWith('https://')) {
+                        return { ...link, url: `https://${lUrl}` };
+                    }
+                }
+                return link;
+            });
+        }
+
         // Update the boat
         const updateData: any = {
             description,
             coverImage,
             profileImage,
-            websiteUrl,
-            socialLinks,
+            websiteUrl: formattedWebsiteUrl,
+            socialLinks: formattedSocialLinks,
             boatModel,
         };
 

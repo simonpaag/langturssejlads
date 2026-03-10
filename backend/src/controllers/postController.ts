@@ -26,12 +26,17 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
         const slugStr = title ? `${title}-${Date.now()}` : `post-${Date.now()}`;
         const slug = slugify(slugStr, { lower: true, strict: true });
 
+        // Auto format youtubeUrl if provided without protocol
+        const formattedYoutubeUrl = youtubeUrl 
+            ? (youtubeUrl.startsWith('http://') || youtubeUrl.startsWith('https://') ? youtubeUrl : `https://${youtubeUrl}`) 
+            : youtubeUrl;
+
         const newPost = await prisma.post.create({
             data: {
                 slug,
                 title,
                 content,
-                youtubeUrl,
+                youtubeUrl: formattedYoutubeUrl,
                 imageUrl,
                 imageUrls: imageUrls || [],
                 postType: postType || 'QUICK_TEXT',
@@ -328,12 +333,17 @@ export const updatePost = async (req: AuthRequest, res: Response): Promise<void>
             newSlug = slugify(`${title}-${Date.now()}`, { lower: true, strict: true });
         }
 
+        // Auto format youtubeUrl if provided without protocol
+        const formattedYoutubeUrl = youtubeUrl 
+            ? (youtubeUrl.startsWith('http://') || youtubeUrl.startsWith('https://') ? youtubeUrl : `https://${youtubeUrl}`) 
+            : undefined;
+
         const updatedPost = await prisma.post.update({
             where: { id: Number(id) },
             data: {
                 title: title !== undefined ? title : undefined,
                 content: content !== undefined ? content : undefined,
-                youtubeUrl: youtubeUrl !== undefined ? youtubeUrl : undefined,
+                youtubeUrl: youtubeUrl !== undefined ? formattedYoutubeUrl : undefined,
                 imageUrl: imageUrl !== undefined ? imageUrl : undefined,
                 imageUrls: imageUrls !== undefined ? imageUrls : undefined,
                 postType: postType !== undefined ? postType : undefined,
