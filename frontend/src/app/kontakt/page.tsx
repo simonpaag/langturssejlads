@@ -31,6 +31,20 @@ export default function KontaktPage() {
                                 Vi brænder for at samle danske langturssejlere her på den nye portal. Tøv ikke med at række ud – lille som stor opgave, vi kan hurtigt få dit indhold formateret og lagt flot op.
                             </p>
 
+                            <div className="flex items-center gap-6 mb-8 bg-muted/30 p-4 rounded-3xl border border-border/50">
+                                <div className="w-24 h-24 shrink-0 rounded-full overflow-hidden border-4 border-background shadow-md bg-muted">
+                                    <img
+                                        src="https://github.com/simonpaag.png"
+                                        alt="Simon Paag"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg font-merriweather">Simon Paag</h3>
+                                    <p className="text-xs text-primary font-bold uppercase tracking-widest">Platform Ansvarlig</p>
+                                </div>
+                            </div>
+
                             <div className="space-y-6">
                                 <a href="tel:+4526712897" className="flex items-center gap-5 group p-4 -ml-4 rounded-2xl hover:bg-muted/50 transition-colors">
                                     <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-sm group-hover:scale-105 group-hover:shadow-md">
@@ -72,6 +86,6 @@ export default function KontaktPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

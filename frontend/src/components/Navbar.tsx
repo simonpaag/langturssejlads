@@ -178,6 +178,32 @@ export default function Navbar() {
                 </div>
             </div>
 
+            {/* Navigation Links */}
+            <div className="border-y border-border/60 shadow-sm sticky top-0 bg-background/95 backdrop-blur-xl z-[70] transition-colors duration-300">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex h-12 sm:h-14 justify-start sm:justify-center items-center space-x-6 sm:space-x-12 overflow-x-auto no-scrollbar">
+                        {pathname !== "/" && (
+                            <Link href="/" className="shrink-0 text-foreground text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors whitespace-nowrap">
+                                Forside
+                            </Link>
+                        )}
+                        <Link href="/boats" className="shrink-0 text-foreground text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors whitespace-nowrap">
+                            Både til søs
+                        </Link>
+                        <Link href="/togter" className="shrink-0 text-foreground text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors whitespace-nowrap">
+                            Togter
+                        </Link>
+                        <Link href="/gaster" className="shrink-0 text-foreground text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors whitespace-nowrap">
+                            Gaster
+                        </Link>
+                        <Link href="/faq" className="shrink-0 text-foreground text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:text-primary transition-colors whitespace-nowrap">
+                            <span className="hidden sm:inline">Lær om langfart</span>
+                            <span className="sm:hidden">Lær mere</span>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
             {/* Main Masthead - Only show on Home Page (/) */}
             {pathname === "/" && (
                 <div className="relative w-full overflow-hidden bg-black mb-0 shadow-2xl">
@@ -222,32 +248,6 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
-
-            {/* Navigation Links */}
-            <div className="border-y border-border/60 shadow-sm sticky top-0 bg-background/80 backdrop-blur-xl z-50 transition-colors duration-300">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-14 justify-center items-center space-x-8 md:space-x-12 overflow-x-auto no-scrollbar">
-                        {pathname !== "/" && (
-                            <Link href="/" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                                Forside
-                            </Link>
-                        )}
-                        <Link href="/boats" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Både til søs
-                        </Link>
-                        <Link href="/togter" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Togter
-                        </Link>
-                        <Link href="/gaster" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            Gaster
-                        </Link>
-                        <Link href="/faq" className="text-foreground text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors whitespace-nowrap">
-                            <span className="hidden sm:inline">Lær om langfart</span>
-                            <span className="sm:hidden">Lær</span>
-                        </Link>
-                    </div>
-                </div>
-            </div>
         </nav>
     );
 }
