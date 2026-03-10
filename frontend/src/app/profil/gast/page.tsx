@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, UserCircle2, ArrowLeft, Info } from 'lucide-react';
+import { Save, UserCircle2, ArrowLeft, Info, Images } from 'lucide-react';
 import Link from 'next/link';
+import MultiImageUpload from '@/components/MultiImageUpload';
 
 export default function GastProfilePage() {
     const router = useRouter();
@@ -214,10 +215,19 @@ export default function GastProfilePage() {
                                 </div>
                             </div>
 
-                            {/* Bemærk: Dette er klargjort til upload. MultipleImageUpload integration kan tilføjes efter behov */}
-                            <div className="bg-primary/5 border border-primary/20 p-5 rounded-xl mt-4">
-                                <p className="text-sm font-bold text-primary mb-1">Flere billeder på vej</p>
-                                <p className="text-xs text-muted-foreground">Billedkarrusellen for gaster er under udvikling. Lige nu er det dit primære profilbillede der er dit ansigt udadtil.</p>
+                            <div className="pt-6 mt-4">
+                                <label className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-foreground/80 mb-3">
+                                    <Images className="w-4 h-4 text-primary" /> Billedkarrusel <span className="text-muted-foreground ml-1" style={{ textTransform: 'none' }}>(Valgfrit - men et kæmpe plus!)</span>
+                                </label>
+                                <div className="bg-background rounded-2xl border border-border/80 overflow-hidden">
+                                    <MultiImageUpload
+                                        currentImages={galleryImages}
+                                        onUploadSuccess={setGalleryImages}
+                                    />
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-3 leading-relaxed max-w-2xl">
+                                    Tilføj op til 10 billeder af dig selv, dine tidligere togter, eller bare for at vise din personlighed. Billederne vil køre i et galleri øverst på din profil, ligesom når man kigger på en båd.
+                                </p>
                             </div>
                         </div>
 
