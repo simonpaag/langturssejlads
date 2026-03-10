@@ -37,6 +37,19 @@ export const getCrewProfileByUserId = async (req: Request, res: Response): Promi
                         id: true,
                         name: true,
                         profileImage: true,
+                        crewMemberships: {
+                            include: {
+                                boat: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        slug: true,
+                                        profileImage: true,
+                                        isActive: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
