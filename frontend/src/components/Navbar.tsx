@@ -255,7 +255,7 @@ export default function Navbar() {
                                     <Ship className="w-6 h-6" />
                                 </span>
                                 <h2 className="text-3xl font-bold font-merriweather leading-tight text-blue-500 drop-shadow-sm">
-                                    Så er platformen live! 🎉
+                                    Så er Langturssejlads live! 🎉
                                 </h2>
                             </div>
                             <p className="text-base leading-relaxed font-medium">
