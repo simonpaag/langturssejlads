@@ -87,6 +87,10 @@ export default function GastProfilePage() {
 
             if (res.ok) {
                 setMessage({ text: 'Din profil som gast er gemt og opdateret!', type: 'success' });
+                // Redirect to profile to encourage filling out general info
+                setTimeout(() => {
+                    router.push('/profil');
+                }, 1000);
             } else {
                 const errData = await res.json();
                 setMessage({ text: errData.error || 'Noget gik galt.', type: 'error' });
