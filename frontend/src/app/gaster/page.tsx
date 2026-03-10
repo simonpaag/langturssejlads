@@ -43,28 +43,36 @@ export default async function GasterPage() {
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <header className="relative py-16 md:py-20 px-4 bg-muted/40 overflow-hidden flex flex-col justify-center min-h-[20vh] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
+            <header className="relative py-16 md:py-20 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[35vh] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
+                <img
+                    src="/images/gaster-hero-team.png"
+                    alt="Gaster og sejlere på dækket"
+                    className="absolute inset-0 w-full h-full object-cover opacity-60"
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
+
                 <div className="max-w-7xl mx-auto relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
                     <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 w-full">
-                        <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5">Ledige Køjeblokke</span>
-                        <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-foreground tracking-tight drop-shadow-sm">Find Gast</h1>
-                        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-medium">
+                        <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 inline-block drop-shadow-md bg-black/30 px-4 py-1.5 rounded-full border border-primary/20 backdrop-blur-sm">Ledige Køjeblokke</span>
+                        <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white tracking-tight drop-shadow-xl">Find Gast</h1>
+                        <p className="text-xl md:text-2xl text-white/90 max-w-2xl leading-relaxed font-medium drop-shadow-lg">
                             Står du og mangler et par ekstra hænder ombord? Her kan du browse igennem eventyrlystne gaster, der drømmer om at komme afsted.
                         </p>
-                        <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-foreground text-background px-6 py-3 rounded-full shadow-md inline-block">
+                        <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-primary/90 text-white px-6 py-3 rounded-full shadow-xl border border-white/10 inline-block backdrop-blur">
                             {gaster.length} Aktive Profiler
                         </div>
                     </div>
 
                     {/* Frivillige Info Boks (Tilpasset Gaster) - Post-it style */}
-                    <div className="w-full max-w-md lg:w-[450px] shrink-0 bg-primary/10 backdrop-blur-md border border-primary/30 rounded-3xl p-6 md:p-8 flex flex-col gap-5 text-left shadow-2xl transform lg:-rotate-2 lg:hover:rotate-0 transition-all duration-300">
+                    <div className="w-full max-w-md lg:w-[450px] shrink-0 bg-black/40 backdrop-blur-md border border-white/20 rounded-3xl p-6 md:p-8 flex flex-col gap-5 text-left shadow-2xl transform lg:-rotate-2 lg:hover:rotate-0 transition-all duration-300">
                         <div className="flex items-center gap-4">
-                            <span className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20 text-primary shadow-inner shrink-0">
+                            <span className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20 text-white shadow-inner shrink-0">
                                 <UserCircle2 className="w-6 h-6" />
                             </span>
-                            <h3 className="text-xl md:text-2xl font-bold font-merriweather text-foreground drop-shadow-sm leading-tight">Er du selv gast? ⛵️</h3>
+                            <h3 className="text-xl md:text-2xl font-bold font-merriweather text-white drop-shadow-sm leading-tight">Er du selv gast? ⛵️</h3>
                         </div>
-                        <p className="text-foreground/90 leading-relaxed font-medium">
+                        <p className="text-white/90 leading-relaxed font-medium">
                             Platformen er åben for alle vandhunde. Meld dig ind, byg din Gaste-profil og bliv fundet af bådejere, der står og mangler lige netop dig til den næste store krydsning.
                             <br />
                             <GastLink />
