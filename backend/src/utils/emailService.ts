@@ -171,3 +171,52 @@ export const sendJoinRequestEmail = async (toEmail: string, requesterName: strin
         return { success: false, error };
     }
 };
+
+export const sendClaimBoatEmail = async (requesterEmail: string, boatName: string) => {
+    try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) return { success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK' };
+
+        const resend = new Resend(apiKey);
+        let subject = `Anmodning om ejer-rolle på ${boatName}`;
+
+        const { data, error } = await resend.emails.send({
+            from: 'Langturssejlads.dk <info@langturssejlads.dk>',
+            to: ['dase@hansen.tdcadsl.dk'], // Using the admin email specified by the user
+            subject: subject,
+            html: `
+                <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #111;">
+                    <h2 style="color: #0f2c59; font-family: 'Merriweather', serif; font-size: 24px; margin-bottom: 24px;">Ny anmodning om ejerskab</h2>
+                    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+                        Brugeren <strong>${requesterEmail}</strong> anmoder om at blive gjort til Kaptajn / Ejer for den ejerløse båd <strong>${boatName}</strong>. 
+                        Gå ind i PosseidonAdmin (Både -> Rediger Skib) for evt at invitere deres mail manuelt.
+                    </p>
+                    <div style="text-align: center; margin: 40px 0;">
+                        <a href="https://langturssejlads.dk/admin" style="background-color: #0f2c59; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+                            Gå til PosseidonAdmin
+                        </a>
+                    </div>
+                </div>
+            `,
+        });
+
+        // Also log the email in SentEmail 
+        try {
+             await prisma.sentEmail.create({
+                 data: {
+                     toEmail: 'dase@hansen.tdcadsl.dk',
+                     subject: subject,
+                     status: error ? 'FAILED' : 'DELIVERED',
+                     errorMsg: error ? JSON.stringify(error) : null,
+                 }
+             });
+         } catch (logError) {
+             console.error('Failed to log sent email', logError);
+         }
+
+        if (error) return { success: false, error };
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error };
+    }
+};

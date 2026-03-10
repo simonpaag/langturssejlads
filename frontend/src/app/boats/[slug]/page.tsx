@@ -52,6 +52,7 @@ import { unstable_noStore as noStore } from 'next/cache';
 import PostVotes from '@/components/PostVotes';
 import Noticeboard from '@/components/Noticeboard';
 import ContactForm from '@/components/ContactForm';
+import ClaimBoatForm from '@/components/ClaimBoatForm';
 import { getFallbackImage } from '@/utils/fallbackImage';
 import ImageWithFallback from '@/components/ImageWithFallback';
 
@@ -155,6 +156,10 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
                     </div>
                 </div>
             </div >
+
+            {boat.crewMemberships.length === 0 && (
+                <ClaimBoatForm boatId={boat.id} boatName={boat.name} />
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 

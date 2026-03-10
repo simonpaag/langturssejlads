@@ -57,6 +57,7 @@ export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise
 
         try {
             const emailResult = await sendCrewInviteEmail(email, token, boat.name, rolesMap[role || 'CREW']);
+            
             // Log til SentEmail for debugging
             await prisma.sentEmail.create({
                 data: {
@@ -66,8 +67,18 @@ export const inviteCrewMember = async (req: AuthRequest, res: Response): Promise
                     errorMsg: emailResult.error ? JSON.stringify(emailResult.error) : null,
                 }
             });
+
+            if (!emailResult.success) {
+                // Slet invitationen igen, da mailen ikke kunne sendes
+                await prisma.boatInvitation.delete({ where: { token } });
+                res.status(500).json({ error: 'Kunne ikke udsende email netop nu.' });
+                return;
+            }
         } catch (emailError) {
-            console.error('Kritisk fejl under udsendelse af email, men invitation er oprettet i databasen:', emailError);
+            console.error('Kritisk fejl under udsendelse af email:', emailError);
+            await prisma.boatInvitation.delete({ where: { token } });
+            res.status(500).json({ error: 'Systemfejl under afsendelse af email.' });
+            return;
         }
 
         res.status(201).json({ message: 'Invitation sendt!' });

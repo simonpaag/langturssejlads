@@ -6,15 +6,19 @@ import slugify from 'slugify';
 
 export const createBoat = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const { name, description, coverImage, profileImage, boatModel, length, width, tonnage, bunks } = req.body;
+        const { name, description, coverImage, profileImage, boatModel, length, width, tonnage, bunks, skipOwner } = req.body;
         const userId = req.user?.userId;
 
         if (!userId) {
             res.status(401).json({ error: 'Unauthorized' });
             return;
         }
+        
+        // Ensure only system admins can use the skipOwner flag
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        const canSkipOwner = skipOwner && user?.isSystemAdmin;
 
-        // Create the boat and assign the creator as OWNER safely in a transaction
+        // Create the boat and assign the creator as OWNER safely in a transaction (unless skipOwner is set by an admin)
         const newBoat = await prisma.$transaction(async (tx) => {
             const boat = await tx.boat.create({
                 data: {
@@ -31,13 +35,15 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
                 },
             });
 
-            await tx.crewMember.create({
-                data: {
-                    userId,
-                    boatId: boat.id,
-                    role: 'OWNER',
-                },
-            });
+            if (!canSkipOwner) {
+                await tx.crewMember.create({
+                    data: {
+                        userId,
+                        boatId: boat.id,
+                        role: 'OWNER',
+                    },
+                });
+            }
 
             return boat;
         });
@@ -195,5 +201,46 @@ export const updateBoardStatus = async (req: AuthRequest, res: Response): Promis
     } catch (error) {
         console.error('Update board status error:', error);
         res.status(500).json({ error: 'Der opstod en fejl' });
+    }
+};
+
+export const claimBoatRequest = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const boatId = parseInt(req.params.id as string);
+        const { email } = req.body;
+
+        if (!email) {
+            res.status(400).json({ error: 'Email er påkrævet' });
+            return;
+        }
+
+        const boat = await prisma.boat.findUnique({
+            where: { id: boatId },
+            include: { crewMemberships: true }
+        });
+
+        if (!boat) {
+            res.status(404).json({ error: 'Båden blev ikke fundet' });
+            return;
+        }
+
+        if (boat.crewMemberships.length > 0) {
+            res.status(400).json({ error: 'Denne båd har allerede en fuld besætning tilknyttet' });
+            return;
+        }
+
+        const { sendClaimBoatEmail } = await import('../utils/emailService');
+        const emailResult = await sendClaimBoatEmail(email, boat.name);
+
+        if (!emailResult.success) {
+            console.error('Kunne ikke sende claim email', emailResult.error);
+            res.status(500).json({ error: 'Kunne ikke sende anmodningen just nu, prøv igen.' });
+            return;
+        }
+
+        res.json({ message: 'Anmodning sendt med succes' });
+    } catch (error) {
+        console.error('Claim boat request error:', error);
+        res.status(500).json({ error: 'Der opstod en systemfejl' });
     }
 };

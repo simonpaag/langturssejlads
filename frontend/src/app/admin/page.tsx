@@ -163,12 +163,92 @@ function TabButton({ active, onClick, icon, label }: { active: boolean, onClick:
 // TABS COMPONENTS
 
 function BoatsTab({ boats, setBoats }: { boats: any[], setBoats: any }) {
+    const [isCreating, setIsCreating] = useState(false);
+    const [name, setName] = useState('');
+    const [length, setLength] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleCreateSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setIsSaving(true);
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/boats`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ name, length, skipOwner: true })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                // Fetch the new list or prepend it. The endpoint returns the newly created boat, but doesn't include crewMemberships right away in the response of POST, so let's refetch or manually construct it.
+                // Refetch to be safe since it's admin
+                const listRes = await fetch(`${apiUrl}/api/admin/boats`, { headers: { 'Authorization': `Bearer ${token}` }});
+                if (listRes.ok) {
+                    const latestBoats = await listRes.json();
+                    setBoats(latestBoats);
+                }
+                setIsCreating(false);
+                setName('');
+                setLength('');
+            } else {
+                setError(data.error || 'Kunne ikke oprette båden');
+            }
+        } catch (err: any) {
+            setError(err.message || 'Systemfejl');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     return (
         <div>
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-merriweather font-bold">Bådkatalog</h2>
-                <span className="text-sm text-muted-foreground font-bold">{boats.length} registrerede både</span>
+                <div>
+                    <h2 className="text-2xl font-merriweather font-bold">Bådkatalog</h2>
+                    <span className="text-sm text-muted-foreground font-bold">{boats.length} registrerede både</span>
+                </div>
+                <button
+                    onClick={() => { setIsCreating(!isCreating); setError(''); }}
+                    className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full transition-colors ${isCreating ? 'bg-muted text-foreground hover:bg-muted/80' : 'bg-primary text-primary-foreground hover:bg-primary/90'}`}
+                >
+                    {isCreating ? 'Afbryd' : '+ Opret Båd (Ejerløs)'}
+                </button>
             </div>
+
+            {isCreating && (
+                <form onSubmit={handleCreateSubmit} className="mb-8 p-6 lg:p-8 border border-border shadow-sm bg-background rounded-2xl">
+                    <h3 className="text-lg font-merriweather font-bold mb-6 text-primary border-b border-border/50 pb-2">
+                        Opret Ejerløs Båd
+                    </h3>
+                    
+                    {error && (
+                        <div className="mb-6 p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-xl text-sm font-medium">
+                            {error}
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">Bådens Navn *</label>
+                            <input required type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="F.eks. S/Y Nordstjernen" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase text-muted-foreground">Længde i fod</label>
+                            <input type="number" step="0.1" value={length} onChange={e => setLength(e.target.value)} className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary" placeholder="F.eks. 35" />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-border/50">
+                        <button type="button" onClick={() => setIsCreating(false)} className="px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:bg-muted transition-colors">Annuller</button>
+                        <button type="submit" disabled={isSaving || !name} className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-6 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-md disabled:opacity-50">
+                            {isSaving ? 'Gemmer...' : 'Opret Båd'}
+                        </button>
+                    </div>
+                </form>
+            )}
 
             <div className="overflow-x-auto rounded-xl border border-border/50 shadow-sm">
                 <table className="w-full text-sm text-left">
