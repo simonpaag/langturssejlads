@@ -1,5 +1,6 @@
-import { Mail, Phone, Anchor } from 'lucide-react';
+import { Mail, Phone, Anchor, ArrowRightLeft, ShieldCheck, Download } from 'lucide-react';
 import Link from 'next/link';
+import WpConnectorForm from '@/components/WpConnectorForm';
 
 export const metadata = {
     title: 'Kontakt os - Langturssejlads.dk',
@@ -85,7 +86,44 @@ export default function KontaktPage() {
                         </div>
                     </div>
                 </div>
+
+                {/* WordPress Connector Section */}
+                <div className="mt-16 pt-16 border-t border-border/40 relative z-10">
+                    <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 text-blue-600 font-bold text-sm tracking-widest uppercase mb-6 border border-blue-500/20">
+                                <ArrowRightLeft className="w-4 h-4" />
+                                Nyhed: WordPress Connector
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-6 font-merriweather text-foreground leading-tight">
+                                Forbind din egen turblog automatisk
+                            </h2>
+                            <div className="space-y-6 text-muted-foreground leading-relaxed">
+                                <p>
+                                    Har du allerede en populær rejseblog kørende på WordPress? Med vores nye <strong>WordPress Connector</strong> kan indholdet på din blog skydes direkte over på Langturssejlads, helt af sig selv.
+                                </p>
+                                <ul className="space-y-4">
+                                    <li className="flex items-start gap-3">
+                                        <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                        <span><strong>Fuld kontrol:</strong> Du kan selv tilføje, redigere eller slette det hele direkte fra platformen, præcis når det passer dig.</span>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <Download className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                                        <span><strong>Dit data er dit:</strong> Ønsker du at forlade os igen? Intet problem. Du kan nemt downloade al dit maritime indhold og tage det med videre hjem til havnen. Læs mere i vores <Link href="/rettigheder" className="text-primary hover:underline font-bold">betingelser og vilkår for indholdsdeling</Link>.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Formular-komponenten */}
+                        <div className="relative">
+                            {/* Decorative blob behind the form */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-full blur-3xl -z-10"></div>
+                            <WpConnectorForm />
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div >
+        </div>
     );
 }
