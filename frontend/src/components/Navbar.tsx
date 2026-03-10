@@ -254,16 +254,21 @@ export default function Navbar() {
                                 <span className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-950 text-yellow-400 shadow-inner shrink-0">
                                     <Ship className="w-6 h-6" />
                                 </span>
-                                <h2 className="text-2xl font-bold font-merriweather leading-tight">
+                                <h2 className="text-3xl font-bold font-merriweather leading-tight text-blue-500 drop-shadow-sm">
                                     Så er platformen live! 🎉
                                 </h2>
                             </div>
                             <p className="text-base leading-relaxed font-medium">
                                 Vi mangler flere både og gaster. Hvis du har en båd eller noget indhold, du gerne vil have hjælp med at publicere, står vi klar til at hjælpe.
                             </p>
-                            <Link href="/kontakt" className="mt-2 w-full bg-yellow-950 text-yellow-400 px-6 py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-colors text-center shadow-lg">
-                                Kontakt Os
-                            </Link>
+                            <div className="mt-2 flex flex-col items-center gap-3">
+                                <Link href="/kontakt" className="w-full bg-yellow-950 text-yellow-400 px-6 py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-colors text-center shadow-lg">
+                                    Kontakt Os
+                                </Link>
+                                <Link href="/register" className="text-sm font-semibold font-merriweather text-yellow-950/70 hover:text-blue-600 transition-colors uppercase tracking-wide">
+                                    eller opret dig
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
