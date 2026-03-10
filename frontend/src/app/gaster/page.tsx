@@ -53,22 +53,22 @@ export default async function GasterPage() {
                     <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-foreground text-background px-6 py-3 rounded-full shadow-md">
                         {gaster.length} Aktive Profiler
                     </div>
+
+                    {/* Frivillige Info Boks (Tilpasset Gaster) - Flyttet ind i topbanneret */}
+                    <div className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-2xl transition-transform hover:-translate-y-1 duration-300">
+                        <div className="bg-primary/20 p-4 rounded-full text-primary shrink-0 shadow-inner">
+                            <UserCircle2 className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold font-merriweather text-foreground mb-2 drop-shadow-sm">Er du selv gast? ⛵️</h3>
+                            <p className="text-foreground/90 leading-relaxed font-medium">
+                                Platformen er åben for alle vandhunde. Meld dig ind, byg din Gaste-profil og bliv fundet af bådejere, der står og mangler lige netop dig til den næste store krydsning.
+                                <GastLink />.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </header>
-
-            {/* Frivillige Info Boks (Tilpasset Gaster) */}
-            <div className="mb-16 bg-primary/5 border border-primary/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-sm">
-                <div className="bg-primary/10 p-4 rounded-full text-primary shrink-0">
-                    <UserCircle2 className="w-6 h-6" />
-                </div>
-                <div>
-                    <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Er du selv gast? ⛵️</h3>
-                    <p className="text-muted-foreground leading-relaxed font-medium">
-                        Platformen er åben for alle vandhunde. Meld dig ind, byg din Gaste-profil og bliv fundet af bådejere, der står og mangler lige netop dig til den næste store krydsning.
-                        <GastLink />.
-                    </p>
-                </div>
-            </div>
 
             {gaster.length === 0 ? (
                 <div className="text-center py-20 bg-muted/20 border border-border/50 rounded-3xl">

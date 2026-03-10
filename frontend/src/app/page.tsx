@@ -68,26 +68,6 @@ export default async function Home() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
-      {/* Midlertidig Call-To-Action Banner */}
-      <div className="bg-primary/10 border border-primary/20 rounded-3xl p-6 md:p-8 mb-14 lg:mb-20 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground shadow-sm">
-              <Ship className="w-4 h-4" />
-            </span>
-            <h2 className="text-xl md:text-2xl font-bold font-merriweather text-foreground">
-              Så er det nye Langturssejlads.dk live! 🎉
-            </h2>
-          </div>
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-3xl">
-            Vi mangler flere både og gaster på den nye platform. Hvis du har en båd eller noget indhold, du gerne vil have hjælp med at publicere, så står vi klar og hjælper dig rigtig gerne helt i mål.
-          </p>
-        </div>
-        <Link href="/kontakt" className="w-full md:w-auto shrink-0 bg-foreground text-background px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary transition-colors hover:shadow-lg hover:-translate-y-1 transform duration-200 text-center whitespace-nowrap">
-          Kontakt Os
-        </Link>
-      </div>
-
       {/* Hero Welcome Section */}
       <div className="mb-14 lg:mb-20 text-center max-w-3xl mx-auto flex flex-col items-center">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-merriweather font-black tracking-tight text-foreground/80 mb-2">

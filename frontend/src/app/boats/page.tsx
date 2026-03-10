@@ -58,22 +58,22 @@ export default async function BoatsPage() {
                     <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-primary/90 text-white px-6 py-3 rounded-full backdrop-blur shadow-xl border border-white/10">
                         Registeret: {boats.length} både
                     </div>
+
+                    {/* Frivillige Info Boks */}
+                    <div className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-md border border-white/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-2xl transition-transform hover:-translate-y-1 duration-300">
+                        <div className="bg-primary/20 p-4 rounded-full text-white shrink-0 shadow-inner">
+                            <Ship className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold font-merriweather text-white mb-2 drop-shadow-sm">Hjælp os med at få flere både med! ⚓️</h3>
+                            <p className="text-white/90 leading-relaxed font-medium">
+                                Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
+                                Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-white hover:text-primary transition-colors underline font-bold underline-offset-4">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen. Sammen skaber vi Danmarks fedeste mødested for langturssejlere!
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </header>
-
-            {/* Frivillige Info Boks */}
-            <div className="mb-16 bg-primary/5 border border-primary/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-sm">
-                <div className="bg-primary/10 p-4 rounded-full text-primary shrink-0">
-                    <Ship className="w-6 h-6" />
-                </div>
-                <div>
-                    <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Hjælp os med at få flere både med! ⚓️</h3>
-                    <p className="text-muted-foreground leading-relaxed font-medium">
-                        Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
-                        Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-primary hover:underline font-bold">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen. Sammen skaber vi Danmarks fedeste mødested for langturssejlere!
-                    </p>
-                </div>
-            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                 {boats.map((boat, idx) => {

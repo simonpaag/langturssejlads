@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { UserCircle, LogOut, Compass, Menu, X, Settings } from 'lucide-react';
+import { UserCircle, LogOut, Compass, Menu, X, Settings, Ship } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -243,6 +243,26 @@ export default function Navbar() {
                                 className="w-full sm:w-auto px-6 py-2.5 text-sm bg-primary text-primary-foreground font-bold rounded-full hover:bg-primary/90 transition-all border border-transparent shadow-lg"
                             >
                                 Vær med
+                            </Link>
+                        </div>
+
+                        {/* Midlertidig Call-To-Action Banner - Flyttet fra page.tsx */}
+                        <div className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-md border border-white/20 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl transition-transform hover:-translate-y-1 duration-300 text-left">
+                            <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white shadow-inner">
+                                        <Ship className="w-4 h-4" />
+                                    </span>
+                                    <h2 className="text-xl md:text-2xl font-bold font-merriweather text-white drop-shadow-sm">
+                                        Så er det nye Langturssejlads.dk live! 🎉
+                                    </h2>
+                                </div>
+                                <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-3xl font-medium">
+                                    Vi mangler flere både og gaster på den nye platform. Hvis du har en båd eller noget indhold, du gerne vil have hjælp med at publicere, så står vi klar og hjælper dig rigtig gerne helt i mål.
+                                </p>
+                            </div>
+                            <Link href="/kontakt" className="w-full md:w-auto shrink-0 bg-white text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary hover:text-white transition-colors hover:shadow-lg transform duration-200 text-center whitespace-nowrap border border-white/20">
+                                Kontakt Os
                             </Link>
                         </div>
                     </div>
