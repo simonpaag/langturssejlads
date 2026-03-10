@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Save, LogOut, Bell, Ship, CheckSquare } from 'lucide-react';
+import { Save, LogOut, Bell, Ship, CheckSquare, UserCircle } from 'lucide-react';
+import Link from 'next/link';
 import ImageUpload from '@/components/ImageUpload';
 
 export default function ProfilePage() {
@@ -122,6 +123,19 @@ export default function ProfilePage() {
 
                     {/* Hovedindhold form */}
                     <form onSubmit={handleSave} className="p-8 md:p-10 flex flex-col gap-8">
+                        {/* Gasteopslag Box */}
+                        <div className="bg-primary/5 p-5 md:p-6 rounded-2xl border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h2 className="text-lg font-bold font-merriweather text-foreground flex items-center gap-2 mb-1">
+                                    <UserCircle className="w-5 h-5 text-primary" /> Mit Gasteopslag
+                                </h2>
+                                <p className="text-sm text-muted-foreground">Søger du en båd? Administrer din gasteprofil, og bliv fundet af bådejere.</p>
+                            </div>
+                            <Link href="/profil/gast" className="px-5 py-2.5 bg-primary text-primary-foreground font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-primary/90 transition-all shadow-md w-full sm:w-auto text-center shrink-0">
+                                Gå til Gasteopslag
+                            </Link>
+                        </div>
+
                         {message.text && (
                             <div className={`p-4 rounded-xl text-sm font-bold flex items-center gap-2 ${message.type === 'success' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-destructive/10 text-destructive border border-destructive/20'}`}>
                                 <span className={`w-2 h-2 rounded-full ${message.type === 'success' ? 'bg-primary' : 'bg-destructive'} animate-pulse`}></span>

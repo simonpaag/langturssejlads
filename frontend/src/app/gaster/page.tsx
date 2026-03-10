@@ -3,6 +3,7 @@ import { UserCircle2, ArrowRight, Anchor } from 'lucide-react';
 import ImageWithFallback from '@/components/ImageWithFallback';
 import { getFallbackImage } from '@/utils/fallbackImage';
 import AdCard from '@/components/AdCard';
+import GastLink from '@/components/gaster/GastLink';
 
 interface CrewProfile {
     id: number;
@@ -25,7 +26,7 @@ export default async function GasterPage() {
     let gaster: CrewProfile[] = [];
     let activeAds: any[] = [];
     try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://langturssejlads-api-103499885172.europe-north1.run.app';
         const [gasterRes, adsRes] = await Promise.all([
             fetch(`${apiUrl}/api/crew-profiles`, { next: { revalidate: 60 } }),
             fetch(`${apiUrl}/api/posts/ads`, { next: { revalidate: 60 } })
@@ -64,7 +65,7 @@ export default async function GasterPage() {
                     <h3 className="text-xl font-bold font-merriweather text-foreground mb-2">Er du selv gast? ⛵️</h3>
                     <p className="text-muted-foreground leading-relaxed font-medium">
                         Platformen er åben for alle vandhunde. Meld dig ind, byg din Gaste-profil og bliv fundet af bådejere, der står og mangler lige netop dig til den næste store krydsning.
-                        <Link href="/profil/gast" className="text-primary hover:underline font-bold ml-2">Opret gasteprofil gratis nu</Link>.
+                        <GastLink />.
                     </p>
                 </div>
             </div>

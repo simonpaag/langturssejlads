@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool, Mail, Users } from 'lucide-react';
+import { Ship, PenLine, LogOut, Type, Image as ImageIcon, Video, FileText, Compass, MapPin, Trash2, Clock, CheckSquare, PencilLine, Route, Settings, Eye, AlertTriangle, PenTool, Mail, Users, UserCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import PostManager from '@/components/dashboard/PostManager';
@@ -461,6 +461,14 @@ export default function Dashboard() {
                             <span className="font-medium">Administrer Logbøger</span>
                         </button>
                     )}
+
+                    <Link
+                        href="/profil/gast"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors hover:bg-muted text-foreground mt-2 border-t border-border/50 pt-5"
+                    >
+                        <UserCircle className="h-5 w-5" />
+                        <span className="font-medium">Mit Gasteopslag</span>
+                    </Link>
                 </nav>
 
                 <div className="p-4 border-t border-border mt-auto">
