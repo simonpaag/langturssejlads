@@ -215,53 +215,53 @@ export default function Navbar() {
                     />
                     <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
 
-                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-48 mt-[15%] md:mt-12 flex flex-col items-center justify-center text-center">
-                        <FifthElement className="mb-6 text-white/90 drop-shadow-md" />
-                        <Link href="/" className="group drop-shadow-lg">
-                            <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-white group-hover:text-primary transition-colors">
-                                Langturssejlads
-                            </h1>
-                        </Link>
-                        <p className="mt-6 text-sm md:text-base font-bold uppercase tracking-widest text-zinc-300 max-w-2xl balance drop-shadow-md">
-                            Følg de danske sejlere på langfart på de syv verdenshave.
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
-                            <a
-                                href="https://www.facebook.com/groups/Langturssejlads/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full sm:w-auto px-6 py-2.5 text-sm bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2"
-                            >
-                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                                </svg>
-                                Facebook Gruppe
-                            </a>
-                            <Link
-                                href="/register"
-                                className="w-full sm:w-auto px-6 py-2.5 text-sm bg-primary text-primary-foreground font-bold rounded-full hover:bg-primary/90 transition-all border border-transparent shadow-lg"
-                            >
-                                Vær med
+                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-32 lg:py-48 mt-[15%] md:mt-12 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+                        <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 w-full">
+                            <FifthElement className="mb-6 text-white/90 drop-shadow-md" />
+                            <Link href="/" className="group drop-shadow-lg">
+                                <h1 className="font-merriweather font-black text-5xl md:text-7xl xl:text-8xl tracking-tighter text-white group-hover:text-primary transition-colors">
+                                    Langturssejlads
+                                </h1>
                             </Link>
+                            <p className="mt-6 text-sm md:text-base font-bold uppercase tracking-widest text-zinc-300 max-w-2xl balance drop-shadow-md">
+                                Følg de danske sejlere på langfart på de syv verdenshave.
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mt-8">
+                                <a
+                                    href="https://www.facebook.com/groups/Langturssejlads/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full sm:w-auto px-6 py-2.5 text-sm bg-[#1877F2] hover:bg-[#1877F2]/90 text-white font-bold rounded-full transition-all flex items-center justify-center gap-2"
+                                >
+                                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                    </svg>
+                                    Facebook Gruppe
+                                </a>
+                                <Link
+                                    href="/register"
+                                    className="w-full sm:w-auto px-6 py-2.5 text-sm bg-primary text-primary-foreground font-bold rounded-full hover:bg-primary/90 transition-all border border-transparent shadow-lg"
+                                >
+                                    Vær med
+                                </Link>
+                            </div>
                         </div>
 
-                        {/* Midlertidig Call-To-Action Banner - Flyttet fra page.tsx */}
-                        <div className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-md border border-white/20 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl transition-transform hover:-translate-y-1 duration-300 text-left">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white shadow-inner">
-                                        <Ship className="w-4 h-4" />
-                                    </span>
-                                    <h2 className="text-xl md:text-2xl font-bold font-merriweather text-white drop-shadow-sm">
-                                        Så er det nye Langturssejlads.dk live! 🎉
-                                    </h2>
-                                </div>
-                                <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-3xl font-medium">
-                                    Vi mangler flere både og gaster på den nye platform. Hvis du har en båd eller noget indhold, du gerne vil have hjælp med at publicere, så står vi klar og hjælper dig rigtig gerne helt i mål.
-                                </p>
+                        {/* Midlertidig Call-To-Action Banner - Post-it style */}
+                        <div className="w-full max-w-md lg:w-[450px] shrink-0 bg-yellow-400/95 dark:bg-yellow-500/90 text-yellow-950 backdrop-blur-md shadow-2xl rounded-2xl p-8 transform lg:rotate-3 lg:hover:rotate-0 transition-all duration-300 flex flex-col gap-5 border border-yellow-300">
+                            <div className="flex items-center gap-4">
+                                <span className="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-950 text-yellow-400 shadow-inner shrink-0">
+                                    <Ship className="w-6 h-6" />
+                                </span>
+                                <h2 className="text-2xl font-bold font-merriweather leading-tight">
+                                    Så er platformen live! 🎉
+                                </h2>
                             </div>
-                            <Link href="/kontakt" className="w-full md:w-auto shrink-0 bg-white text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary hover:text-white transition-colors hover:shadow-lg transform duration-200 text-center whitespace-nowrap border border-white/20">
+                            <p className="text-base leading-relaxed font-medium">
+                                Vi mangler flere både og gaster. Hvis du har en båd eller noget indhold, du gerne vil have hjælp med at publicere, står vi klar til at hjælpe.
+                            </p>
+                            <Link href="/kontakt" className="mt-2 w-full bg-yellow-950 text-yellow-400 px-6 py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-black hover:text-white transition-colors text-center shadow-lg">
                                 Kontakt Os
                             </Link>
                         </div>

@@ -44,28 +44,31 @@ export default async function GasterPage() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <header className="relative py-16 md:py-20 px-4 bg-muted/40 overflow-hidden flex flex-col justify-center min-h-[20vh] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
-                <div className="max-w-7xl mx-auto relative z-10 w-full flex flex-col items-center">
-                    <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 block px-4 py-1 rounded-full border border-primary/20 bg-primary/5">Ledige Køjeblokke</span>
-                    <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-foreground tracking-tight drop-shadow-sm">Find Gast</h1>
-                    <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-                        Står du og mangler et par ekstra hænder ombord? Her kan du browse igennem eventyrlystne gaster, der drømmer om at komme afsted.
-                    </p>
-                    <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-foreground text-background px-6 py-3 rounded-full shadow-md">
-                        {gaster.length} Aktive Profiler
+                <div className="max-w-7xl mx-auto relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+                    <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 w-full">
+                        <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 inline-block px-4 py-1 rounded-full border border-primary/20 bg-primary/5">Ledige Køjeblokke</span>
+                        <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-foreground tracking-tight drop-shadow-sm">Find Gast</h1>
+                        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-medium">
+                            Står du og mangler et par ekstra hænder ombord? Her kan du browse igennem eventyrlystne gaster, der drømmer om at komme afsted.
+                        </p>
+                        <div className="mt-8 text-sm font-bold uppercase tracking-widest bg-foreground text-background px-6 py-3 rounded-full shadow-md inline-block">
+                            {gaster.length} Aktive Profiler
+                        </div>
                     </div>
 
-                    {/* Frivillige Info Boks (Tilpasset Gaster) - Flyttet ind i topbanneret */}
-                    <div className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-2xl transition-transform hover:-translate-y-1 duration-300">
-                        <div className="bg-primary/20 p-4 rounded-full text-primary shrink-0 shadow-inner">
-                            <UserCircle2 className="w-6 h-6" />
+                    {/* Frivillige Info Boks (Tilpasset Gaster) - Post-it style */}
+                    <div className="w-full max-w-md lg:w-[450px] shrink-0 bg-primary/10 backdrop-blur-md border border-primary/30 rounded-3xl p-6 md:p-8 flex flex-col gap-5 text-left shadow-2xl transform lg:-rotate-2 lg:hover:rotate-0 transition-all duration-300">
+                        <div className="flex items-center gap-4">
+                            <span className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20 text-primary shadow-inner shrink-0">
+                                <UserCircle2 className="w-6 h-6" />
+                            </span>
+                            <h3 className="text-xl md:text-2xl font-bold font-merriweather text-foreground drop-shadow-sm leading-tight">Er du selv gast? ⛵️</h3>
                         </div>
-                        <div>
-                            <h3 className="text-xl font-bold font-merriweather text-foreground mb-2 drop-shadow-sm">Er du selv gast? ⛵️</h3>
-                            <p className="text-foreground/90 leading-relaxed font-medium">
-                                Platformen er åben for alle vandhunde. Meld dig ind, byg din Gaste-profil og bliv fundet af bådejere, der står og mangler lige netop dig til den næste store krydsning.
-                                <GastLink />.
-                            </p>
-                        </div>
+                        <p className="text-foreground/90 leading-relaxed font-medium">
+                            Platformen er åben for alle vandhunde. Meld dig ind, byg din Gaste-profil og bliv fundet af bådejere, der står og mangler lige netop dig til den næste store krydsning.
+                            <br />
+                            <GastLink />
+                        </p>
                     </div>
                 </div>
             </header>

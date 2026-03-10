@@ -143,25 +143,27 @@ export default async function VoyagesOverviewPage() {
                 <div className="absolute bottom-0 left-0 right-0 h-2/3 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent opacity-80"></div>
 
-                <div className="max-w-7xl mx-auto relative z-10 text-center flex flex-col items-center">
-                    <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 block drop-shadow-md bg-black/30 px-4 py-1.5 rounded-full border border-primary/20 backdrop-blur-sm">Eventyr Venter</span>
-                    <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white drop-shadow-xl tracking-tight">Vil du til søs?</h1>
-                    <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg font-medium">
-                        Find din næste drømmerejse over de store oceaner, eller dyk ned i sejlerhistorier fra hele verden.
-                    </p>
+                <div className="max-w-7xl mx-auto relative z-10 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+                    <div className="flex flex-col items-center lg:items-start text-center lg:text-left flex-1 w-full">
+                        <span className="text-sm font-bold tracking-widest text-primary uppercase mb-4 inline-block drop-shadow-md bg-black/30 px-4 py-1.5 rounded-full border border-primary/20 backdrop-blur-sm">Eventyr Venter</span>
+                        <h1 className="text-5xl md:text-7xl font-bold font-merriweather mb-6 text-white drop-shadow-xl tracking-tight">Vil du til søs?</h1>
+                        <p className="text-xl md:text-2xl text-white/90 max-w-2xl leading-relaxed drop-shadow-lg font-medium">
+                            Find din næste drømmerejse over de store oceaner, eller dyk ned i sejlerhistorier fra hele verden.
+                        </p>
+                    </div>
 
-                    {/* Frivillige Info Boks - Flyttet ind i topbanneret */}
-                    <div className="mt-12 lg:mt-16 w-full max-w-4xl mx-auto bg-black/40 backdrop-blur-md border border-white/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center sm:items-start text-left shadow-2xl transition-transform hover:-translate-y-1 duration-300">
-                        <div className="bg-primary/20 p-4 rounded-full text-white shrink-0 shadow-inner">
-                            <Ship className="w-6 h-6" />
+                    {/* Frivillige Info Boks - Post-it style */}
+                    <div className="w-full max-w-md lg:w-[450px] shrink-0 bg-black/40 backdrop-blur-md border border-white/20 rounded-3xl p-6 md:p-8 flex flex-col gap-5 text-left shadow-2xl transform lg:rotate-2 lg:hover:rotate-0 transition-all duration-300">
+                        <div className="flex items-center gap-4">
+                            <span className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20 text-white shadow-inner shrink-0">
+                                <Ship className="w-6 h-6" />
+                            </span>
+                            <h3 className="text-xl md:text-2xl font-bold font-merriweather text-white drop-shadow-sm leading-tight">Hjælp os med at bygge platformen! ⚓️</h3>
                         </div>
-                        <div>
-                            <h3 className="text-xl font-bold font-merriweather text-white mb-2 drop-shadow-sm">Hjælp os med at bygge platformen! ⚓️</h3>
-                            <p className="text-white/90 leading-relaxed font-medium">
-                                Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
-                                Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-white hover:text-primary transition-colors underline font-bold underline-offset-4">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen. Sammen skaber vi Danmarks fedeste mødested for langturssejlere!
-                            </p>
-                        </div>
+                        <p className="text-white/90 leading-relaxed font-medium">
+                            Langturssejlads.dk er drevet af frivillige kræfter og passionen for havet. Vi mangler altid flere både på landkortet og spændende togter at drømme os væk i.
+                            Vil du være med til at opbygge fællesskabet? <Link href="/opret-baad" className="text-white hover:text-primary transition-colors underline font-bold underline-offset-4">Opret din båd gratis i dag</Link>, tilføj dine togter, eller skriv forslag til os i logbogen.
+                        </p>
                     </div>
                 </div>
             </header>
