@@ -63,7 +63,7 @@ export default async function LearnAboutSailing() {
                             <p className="text-white/90 leading-relaxed font-medium">
                                 Brænder du for et sejlads-relateret emne og vil du hjælpe fællesskabet ved at skrive en kort artikel, vi kan udgive her?
                                 <br /><br />
-                                Så ræk ud til os på <a href="mailto:simon@paag.dk" className="text-white hover:text-primary transition-colors underline font-bold underline-offset-4 break-all">simon@paag.dk</a> eller smid en besked i logbogen på Om-siden.
+                                Så ræk ud til os via <Link href="/kontakt" className="text-white hover:text-primary transition-colors underline font-bold underline-offset-4 break-all">vores kontaktside</Link> eller smid en besked i logbogen på Om-siden.
                             </p>
                         </div>
                     </div>
