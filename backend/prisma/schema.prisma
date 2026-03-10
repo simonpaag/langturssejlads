@@ -28,6 +28,7 @@ model User {
   auditLogs       AuditLog[]
   subscriptions   NotificationSubscription[]
   joinRequests    JoinRequest[]
+  crewProfile     CrewProfile?
 }
 
 model Boat {
@@ -40,6 +41,7 @@ model Boat {
   websiteUrl   String?
   socialLinks  Json?     // [{ platform: 'Instagram', url: '...' }]
   isBoardPublic Boolean  @default(true)
+  isActive      Boolean  @default(true)
   
   // Specs
   boatModel    String?   // Model
@@ -107,6 +109,30 @@ model JoinRequest {
   createdAt DateTime @default(now())
   
   @@unique([userId, boatId]) // En bruger kan kun anmode én gang pr båd
+}
+
+// ----------------------------------------------------
+// Crew / Gast Profile System
+// ----------------------------------------------------
+model CrewProfile {
+  id              Int       @id @default(autoincrement())
+  userId          Int       @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Obligatorisk (eller primær)
+  description     String    // Lille profiltekst
+  
+  // Periode / Tidsrum (tekst er nemmest for gasten, evt kombineret med løse dates senere)
+  availablePeriod String?   // F.eks. "Sommeren 2026", "Når som helst" eller faste datoer skrevet ind
+  
+  // Ikke obligatorisk
+  experience      String?   // Sejlererfaring
+  homePort        String?   // Hjemhavn
+  galleryImages   String[]  @default([]) // Flere billeder uploadet af personen
+  
+  isActive        Boolean   @default(true) // Om de p.t. søger
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 enum PostType {

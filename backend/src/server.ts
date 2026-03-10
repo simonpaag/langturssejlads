@@ -25,11 +25,13 @@ import faqRoutes from './routes/faqRoutes';
 import searchRoutes from './routes/searchRoutes';
 import adminRoutes from './routes/adminRoutes';
 import ideaRoutes from './routes/ideaRoutes';
+import crewProfileRoutes from './routes/crewProfileRoutes';
 
 // We will import and mount routes here later
 app.use('/api/auth', authRoutes);
 app.use('/api/boats', boatRoutes);
 app.use('/api/crew', crewRoutes);
+app.use('/api/crew-profiles', crewProfileRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/voyages', voyageRoutes);
 app.use('/api', boardMessageRoutes); // Mounts to /api/boats/:id/messages and /api/messages/:id

@@ -64,6 +64,7 @@ export default function Dashboard() {
     const [boatWidth, setBoatWidth] = useState('');
     const [boatTonnage, setBoatTonnage] = useState('');
     const [boatBunks, setBoatBunks] = useState('');
+    const [isBoatActive, setIsBoatActive] = useState(true);
     const [isSubmittingBoat, setIsSubmittingBoat] = useState(false);
 
     const [isBoardPublic, setIsBoardPublic] = useState(true);
@@ -147,6 +148,7 @@ export default function Dashboard() {
             setBoatWebsiteUrl(currentBoat.websiteUrl || '');
             setBoatSocialLinks(Array.isArray(currentBoat.socialLinks) ? currentBoat.socialLinks : []);
             setIsBoardPublic(currentBoat.isBoardPublic ?? true);
+            setIsBoatActive(currentBoat.isActive ?? true);
             setBoatModel(currentBoat.boatModel || '');
             setBoatLength(currentBoat.length?.toString() || '');
             setBoatWidth(currentBoat.width?.toString() || '');
@@ -314,7 +316,8 @@ export default function Dashboard() {
                     length: boatLength,
                     width: boatWidth,
                     tonnage: boatTonnage,
-                    bunks: boatBunks
+                    bunks: boatBunks,
+                    isActive: isBoatActive
                 })
             });
 
@@ -903,6 +906,20 @@ export default function Dashboard() {
                                         className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${isBoardPublic ? 'bg-primary' : 'bg-muted-foreground/30'} flex-shrink-0 disabled:opacity-50`}
                                     >
                                         <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isBoardPublic ? 'translate-x-5' : 'translate-x-0'}`} />
+                                    </button>
+                                </div>
+
+                                <div className="p-5 border border-border rounded-2xl bg-muted/10 flex items-center justify-between gap-4">
+                                    <div>
+                                        <h3 className="block text-sm font-semibold">Tilmeldt Langturssejlads.dk</h3>
+                                        <p className="text-xs text-muted-foreground mt-1">Når denne er slået fra, vises din båd ikke på oversigten længere – og udefrakommende gaster kan ikke søge den frem.</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsBoatActive(!isBoatActive)}
+                                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${isBoatActive ? 'bg-primary' : 'bg-muted-foreground/30'} flex-shrink-0 disabled:opacity-50`}
+                                    >
+                                        <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isBoatActive ? 'translate-x-5' : 'translate-x-0'}`} />
                                     </button>
                                 </div>
 

@@ -57,6 +57,7 @@ export const getBoats = async (req: AuthRequest, res: Response): Promise<void> =
         const skip = (page - 1) * limit;
 
         const boats = await prisma.boat.findMany({
+            where: { isActive: true },
             include: {
                 crewMemberships: {
                     include: {
@@ -108,7 +109,7 @@ export const getBoatBySlug = async (req: AuthRequest, res: Response): Promise<vo
 export const updateBoat = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
         const boatId = parseInt(req.params.id as string);
-        const { name, description, coverImage, profileImage, websiteUrl, socialLinks, boatModel, length, width, tonnage, bunks } = req.body;
+        const { name, description, coverImage, profileImage, websiteUrl, socialLinks, boatModel, length, width, tonnage, bunks, isActive } = req.body;
         const userId = req.user?.userId;
 
         if (!userId) {
@@ -149,6 +150,10 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
         if (name) {
             updateData.name = name;
             updateData.slug = slugify(name, { lower: true, strict: true });
+        }
+
+        if (isActive !== undefined) {
+            updateData.isActive = Boolean(isActive);
         }
 
         const updatedBoat = await prisma.boat.update({
