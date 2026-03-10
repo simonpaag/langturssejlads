@@ -131,32 +131,35 @@ export const getLogs = async (req: Request, res: Response): Promise<void> => {
 
 export const getGitLogs = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { exec } = require('child_process');
-        exec('git log -n 50 --pretty=format:"%H|%an|%ae|%ad|%s" --date=iso', (error: any, stdout: string, stderr: string) => {
-            if (error) {
-                console.error(`Error executing git log: ${error.message}`);
-                return res.status(500).json({ error: 'Fejl under indlæsning af git logs' });
+        // Fetch from public GitHub API instead of local git log (since we run in Docker on Cloud Run without .git)
+        const response = await fetch('https://api.github.com/repos/simonpaag/langturssejlads/commits?per_page=50', {
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'PosseidonAdmin-App'
             }
-            if (stderr) {
-                console.warn(`Git log stderr: ${stderr}`);
-            }
-
-            const logs = stdout.trim().split('\n').filter(line => line).map((line) => {
-                const parts = line.split('|');
-                return {
-                    hash: parts[0] || '',
-                    authorName: parts[1] || '',
-                    authorEmail: parts[2] || '',
-                    date: parts[3] || '',
-                    message: parts.slice(4).join('|') || '' // In case message contains '|'
-                };
-            });
-
-            res.json(logs);
         });
+
+        if (!response.ok) {
+            console.error(`GitHub API returned ${response.status}: ${response.statusText}`);
+            res.status(500).json({ error: 'Fejl under indlæsning af git logs fra GitHub' });
+            return;
+        }
+
+        const data = await response.json();
+
+        // Map GitHub API response to the format expected by the frontend
+        const logs = data.map((commitData: any) => ({
+            hash: commitData.sha || '',
+            authorName: commitData.commit?.author?.name || '',
+            authorEmail: commitData.commit?.author?.email || '',
+            date: commitData.commit?.author?.date || '',
+            message: commitData.commit?.message?.split('\n')[0] || '' // Take first line of message
+        }));
+
+        res.json(logs);
     } catch (error) {
         console.error('Error in getGitLogs:', error);
-        res.status(500).json({ error: 'Kunne ikke hente git logs' });
+        res.status(500).json({ error: 'Kunne ikke hente git logs fra GitHub' });
     }
 };
 
