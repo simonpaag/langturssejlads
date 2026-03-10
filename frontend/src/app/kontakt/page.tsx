@@ -34,7 +34,7 @@ export default function KontaktPage() {
                             <div className="flex items-center gap-6 mb-8 bg-muted/30 p-4 rounded-3xl border border-border/50">
                                 <div className="w-24 h-24 shrink-0 rounded-full overflow-hidden border-4 border-background shadow-md bg-muted">
                                     <img
-                                        src="https://github.com/simonpaag.png"
+                                        src="/images/simon_paag_portrait.png"
                                         alt="Simon Paag"
                                         className="w-full h-full object-cover"
                                     />
