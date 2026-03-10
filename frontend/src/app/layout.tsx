@@ -15,6 +15,7 @@ const merriweather = Merriweather({
   display: 'swap',
 });
 
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
@@ -38,6 +39,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <GoogleAnalytics gaId="G-967E7X94FN" />
           {process.env.NEXT_PUBLIC_BUILD_TIME && (
             <div className="fixed bottom-2 right-4 z-[100] text-[10px] font-medium text-muted-foreground/40 pointer-events-none select-none text-right">
               Sidst opdateret: {process.env.NEXT_PUBLIC_BUILD_TIME}
