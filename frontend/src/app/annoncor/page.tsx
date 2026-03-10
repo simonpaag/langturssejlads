@@ -87,9 +87,14 @@ export default function AnnoncorPage() {
                     <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
                         Skriv direkte til projektledelsen for at høre nærmere om mulighederne for at bygge et stærkt partnerskab mellem jeres virksomhed og Langturssejlads.dk.
                     </p>
-                    <a href="https://calendar.app.google/o2CJnC1ispck2ZAw9" target="_blank" rel="noopener noreferrer" className="inline-block bg-primary text-primary-foreground font-bold font-sans py-4 px-10 rounded-full hover:bg-primary/90 transition-all shadow-md text-lg tracking-wide">
-                        Book et møde med os
-                    </a>
+                    <div className="flex flex-col items-center gap-3">
+                        <a href="https://calendar.app.google/o2CJnC1ispck2ZAw9" target="_blank" rel="noopener noreferrer" className="inline-block bg-primary text-primary-foreground font-bold font-sans py-4 px-10 rounded-full hover:bg-primary/90 transition-all shadow-md text-lg tracking-wide">
+                            Book et møde
+                        </a>
+                        <span className="text-xs text-muted-foreground/70 uppercase tracking-widest font-semibold flex items-center gap-1.5 opacity-80">
+                            Åbner kalender booking
+                        </span>
+                    </div>
                 </section>
 
             </main>
