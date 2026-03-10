@@ -134,7 +134,7 @@ export default async function VoyagesOverviewPage() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="relative py-20 lg:py-24 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] lg:min-h-[450px] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
+            <header className="relative py-20 lg:py-24 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] lg:min-h-[450px] border-b border-border/10 text-center mb-16">
                 <img
                     src="/images/togter-hero.jpg"
                     alt="Styrmand på havet"

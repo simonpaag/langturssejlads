@@ -42,8 +42,8 @@ export default async function GasterPage() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <header className="relative py-20 lg:py-24 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] lg:min-h-[450px] border-b border-border/10 text-center -mx-4 sm:-mx-6 lg:-mx-8 mb-16">
+        <div className="min-h-screen bg-background">
+            <header className="relative py-20 lg:py-24 px-4 bg-black overflow-hidden flex flex-col justify-center min-h-[40vh] lg:min-h-[450px] border-b border-border/10 text-center mb-16">
                 <img
                     src="/images/gaster-hero-team.png"
                     alt="Gaster og sejlere på dækket"
@@ -81,61 +81,64 @@ export default async function GasterPage() {
                 </div>
             </header>
 
-            {gaster.length === 0 ? (
-                <div className="text-center py-20 bg-muted/20 border border-border/50 rounded-3xl">
-                    <p className="text-xl text-muted-foreground mb-2">P.t. ingen aktive gaster at finde.</p>
-                    <Link href="/profil/gast" className="font-bold border-b-2 border-primary/50 text-foreground hover:text-primary transition-colors">Vær den første til at oprette dig!</Link>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-                    {gaster.map((profile, idx) => {
-                        const ad = activeAds.find(a => a.placement === idx);
-                        return (
-                            <div className="contents" key={profile.id}>
-                                {ad && (
-                                    <AdCard ad={ad} />
-                                )}
-                                <Link href={`/profil/${profile.userId}`} className="block group">
-                                    <div className="flex flex-col h-full bg-card hover:bg-muted/30 hover:-translate-y-1 transition-all duration-300 rounded-3xl border border-border/80 overflow-hidden shadow-sm hover:shadow-lg">
-                                        <div className="relative w-full aspect-square bg-muted overflow-hidden">
-                                            <ImageWithFallback
-                                                src={profile.user.profileImage}
-                                                fallbackSrc={getFallbackImage(profile.userId, 'avatar')}
-                                                alt={`Gast ${profile.user.name}`}
-                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                                            />
-                                        </div>
-                                        <div className="flex-1 p-6 md:p-8 flex flex-col">
-                                            <h2 className="text-2xl font-merriweather font-bold mb-3 group-hover:text-primary transition-colors">
-                                                {profile.user.name}
-                                            </h2>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
 
-                                            <div className="space-y-3 mb-6 flex-1">
-                                                {profile.availablePeriod && (
-                                                    <div className="flex items-start gap-3">
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground pt-1 w-20 shrink-0">Periode</span>
-                                                        <span className="text-sm font-medium">{profile.availablePeriod}</span>
-                                                    </div>
-                                                )}
-                                                {profile.experience && (
-                                                    <div className="flex items-start gap-3">
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground pt-1 w-20 shrink-0">Erfaring</span>
-                                                        <span className="text-sm font-medium text-muted-foreground line-clamp-2">{profile.experience}</span>
-                                                    </div>
-                                                )}
+                {gaster.length === 0 ? (
+                    <div className="text-center py-20 bg-muted/20 border border-border/50 rounded-3xl">
+                        <p className="text-xl text-muted-foreground mb-2">P.t. ingen aktive gaster at finde.</p>
+                        <Link href="/profil/gast" className="font-bold border-b-2 border-primary/50 text-foreground hover:text-primary transition-colors">Vær den første til at oprette dig!</Link>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+                        {gaster.map((profile, idx) => {
+                            const ad = activeAds.find(a => a.placement === idx);
+                            return (
+                                <div className="contents" key={profile.id}>
+                                    {ad && (
+                                        <AdCard ad={ad} />
+                                    )}
+                                    <Link href={`/profil/${profile.userId}`} className="block group">
+                                        <div className="flex flex-col h-full bg-card hover:bg-muted/30 hover:-translate-y-1 transition-all duration-300 rounded-3xl border border-border/80 overflow-hidden shadow-sm hover:shadow-lg">
+                                            <div className="relative w-full aspect-square bg-muted overflow-hidden">
+                                                <ImageWithFallback
+                                                    src={profile.user.profileImage}
+                                                    fallbackSrc={getFallbackImage(profile.userId, 'avatar')}
+                                                    alt={`Gast ${profile.user.name}`}
+                                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                                                />
                                             </div>
+                                            <div className="flex-1 p-6 md:p-8 flex flex-col">
+                                                <h2 className="text-2xl font-merriweather font-bold mb-3 group-hover:text-primary transition-colors">
+                                                    {profile.user.name}
+                                                </h2>
 
-                                            <div className="border-t border-border pt-4 flex items-center justify-between text-sm font-bold uppercase tracking-widest text-primary group-hover:text-foreground transition-colors">
-                                                Læs mere <ArrowRight className="w-4 h-4" />
+                                                <div className="space-y-3 mb-6 flex-1">
+                                                    {profile.availablePeriod && (
+                                                        <div className="flex items-start gap-3">
+                                                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground pt-1 w-20 shrink-0">Periode</span>
+                                                            <span className="text-sm font-medium">{profile.availablePeriod}</span>
+                                                        </div>
+                                                    )}
+                                                    {profile.experience && (
+                                                        <div className="flex items-start gap-3">
+                                                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground pt-1 w-20 shrink-0">Erfaring</span>
+                                                            <span className="text-sm font-medium text-muted-foreground line-clamp-2">{profile.experience}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="border-t border-border pt-4 flex items-center justify-between text-sm font-bold uppercase tracking-widest text-primary group-hover:text-foreground transition-colors">
+                                                    Læs mere <ArrowRight className="w-4 h-4" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
+                                    </Link>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
