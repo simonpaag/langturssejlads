@@ -11,6 +11,9 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
   - Tilknyttet `@google/genai` SDK'et til at lade Gemini 2.5 strukturere velformaterede HTML artikler på vegne af brugeren the direkte indsættelse i tekst-editoren.
   - **Forbedring:** Udvidet AI backend-kald med *System Instructions* the konversational forståelse, samt aktiveret *Google Search Grounding* så AI'en aktivt slår ny viden op The nettet.
 - **Frontend & Navigation:**
+  - Bygget og integreret `CookieBanner.tsx` som en "Consent Management" løsning. Google Analytics (GA4) er nu default blokeret, unless the besøgende aktivt klikker "Tillad Statistik".
+  - Oprettet `ScriptsContainer` the nem integration af GTM, Meta Pixel osv.
+  - Oprettet `/om/cookies` webside the transparens om cookies på platformen.
   - Løst manglende side-navigation på mobilvisninger ved at indkode 'Både', 'Togter' og 'Vidensbase' links direkte i hamburgermenuens struktur (med flotte Lucide-ikoner for at bevare designlinjen).
 
 
