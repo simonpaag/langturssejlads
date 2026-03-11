@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { UserCircle, LogOut, Compass, Menu, X, Settings, Ship, PenLine, Mail, Users, FileText } from 'lucide-react';
+import { UserCircle, LogOut, Compass, Menu, X, Settings, Ship, PenLine, Mail, Users, FileText, Map, BookOpen } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -152,14 +152,23 @@ export default function Navbar() {
                                             <Compass className="w-5 h-5 text-primary" /> Forside
                                         </Link>
                                     )}
+                                    <Link href="/boats" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        <Ship className="w-5 h-5 text-primary" /> Både til søs
+                                    </Link>
+                                    <Link href="/togter" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        <Map className="w-5 h-5 text-primary" /> Togter
+                                    </Link>
+                                    <Link href="/gaster" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        <UserCircle className="w-5 h-5 text-primary" /> Gaster
+                                    </Link>
+                                    <Link href="/faq" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        <BookOpen className="w-5 h-5 text-primary" /> Lær om langfart
+                                    </Link>
                                     <Link href="/om" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                                         Om Langturssejlads
                                     </Link>
                                     <Link href="/annoncor" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
                                         Bliv annoncør
-                                    </Link>
-                                    <Link href="/gaster" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                                        <UserCircle className="w-5 h-5 text-primary" /> Gaster
                                     </Link>
                                 </>
                             )}
