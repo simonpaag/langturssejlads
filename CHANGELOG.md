@@ -4,12 +4,15 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
-### [2026-03-11] - AI-Powered FAQ Editor
+### [2026-03-11] - AI-Powered FAQ Editor & UI Fixes
 - **Admin Dashboard & Integration:**
   - Oprettet et dedikeret AI-assistent panel ("Spørg Gemini") inde i Vidensbase & FAQ tabben.
   - Implementeret ny backend route (`/api/admin/ai/generate`) beskyttet af system-admin auth.
   - Tilknyttet `@google/genai` SDK'et til at lade Gemini 2.5 strukturere velformaterede HTML artikler på vegne af brugeren the direkte indsættelse i tekst-editoren.
   - **Forbedring:** Udvidet AI backend-kald med *System Instructions* the konversational forståelse, samt aktiveret *Google Search Grounding* så AI'en aktivt slår ny viden op The nettet.
+- **Frontend & Navigation:**
+  - Løst manglende side-navigation på mobilvisninger ved at indkode 'Både', 'Togter' og 'Vidensbase' links direkte i hamburgermenuens struktur (med flotte Lucide-ikoner for at bevare designlinjen).
+
 
 
 ### [2026-03-11] - Notification Center & Smårettelser
