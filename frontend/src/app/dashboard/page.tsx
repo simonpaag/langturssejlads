@@ -41,6 +41,7 @@ export default function Dashboard() {
 
     // Voyage states
     const [voyages, setVoyages] = useState<any[]>([]);
+    const [editingVoyageId, setEditingVoyageId] = useState<number | null>(null);
     const [voyageTitle, setVoyageTitle] = useState('');
     const [voyageDescription, setVoyageDescription] = useState('');
 
@@ -292,8 +293,11 @@ export default function Dashboard() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
 
         try {
-            const res = await fetch(`${apiUrl}/api/voyages`, {
-                method: 'POST',
+            const method = editingVoyageId ? 'PUT' : 'POST';
+            const url = editingVoyageId ? `${apiUrl}/api/voyages/${editingVoyageId}` : `${apiUrl}/api/voyages`;
+            
+            const res = await fetch(url, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -312,13 +316,20 @@ export default function Dashboard() {
                 })
             });
 
-            if (!res.ok) throw new Error('Kunne ikke oprette togt');
+            if (!res.ok) throw new Error(editingVoyageId ? 'Kunne ikke opdatere togt' : 'Kunne ikke oprette togt');
 
-            const newVoyage = await res.json();
-            setVoyages([newVoyage, ...voyages]);
+            const savedVoyage = await res.json();
+            
+            if (editingVoyageId) {
+                setVoyages(voyages.map(v => v.id === editingVoyageId ? savedVoyage : v));
+                alert('Togtet er opdateret!');
+            } else {
+                setVoyages([savedVoyage, ...voyages]);
+                alert('Togtet er oprettet!');
+            }
 
-            alert('Togtet er oprettet!');
             setVoyageTitle(''); setVoyageDescription(''); setVoyageFrom(''); setVoyageTo(''); setVoyageImage(''); setVoyageStart(''); setVoyageEnd(''); setVoyageBunkFee('');
+            setEditingVoyageId(null);
         } catch (error: any) {
             alert(`Fejl: ${error.message}`);
         } finally {
@@ -683,7 +694,7 @@ export default function Dashboard() {
                     ) : activeTab === 'voyages' ? (
                         <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
                             <div className="p-6 border-b border-border bg-muted/30">
-                                <h1 className="text-2xl font-bold font-merriweather">Planlæg Nyt Togt</h1>
+                                <h1 className="text-2xl font-bold font-merriweather">{editingVoyageId ? 'Opdater Togt' : 'Planlæg Nyt Togt'}</h1>
                                 <p className="text-muted-foreground mt-1">Hvor går rejsen hen, og hvem skal med?</p>
                             </div>
                             <form onSubmit={handleVoyageSubmit} className="p-6 flex flex-col gap-6">
@@ -748,9 +759,21 @@ export default function Dashboard() {
                                         onChange={setVoyageDescription}
                                     />
                                 </div>
-                                <div className="flex justify-end pt-4 border-t border-border mt-2">
+                                <div className="flex justify-end gap-3 pt-4 border-t border-border mt-2">
+                                    {editingVoyageId && (
+                                        <button 
+                                            type="button" 
+                                            onClick={() => {
+                                                setEditingVoyageId(null);
+                                                setVoyageTitle(''); setVoyageDescription(''); setVoyageFrom(''); setVoyageTo(''); setVoyageImage(''); setVoyageStart(''); setVoyageEnd(''); setVoyageBunkFee('');
+                                            }}
+                                            className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-muted text-foreground hover:bg-muted/80 transition-colors shadow-sm"
+                                        >
+                                            Annuller
+                                        </button>
+                                    )}
                                     <button type="submit" disabled={isSubmittingVoyage} className="px-6 py-2.5 rounded-full font-bold uppercase tracking-wider text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-50">
-                                        {isSubmittingVoyage ? 'Opretter...' : 'Opret Togt'}
+                                        {isSubmittingVoyage ? (editingVoyageId ? 'Gemmer...' : 'Opretter...') : (editingVoyageId ? 'Opdater Togt' : 'Opret Togt')}
                                     </button>
                                 </div>
                             </form>
@@ -772,9 +795,29 @@ export default function Dashboard() {
                                                         {v.endDate && <span>- {new Date(v.endDate).toLocaleDateString('da-DK')}</span>}
                                                     </div>
                                                 </div>
-                                                <Link href={`/boats/${currentBoat?.slug}/voyages/${v.slug}`} className="px-4 py-2 border-2 border-primary/20 rounded-lg text-sm font-bold text-primary hover:bg-primary/5 transition-colors whitespace-nowrap">
-                                                    Vis Invitation
-                                                </Link>
+                                                <div className="flex items-center gap-2 mt-4 md:mt-0">
+                                                    <button 
+                                                        onClick={() => {
+                                                            setEditingVoyageId(v.id);
+                                                            setVoyageTitle(v.title || '');
+                                                            setVoyageDescription(v.description || '');
+                                                            setVoyageFrom(v.fromLocation || '');
+                                                            setVoyageTo(v.toLocation || '');
+                                                            setVoyageImage(v.imageUrl || '');
+                                                            setVoyageStart(v.startDate ? v.startDate.split('T')[0] : '');
+                                                            setVoyageEnd(v.endDate ? v.endDate.split('T')[0] : '');
+                                                            setVoyageSeats(v.availableSeats?.toString() || '0');
+                                                            setVoyageBunkFee(v.bunkFee || '');
+                                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                        }}
+                                                        className="px-4 py-2 border border-border rounded-lg text-sm font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors whitespace-nowrap flex items-center gap-2"
+                                                    >
+                                                        <PenLine className="w-4 h-4" /> Rediger
+                                                    </button>
+                                                    <Link href={`/boats/${currentBoat?.slug}/voyages/${v.slug}`} className="px-4 py-2 border-2 border-primary/20 rounded-lg text-sm font-bold text-primary hover:bg-primary/5 transition-colors whitespace-nowrap">
+                                                        Vis Invitation
+                                                    </Link>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
