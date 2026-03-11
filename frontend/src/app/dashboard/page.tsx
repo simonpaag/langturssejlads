@@ -20,7 +20,10 @@ export default function Dashboard() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const queryBoatSlug = searchParams.get('boatSlug');
-    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox' | 'crew'>('write');
+    const tabParam = searchParams.get('tab');
+    
+    // Brug tabParam fra URL som default, eller 'write' hvis den ikke findes
+    const [activeTab, setActiveTab] = useState<'write' | 'profile' | 'voyages' | 'posts' | 'inbox' | 'crew'>((tabParam as any) || 'write');
     const [user, setUser] = useState<any>(null);
     const [adminBoat, setAdminBoat] = useState<any>(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
@@ -71,6 +74,13 @@ export default function Dashboard() {
     const [isTogglingBoard, setIsTogglingBoard] = useState(false);
 
     const [unreadCount, setUnreadCount] = useState(0);
+
+    // Lyt til URL ændringer og opdater faneblad
+    useEffect(() => {
+        if (tabParam) {
+            setActiveTab(tabParam as 'write' | 'profile' | 'voyages' | 'posts' | 'inbox' | 'crew');
+        }
+    }, [tabParam]);
 
     useEffect(() => {
         const fetchUser = async () => {

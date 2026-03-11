@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Merriweather } from 'next/font/google';
+import { Suspense } from 'react';
 import './globals.css';
 
 const inter = Inter({
@@ -34,7 +35,9 @@ export default function RootLayout({
     <html lang="da" className={`${inter.variable} ${merriweather.variable}`} suppressHydrationWarning>
       <body className="bg-background text-foreground antialiased min-h-screen flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Navbar />
+          <Suspense fallback={<div className="h-14 bg-background border-b border-border" />}>
+            <Navbar />
+          </Suspense>
           <main className="flex-grow">
             {children}
           </main>

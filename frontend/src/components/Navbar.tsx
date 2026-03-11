@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { UserCircle, LogOut, Compass, Menu, X, Settings, Ship } from 'lucide-react';
+import { UserCircle, LogOut, Compass, Menu, X, Settings, Ship, PenLine, Mail, Users, FileText } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import SearchBar from '@/components/SearchBar';
 import FifthElement from '@/components/FifthElement';
@@ -15,6 +15,7 @@ export default function Navbar() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [user, setUser] = useState<{ id: number; name: string; profileImage?: string | null; isSystemAdmin?: boolean; crewMemberships?: any[] } | null>(null);
 
     useEffect(() => {
@@ -161,10 +162,39 @@ export default function Navbar() {
                                 </Link>
                             )}
                             {(user?.isSystemAdmin || (user && user.crewMemberships && user.crewMemberships.length > 0)) && (
-                                <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-3 mt-2 border-t border-border pt-4">
-                                    <Settings className="w-5 h-5 text-primary" />
-                                    Under Dæk
-                                </Link>
+                                <div className="flex flex-col gap-3 mt-2 border-t border-border pt-4">
+                                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-3">
+                                        <Settings className="w-5 h-5 text-primary" />
+                                        Under Dæk
+                                    </Link>
+                                    
+                                    {/* Dashboard Submenu i Burgermenu for mobil, når man er på dashboardet */}
+                                    {pathname.startsWith('/dashboard') && (
+                                        <div className="flex flex-col gap-3 pl-8 mt-2 border-l-2 border-primary/20">
+                                            <button onClick={() => { router.push('/dashboard?tab=write'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'write' || !searchParams.get('tab') ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                                <PenLine className="w-4 h-4" /> Skriv Logbog
+                                            </button>
+                                            <button onClick={() => { router.push('/dashboard?tab=voyages'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'voyages' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                                <Compass className="w-4 h-4" /> Planlæg Togter
+                                            </button>
+                                            <button onClick={() => { router.push('/dashboard?tab=profile'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'profile' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                                <Ship className="w-4 h-4" /> Bådens Profil
+                                            </button>
+                                            <button onClick={() => { router.push('/dashboard?tab=inbox'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'inbox' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                                <Mail className="w-4 h-4" /> Indbakke
+                                            </button>
+                                            <button onClick={() => { router.push('/dashboard?tab=crew'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'crew' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                                <Users className="w-4 h-4" /> Besætning
+                                            </button>
+                                            <button onClick={() => { router.push('/dashboard?tab=posts'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'posts' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                                <FileText className="w-4 h-4" /> Administrer Logbøger
+                                            </button>
+                                            <Link href="/profil/gast" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium flex items-center gap-2 text-foreground hover:text-primary mt-2">
+                                                <UserCircle className="w-4 h-4" /> Mit Gasteopslag
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
                             )}
                             {(!isLoggedIn && !isAdmin) && (
                                 <div className="pt-4 mt-2 border-t border-border sm:hidden">
@@ -178,8 +208,8 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Navigation Links */}
-            <div className="border-y border-border/60 shadow-sm sticky top-0 bg-background/95 backdrop-blur-xl z-[70] transition-colors duration-300">
+            {/* Navigation Links - Hides on Mobile to make room since they are in the hamburger menu */}
+            <div className="hidden md:block border-y border-border/60 shadow-sm sticky top-0 bg-background/95 backdrop-blur-xl z-[70] transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex h-12 sm:h-14 justify-start sm:justify-center items-center space-x-6 sm:space-x-12 overflow-x-auto no-scrollbar">
                         {pathname !== "/" && (
