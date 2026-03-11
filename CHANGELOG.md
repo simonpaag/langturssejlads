@@ -9,6 +9,7 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
   - Oprettet et dedikeret AI-assistent panel ("Spørg Gemini") inde i Vidensbase & FAQ tabben.
   - Implementeret ny backend route (`/api/admin/ai/generate`) beskyttet af system-admin auth.
   - Tilknyttet `@google/genai` SDK'et til at lade Gemini 2.5 strukturere velformaterede HTML artikler på vegne af brugeren the direkte indsættelse i tekst-editoren.
+  - **Forbedring:** Udvidet AI backend-kald med *System Instructions* the konversational forståelse, samt aktiveret *Google Search Grounding* så AI'en aktivt slår ny viden op The nettet.
 
 
 ### [2026-03-11] - Notification Center & Smårettelser
