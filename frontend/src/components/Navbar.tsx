@@ -141,20 +141,28 @@ export default function Navbar() {
                 <div className="relative z-[50]">
                     {isMenuOpen && (
                         <div className="md:hidden absolute top-0 left-0 w-full bg-background border-b border-border p-6 shadow-2xl flex flex-col gap-5 animate-in slide-in-from-top-4 fade-in duration-200">
-                            {pathname !== "/" && (
-                                <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                                    <Compass className="w-5 h-5 text-primary" /> Forside
+                            {pathname.startsWith('/dashboard') ? (
+                                <Link href="/" onClick={() => setIsMenuOpen(false)} className="font-merriweather font-black text-2xl text-foreground hover:opacity-80 transition-opacity tracking-tight lowercase">
+                                    langturssejlads.dk
                                 </Link>
+                            ) : (
+                                <>
+                                    {pathname !== "/" && (
+                                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                            <Compass className="w-5 h-5 text-primary" /> Forside
+                                        </Link>
+                                    )}
+                                    <Link href="/om" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        Om Langturssejlads
+                                    </Link>
+                                    <Link href="/annoncor" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        Bliv annoncør
+                                    </Link>
+                                    <Link href="/gaster" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
+                                        <UserCircle className="w-5 h-5 text-primary" /> Gaster
+                                    </Link>
+                                </>
                             )}
-                            <Link href="/om" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                                Om Langturssejlads
-                            </Link>
-                            <Link href="/annoncor" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                                Bliv annoncør
-                            </Link>
-                            <Link href="/gaster" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-foreground hover:text-primary flex items-center gap-3">
-                                <UserCircle className="w-5 h-5 text-primary" /> Gaster
-                            </Link>
                             {user?.isSystemAdmin && (
                                 <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-3 mt-2 border-t border-border pt-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
