@@ -74,8 +74,18 @@ export const submitBoatContactMessage = async (req: Request, res: Response): Pro
             return;
         }
 
-        // Tjek om båden findes
-        const boat = await prisma.boat.findUnique({ where: { id: Number(boatId) } });
+        // Tjek om båden findes og træk besætningens emails med
+        const boat = await prisma.boat.findUnique({ 
+            where: { id: Number(boatId) },
+            include: {
+                crewMemberships: {
+                    include: {
+                        user: { select: { email: true } }
+                    }
+                }
+            }
+        });
+        
         if (!boat) {
             res.status(404).json({ error: 'Båden blev ikke fundet.' });
             return;
@@ -90,6 +100,13 @@ export const submitBoatContactMessage = async (req: Request, res: Response): Pro
                 voyageId: voyageId ? Number(voyageId) : undefined,
             }
         });
+
+        // Send email til hele besætningen
+        const crewEmails = boat.crewMemberships.map(cm => cm.user.email).filter(Boolean);
+        if (crewEmails.length > 0) {
+            const { sendNewMessageEmail } = await import('../utils/emailService');
+            await sendNewMessageEmail(crewEmails, boat.name, senderName, message);
+        }
 
         res.status(201).json({
             success: true,
@@ -180,5 +197,35 @@ export const markMessageAsRead = async (req: AuthRequest, res: Response): Promis
     } catch (error) {
         console.error('Mark message read error:', error);
         res.status(500).json({ error: 'Der opstod en serverfejl.' });
+    }
+};
+
+// GET /api/contact/boat/:boatId/unread-count
+// Henter antallet af ulæste beskeder til en specifik båd
+export const getUnreadMessageCount = async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        const { boatId } = req.params;
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+
+        const access = await checkBoatAccess(userId, Number(boatId), req.user?.isSystemAdmin || false);
+
+        if (!access.hasAccess) {
+            res.status(403).json({ error: 'Forbidden. Du har ikke adgang til denne båd.' });
+            return;
+        }
+
+        const count = await prisma.contactMessage.count({
+            where: { boatId: Number(boatId), isRead: false }
+        });
+
+        res.json({ unreadCount: count });
+    } catch (error) {
+        console.error('Get unread count error:', error);
+        res.status(500).json({ error: 'Systemfejl' });
     }
 };

@@ -70,6 +70,8 @@ export default function Dashboard() {
     const [isBoardPublic, setIsBoardPublic] = useState(true);
     const [isTogglingBoard, setIsTogglingBoard] = useState(false);
 
+    const [unreadCount, setUnreadCount] = useState(0);
+
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem('user_token');
@@ -137,6 +139,30 @@ export default function Dashboard() {
     const currentBoat = adminBoat || user?.crewMemberships?.[0]?.boat;
     const myRole = adminBoat ? 'OWNER' : (user?.crewMemberships?.[0]?.role || 'CREW');
     const activeBoatId = currentBoat?.id;
+
+    // Fetch Unread Messages
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            if (activeBoatId) {
+                const token = localStorage.getItem('user_token');
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+                try {
+                    const res = await fetch(`${apiUrl}/api/contact/boat/${activeBoatId}/unread-count`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        setUnreadCount(data.unreadCount);
+                    }
+                } catch (err) {
+                    console.error("Failed to fetch unread count", err);
+                }
+            }
+        };
+        fetchUnreadCount();
+        const interval = setInterval(fetchUnreadCount, 60000); // Tjekker hvert minut
+        return () => clearInterval(interval);
+    }, [activeBoatId]);
 
     // Load initial boat data into state when boat loads
     useEffect(() => {
@@ -441,11 +467,18 @@ export default function Dashboard() {
 
                     {currentBoat && (
                         <button
-                            onClick={() => setActiveTab('inbox')}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'inbox' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
+                            onClick={() => { setActiveTab('inbox'); setUnreadCount(0); }}
+                            className={`flex items-center justify-between px-4 py-3 rounded-xl transition-colors ${activeTab === 'inbox' ? 'bg-primary text-white' : 'hover:bg-muted text-foreground'}`}
                         >
-                            <Mail className="h-5 w-5" />
-                            <span className="font-medium">Indbakke</span>
+                            <div className="flex items-center gap-3">
+                                <Mail className="h-5 w-5" />
+                                <span className="font-medium">Indbakke</span>
+                            </div>
+                            {unreadCount > 0 && (
+                                <span className={`flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] font-bold rounded-full ${activeTab === 'inbox' ? 'bg-white text-primary' : 'bg-red-500 text-white'}`}>
+                                    {unreadCount}
+                                </span>
+                            )}
                         </button>
                     )}
 

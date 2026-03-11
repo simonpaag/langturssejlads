@@ -220,3 +220,40 @@ export const sendClaimBoatEmail = async (requesterEmail: string, boatName: strin
         return { success: false, error };
     }
 };
+
+export const sendNewMessageEmail = async (toEmails: string[], boatName: string, senderName: string, messagePreview: string) => {
+    try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) return { success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK' };
+
+        const resend = new Resend(apiKey);
+        let subject = `Ny besked til ${boatName} fra ${senderName} ⛵`;
+
+        const { data, error } = await resend.emails.send({
+            from: 'Langturssejlads.dk <info@langturssejlads.dk>',
+            to: toEmails,
+            subject: subject,
+            html: `
+                <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #111;">
+                    <h2 style="color: #0f2c59; font-family: 'Merriweather', serif; font-size: 24px; margin-bottom: 24px;">Besked i flaskeposten!</h2>
+                    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+                        Hej Besætning! I har modtaget en ny besked til <strong>${boatName}</strong> fra <strong>${senderName}</strong>:
+                    </p>
+                    <blockquote style="margin: 0 0 24px 0; padding: 15px 20px; border-left: 4px solid #0f2c59; background-color: #f8fafc; font-style: italic; color: #475569;">
+                        "${messagePreview.length > 200 ? messagePreview.substring(0, 200) + '...' : messagePreview}"
+                    </blockquote>
+                    <div style="text-align: center; margin: 40px 0;">
+                        <a href="https://langturssejlads.dk/dashboard" style="background-color: #0f2c59; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+                            Læs og besvar i indbakken
+                        </a>
+                    </div>
+                </div>
+            `,
+        });
+
+        if (error) return { success: false, error };
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error };
+    }
+};
