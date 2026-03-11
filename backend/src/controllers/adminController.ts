@@ -351,20 +351,38 @@ export const generateFaqContent = async (req: Request, res: Response): Promise<v
 
         const ai = new GoogleGenAI({ apiKey });
         
-        const prompt = `Skriv et detaljeret, informativt og engagerende råudkast til en FAQ-artikel (Vidensbase) til platformen 'Danske Langturssejlere'.
-Emne/Stikord for artiklen: "${topic}".
-Brug HTML-formatering med inspirerende overskrifter (<h2> og <h3>), letlæselige afsnit (<p>) og evt. punktopstillinger (<ul><li>).
-Sproget skal være maritimt, venligt men professionelt, henvendt til danske sejlere.
-Returnér kun den rene HTML-kode til lærredet, uden meta-tekst ("Her er din kodetekst:" eller markdown code blocks som \`\`\`html). Rå HTML kun.`;
+        const systemInstruction = `Du er en dygtig ekspertskribent og researcher for "Danske Langturssejlere", en forening og vidensplatform for langfartssejlere. 
+Brugeren beder dig om hjælp til at undersøge, opsummere eller skrive et stykke indhold til platformens "Vidensbase / FAQ".
+
+Det er DIT job at levere et super velskrevet svar, med et maritimt, engagerende, velresearchet og professionelt sprog.
+Du har adgang til Google Search-værktøjet til at finde opdateret information (søg på nettet, hvis bedt om det, eller for at dobbelttjekke tekniske oplysninger som navigation, ankersystemer, havne osv.).
+
+VIGTIGT:
+1. Din primære opgave er at generere tekst, som formateres direkte til at passe ind i vores WYSIWYG HTML-editor.
+2. Formater dit ENDELIGE OUTPUT i REN HTML.
+3. Brug tags som <h2>, <h3> til velvalgte overskrifter, <p> til faste overskuelige afsnit, <br/> til linjeskift, og <ul><li> til læsbare lister, fordele/ulemper eller tips.
+4. Gør teksten indbydende at læse, markér gerne vigtige keywords i <strong>.
+5. VIKTIGSTE REGEL: Undlad ALLE intro-replikker ("Her er din tekst:", "Selvfølgelig..."). Og pak ALDRIG din HTML ind i markdown code blocks som "\`\`\`html"! SPYT DET RAA KODESTYKKE UT, der MÅ KUN VÆRE RENT HTML, KLAR TIL BROWSEREN! Ingenting før og ingenting efter HTML-tagsene!`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: prompt,
+            contents: topic,
+            config: {
+                systemInstruction: systemInstruction,
+                tools: [{ googleSearch: {} }],
+                temperature: 0.7,
+            }
         });
 
-        res.json({ content: response.text });
+        let text = response.text || '';
+        // Fjern markdown formatting blocks, hvis modellen kom the at inkludere det
+        text = text.replace(/^```html\s*/i, '').replace(/\s*```$/i, '');
+        text = text.replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+        text = text.trim();
+
+        res.json({ content: text });
     } catch (error) {
         console.error('Error generating AI text:', error);
-        res.status(500).json({ error: 'Fejl under kommunikation med Gemini AI' });
+        res.status(500).json({ error: 'Fejl under kommunikation med Gemini AI (Måske en netværksfejl eller ulovligt emne)' });
     }
 };
