@@ -1,4 +1,5 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config({ override: true });
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
