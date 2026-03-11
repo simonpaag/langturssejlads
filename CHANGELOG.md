@@ -4,6 +4,13 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-11] - AI-Powered FAQ Editor
+- **Admin Dashboard & Integration:**
+  - Oprettet et dedikeret AI-assistent panel ("Spørg Gemini") inde i Vidensbase & FAQ tabben.
+  - Implementeret ny backend route (`/api/admin/ai/generate`) beskyttet af system-admin auth.
+  - Tilknyttet `@google/genai` SDK'et til at lade Gemini 2.5 strukturere velformaterede HTML artikler på vegne af brugeren the direkte indsættelse i tekst-editoren.
+
+
 ### [2026-03-11] - Notification Center & Smårettelser
 - **Admin Dashboard:**
   - Ombygget Notification Center emails til et kompakt List View hvor skabeloner vises mere overskueligt.
