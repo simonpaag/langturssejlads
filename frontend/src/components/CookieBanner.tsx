@@ -43,8 +43,32 @@ export default function CookieBanner() {
 
   return (
     <>
-      {/* Indlæs KUN Google Analytics hvis brugeren har sagt aktivt ja (consentGiven = true) */}
-      {consentGiven && <GoogleAnalytics gaId="G-967E7X94FN" />}
+      {/* 
+        ========================================================================
+        MARKETING & TRACKING SCRIPTS
+        Indsæt the tracking scripts herunder (Google Analytics, Meta Pixel, 
+        LinkedIn Insight Tag, Google Tag Manager mv.). 
+        
+        Alle the the {consentGiven && (...)} vil automatisk the 
+        holdt tilbage, og KUN the The (injected the DOM'en), the 
+        besøgende aktivt the klikket "Tillad Statistik" i banneret.
+        ========================================================================
+      */}
+      {consentGiven && (
+        <>
+          {/* Eksempel 1: Din nuværende Google Analytics (GA4) */}
+          <GoogleAnalytics gaId="G-967E7X94FN" />
+          
+          {/* Eksempel 2: Google Tag Manager (hvis du the over the the) 
+              Fjern the-tagget og importer { GoogleTagManager } the toppen.
+              <GoogleTagManager gtmId="GTM-XXXXXXX" />
+          */}
+
+          {/* Eksempel 3: Facebook / Meta Pixel 
+              Kan indsættes her under the the the the the the the (<script>) the `<Script id="meta-pixel">...</Script>`
+          */}
+        </>
+      )}
 
       {/* Selve Cookie Banner UI */}
       {showBanner && (
