@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import { checkBoatAccess } from '../utils/authHelpers';
+import { logAction } from '../utils/auditLogger';
 import slugify from 'slugify';
 
 export const createVoyage = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -42,6 +43,8 @@ export const createVoyage = async (req: AuthRequest, res: Response): Promise<voi
                 boatId: Number(boatId)
             }
         });
+
+        logAction('CREATED_VOYAGE', userId, newVoyage.id, { title: newVoyage.title, boatId }).catch(e => console.error(e));
 
         res.status(201).json(newVoyage);
     } catch (error) {
@@ -153,6 +156,9 @@ export const updateVoyage = async (req: AuthRequest, res: Response): Promise<voi
                 ...(endDate !== undefined && { endDate: endDate ? new Date(endDate) : null }),
             }
         });
+        
+        logAction('UPDATED_VOYAGE', userId, updated.id, { title: updated.title, ...req.body }).catch(e => console.error(e));
+        
         res.json(updated);
     } catch (error) {
         res.status(500).json({ error: 'Kunne ikke opdatere togt' });
@@ -182,6 +188,9 @@ export const deleteVoyage = async (req: AuthRequest, res: Response): Promise<voi
         }
 
         await prisma.voyage.delete({ where: { id: voyageId } });
+        
+        logAction('DELETED_VOYAGE', userId, voyageId, existingVoyage).catch(e => console.error(e));
+        
         res.status(204).send();
     } catch (error) {
         res.status(500).json({ error: 'Kunne ikke slette togt' });

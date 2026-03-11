@@ -257,3 +257,69 @@ export const sendNewMessageEmail = async (toEmails: string[], boatName: string, 
         return { success: false, error };
     }
 };
+
+export const sendWelcomeEmail = async (toEmail: string, name: string) => {
+    try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) return { success: false, error: 'API_NØGLE_MANGLER_DIAGNOSTIK' };
+
+        const resend = new Resend(apiKey);
+        let subject = `Velkommen ombord, ${name}! ⛵`;
+        let bodyHtml = '';
+
+        try {
+            const template = await prisma.emailTemplate.findUnique({ where: { name: 'WELCOME_EMAIL' } });
+            if (template) {
+                subject = template.subject.replace(/\{\{name\}\}/g, name);
+                bodyHtml = template.bodyHtml
+                    .replace(/\{\{name\}\}/g, name)
+                    .replace(/\{\{dashboardLink\}\}/g, `https://langturssejlads.dk/dashboard`);
+            }
+        } catch (dbError) {
+            console.error('Kunne ikke hente WELCOME_EMAIL fra DB:', dbError);
+        }
+
+        const { data, error } = await resend.emails.send({
+            from: 'Langturssejlads.dk <info@langturssejlads.dk>',
+            to: [toEmail],
+            subject: subject,
+            html: bodyHtml || `
+                <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #111;">
+                    <h2 style="color: #0f2c59; font-family: 'Merriweather', serif; font-size: 24px; margin-bottom: 24px;">Velkommen på Langturssejlads.dk!</h2>
+                    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 16px;">Hej ${name},</p>
+                    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+                        Det er skønt at have dig med. Platformen er skabt for at samle danske sejlere på tværs af verdenshavene.
+                        Her kan du oprette din egen båd, dele togter og samle på logbøger – eller finde drømmebåden at sejle jorden rundt med som gast.
+                    </p>
+                    <div style="text-align: center; margin: 40px 0;">
+                        <a href="https://langturssejlads.dk/dashboard" style="background-color: #0f2c59; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+                            Gå til Kahytten (Dashboard)
+                        </a>
+                    </div>
+                    <p style="font-size: 14px; line-height: 1.6; color: #666;">
+                        God vind derude!<br>Hilsen crewet bag Langturssejlads.dk
+                    </p>
+                </div>
+            `,
+        });
+
+        // Log the email in SentEmail 
+        try {
+             await prisma.sentEmail.create({
+                 data: {
+                     toEmail: toEmail,
+                     subject: subject,
+                     status: error ? 'FAILED' : 'DELIVERED',
+                     errorMsg: error ? JSON.stringify(error) : null,
+                 }
+             });
+         } catch (logError) {
+             console.error('Failed to log sent email', logError);
+         }
+
+        if (error) return { success: false, error };
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, error };
+    }
+};

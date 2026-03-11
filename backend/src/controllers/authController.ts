@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { sendWelcomeEmail } from '../utils/emailService';
+import { logAction } from '../utils/auditLogger';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-change-me-later';
 
@@ -36,6 +38,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             JWT_SECRET,
             { expiresIn: '30d' }
         );
+
+        // Send velkomstmail uden at afvente (fire-and-forget for hurtig response)
+        sendWelcomeEmail(newUser.email, newUser.name).catch((e: any) => console.error("Fejl ved velkomstmail", e));
+
+        // Log brugeroprettelse
+        await logAction('USER_REGISTERED', newUser.id, undefined, { email: newUser.email });
 
         res.status(201).json({
             message: 'User created successfully',
@@ -74,6 +82,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         );
 
         res.json({ token, user: { id: user.id, name: user.name, email: user.email, isSystemAdmin: user.isSystemAdmin } });
+        
+        // Log user login
+        logAction('USER_LOGIN', user.id).catch((e: any) => {});
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -170,6 +181,9 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
 
         // Fjern password-hashet før the returneres
         const { passwordHash, ...userWithoutPassword } = updatedUser;
+        
+        // Log profile update
+        logAction('UPDATED_PROFILE', userId, undefined, dataToUpdate).catch((e: any) => {});
 
         res.status(200).json({
             message: 'Profile updated successfully',

@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import { checkBoatAccess } from '../utils/authHelpers';
+import { logAction } from '../utils/auditLogger';
 import slugify from 'slugify';
 
 export const createBoat = async (req: AuthRequest, res: Response): Promise<void> => {
@@ -47,6 +48,8 @@ export const createBoat = async (req: AuthRequest, res: Response): Promise<void>
 
             return boat;
         });
+
+        logAction('CREATED_BOAT', userId, newBoat.id, { name: newBoat.name }).catch(e => console.error(e));
 
         res.status(201).json({ message: 'Boat created successfully', boat: newBoat });
     } catch (error) {
@@ -185,6 +188,8 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
             where: { id: boatId },
             data: updateData
         });
+
+        logAction('UPDATED_BOAT_PROFILE', userId, updatedBoat.id, updateData).catch(e => console.error(e));
 
         res.json({ message: 'Boat updated successfully', boat: updatedBoat });
     } catch (error) {

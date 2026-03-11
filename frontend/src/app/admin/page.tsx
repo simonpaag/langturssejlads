@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus, Lightbulb } from 'lucide-react';
+import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus, Lightbulb, GitCommit, Filter } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import ImageUpload from '@/components/ImageUpload';
 import AnimatedLoader from '@/components/AnimatedLoader';
@@ -302,85 +302,136 @@ function BoatsTab({ boats, setBoats }: { boats: any[], setBoats: any }) {
 // ----------------------------------------------------
 
 function LogsTab({ logs, sentEmails, gitLogs }: { logs: any[], sentEmails: any[], gitLogs: any[] }) {
+    const [activeFilter, setActiveFilter] = useState<'all' | 'platform' | 'email' | 'git'>('all');
+
+    // Fletning af al data til et standardiseret data format
+    const allEvents = [
+        ...logs.map(log => ({
+            id: `log-${log.id}`,
+            type: 'platform',
+            title: log.action,
+            subtitle: `Bruger: ${log.user?.email || 'System'}`,
+            details: log.details,
+            dateRaw: log.createdAt,
+            date: new Date(log.createdAt),
+            status: undefined as string | undefined,
+            link: undefined as string | undefined
+        })),
+        ...sentEmails.map(mail => ({
+            id: `email-${mail.id}`,
+            type: 'email',
+            title: mail.subject,
+            subtitle: `Til: ${mail.toEmail}`,
+            details: `Status: ${mail.status}`,
+            dateRaw: mail.sentAt,
+            date: new Date(mail.sentAt),
+            status: mail.status as string | undefined,
+            link: undefined as string | undefined
+        })),
+        ...gitLogs.map(commit => ({
+            id: `git-${commit.hash}`,
+            type: 'git',
+            title: commit.message,
+            subtitle: `${commit.authorName} (${commit.hash.substring(0, 7)})`,
+            details: null,
+            dateRaw: commit.date,
+            date: new Date(commit.date),
+            status: undefined as string | undefined,
+            link: `https://github.com/simonpaag/langturssejlads/commit/${commit.hash}` as string | undefined
+        }))
+    ];
+
+    // Sorter alt nyeste først -> Sort faldende ()
+    allEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+    const filteredEvents = allEvents.filter(event => activeFilter === 'all' || event.type === activeFilter);
+
     return (
         <div>
-            <h2 className="text-2xl font-merriweather font-bold mb-6">Aktivitetslog</h2>
-
-            <div className="grid lg:grid-cols-3 gap-8">
-                {/* System Logs */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">System Hændelser</h3>
-                    <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                        {logs.length === 0 ? <p className="text-muted-foreground text-sm">Ingen system logs fundet.</p> : null}
-                        {logs.map(log => (
-                            <div key={log.id} className="p-4 border border-border/50 rounded-2xl bg-muted/20 flex gap-4 items-start">
-                                <div className="bg-primary/10 p-2 rounded-full mt-1 shrink-0">
-                                    <Activity className="w-4 h-4 text-primary" />
-                                </div>
-                                <div>
-                                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                                        <span className="font-bold text-sm">{log.action}</span>
-                                        <span className="text-xs text-muted-foreground whitespace-nowrap">{new Date(log.createdAt).toLocaleString('da-DK')}</span>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground">Bruger: {log.user?.email || 'System'}</p>
-                                    {log.details && <p className="text-xs bg-muted p-2 rounded-lg mt-2 font-mono break-all">{log.details}</p>}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <h2 className="text-2xl font-merriweather font-bold">Aktivitetslog</h2>
+                
+                {/* Filter Knapper */}
+                <div className="flex flex-wrap items-center gap-2 bg-muted/40 p-1.5 rounded-xl border border-border/50">
+                    <button 
+                        onClick={() => setActiveFilter('all')}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${activeFilter === 'all' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        Alle
+                    </button>
+                    <button 
+                        onClick={() => setActiveFilter('platform')}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 ${activeFilter === 'platform' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        <Activity className="w-3.5 h-3.5" /> Platform
+                    </button>
+                    <button 
+                        onClick={() => setActiveFilter('email')}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 ${activeFilter === 'email' ? 'bg-background shadow-sm text-green-600' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        <Mail className="w-3.5 h-3.5" /> E-mails
+                    </button>
+                    <button 
+                        onClick={() => setActiveFilter('git')}
+                        className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-1.5 ${activeFilter === 'git' ? 'bg-background shadow-sm text-slate-500' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        <GitCommit className="w-3.5 h-3.5" /> Kildekode
+                    </button>
                 </div>
+            </div>
 
-                {/* Sent Emails Log */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">Afsendte Mails</h3>
-                    <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                        {sentEmails.length === 0 ? <p className="text-muted-foreground text-sm">Ingen udsendte mails endnu.</p> : null}
-                        {sentEmails.map(mail => (
-                            <div key={mail.id} className="flex flex-col p-3 bg-muted/20 rounded-xl border border-border/30 text-sm">
-                                <div className="flex justify-between items-start gap-2 mb-2">
-                                    <p className="font-semibold leading-tight">{mail.subject}</p>
-                                    <span className={`shrink-0 text-[10px] font-bold uppercase px-2 py-1 rounded-full ${mail.status === 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                        {mail.status}
+            <div className="bg-muted/10 border border-border/50 rounded-2xl overflow-hidden">
+                <div className="max-h-[700px] overflow-y-auto p-4 space-y-3">
+                    {filteredEvents.length === 0 ? (
+                        <div className="py-12 text-center">
+                            <Filter className="w-8 h-8 text-muted-foreground/30 mx-auto mb-3" />
+                            <p className="text-muted-foreground text-sm font-semibold">Ingen hændelser fundet i kategorien.</p>
+                        </div>
+                    ) : null}
+                    
+                    {filteredEvents.map(event => (
+                        <div key={event.id} className="p-4 border border-border/40 rounded-xl bg-card hover:bg-muted/30 transition-colors flex gap-4 items-start shadow-sm">
+                            {/* Ikon */}
+                            <div className={`p-2.5 rounded-full mt-0.5 shrink-0 ${
+                                event.type === 'platform' ? 'bg-primary/10 text-primary' : 
+                                event.type === 'email' ? 'bg-green-100/50 text-green-600' : 
+                                'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                            }`}>
+                                {event.type === 'platform' && <Activity className="w-4 h-4" />}
+                                {event.type === 'email' && <Mail className="w-4 h-4" />}
+                                {event.type === 'git' && <GitCommit className="w-4 h-4" />}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1">
+                                    <h4 className="font-bold text-sm text-foreground truncate">{event.title}</h4>
+                                    <span className="text-[11px] font-medium text-muted-foreground shrink-0 flex items-center gap-2">
+                                        {event.date.toLocaleString('da-DK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                        
+                                        {event.type === 'email' && (
+                                            <span className={`px-1.5 py-0.5 rounded-[4px] uppercase tracking-widest text-[8px] font-black ${event.status === 'DELIVERED' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                {event.status}
+                                            </span>
+                                        )}
+                                        {event.type === 'git' && event.link && (
+                                            <a href={event.link} target="_blank" rel="noopener noreferrer" className="hover:text-primary" title="Vis commit">
+                                                <ExternalLink className="w-3 h-3" />
+                                            </a>
+                                        )}
                                     </span>
                                 </div>
-                                <p className="text-xs text-muted-foreground truncate" title={mail.toEmail}>Til: {mail.toEmail}</p>
-                                <span className="text-[10px] text-muted-foreground mt-2">{new Date(mail.sentAt).toLocaleString('da-DK')}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Git Push Logs */}
-                <div>
-                    <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground mb-4">Pushes fra Git</h3>
-                    <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                        {gitLogs.length === 0 ? <p className="text-muted-foreground text-sm">Ingen Git commits fundet.</p> : null}
-                        {gitLogs.map(commit => (
-                            <div key={commit.hash} className="flex flex-col p-3 bg-card rounded-xl border border-border/50 text-sm shadow-sm">
-                                <div className="flex justify-between items-start gap-2 mb-2">
-                                    <p className="font-bold leading-tight line-clamp-2">{commit.message}</p>
-                                    <a
-                                        href={`https://github.com/simonpaag/langturssejlads/commit/${commit.hash}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="shrink-0 text-[10px] font-mono font-bold px-2 py-1 rounded bg-muted/50 hover:bg-muted transition-colors text-muted-foreground"
-                                        title="Vis commit på GitHub"
-                                    >
-                                        {commit.hash.substring(0, 7)}
-                                    </a>
-                                </div>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
-                                        {commit.authorName.charAt(0).toUpperCase()}
+                                
+                                <p className="text-xs text-muted-foreground truncate">{event.subtitle}</p>
+                                
+                                {event.type === 'platform' && event.details && (
+                                    <div className="mt-2.5 bg-muted/50 p-2.5 rounded-lg border border-border/50">
+                                        <p className="text-[10px] font-mono break-all text-muted-foreground">{event.details}</p>
                                     </div>
-                                    <p className="text-xs text-muted-foreground truncate flex-1">{commit.authorName}</p>
-                                    <span className="text-[10px] text-muted-foreground">{new Date(commit.date).toLocaleDateString('da-DK')}</span>
-                                </div>
+                                )}
                             </div>
-                        ))}
-                    </div>
+                        </div>
+                    ))}
                 </div>
-
             </div>
         </div>
     );
