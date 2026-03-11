@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus, Lightbulb, GitCommit, Filter } from 'lucide-react';
+import { ShieldAlert, Activity, Mail, FileText, Megaphone, Trash2, Eye, EyeOff, Save, Users, UserPlus, ExternalLink, BookOpen, Edit, Plus, Lightbulb, GitCommit, Filter, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import ImageUpload from '@/components/ImageUpload';
 import AnimatedLoader from '@/components/AnimatedLoader';
@@ -1073,9 +1074,44 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
     const [isCreating, setIsCreating] = useState(false);
     const [formData, setFormData] = useState({ title: '', slug: '', content: '', imageUrl: '', order: 0, status: 'PUBLISHED' });
     const [isSaving, setIsSaving] = useState(false);
+    
+    // AI Integration States
+    const [aiTopic, setAiTopic] = useState('');
+    const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+
+    const handleGenerateAi = async () => {
+        if (!aiTopic) return alert('Indtast venligst et stikord eller emne.');
+        setIsGeneratingAi(true);
+        try {
+            const token = localStorage.getItem('user_token');
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+            const res = await fetch(`${apiUrl}/api/admin/ai/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ topic: aiTopic })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                
+                // Tilføj teksten The the nuværende form. Hvis field var tomt er let the erstatte, ellers break lines.
+                setFormData(prev => ({ 
+                    ...prev, 
+                    content: (prev.content ? prev.content + '<br><br>' : '') + data.content 
+                }));
+                setAiTopic('');
+            } else {
+                alert('Der opstod en fejl under AI generering.');
+            }
+        } catch(e) {
+            alert('Netværksfejl.');
+        } finally {
+            setIsGeneratingAi(false);
+        }
+    };
 
     const handleCreateNew = () => {
         setFormData({ title: '', slug: '', content: '', imageUrl: '', order: faqs.length, status: 'PUBLISHED' });
+       
         setEditingFaq(null);
         setIsCreating(true);
     };
@@ -1213,6 +1249,36 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
                             onUploadSuccess={(url) => setFormData({ ...formData, imageUrl: url })}
                             label="Upload Hero Billede"
                         />
+                    </div>
+
+                    {/* Gemini AI Assistent */}
+                    <div className="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 border border-indigo-100 dark:border-indigo-900/50 rounded-xl p-6 relative overflow-hidden my-6">
+                        <div className="absolute top-0 right-0 -mt-4 -mr-4 text-indigo-500/10 dark:text-indigo-400/5 pointer-events-none">
+                            <Sparkles className="w-32 h-32" />
+                        </div>
+                        <div className="relative z-10 flex flex-col md:flex-row gap-4 items-end">
+                            <div className="flex-1 w-full">
+                                <label className="flex items-center gap-2 text-sm font-bold text-indigo-900 dark:text-indigo-300 mb-2">
+                                    <Sparkles className="w-4 h-4" /> Spørg Gemini (AI Assistent)
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Hvad vil du skrive om? Fx. Planlægning af togt over Atlanten..."
+                                    className="w-full bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-800 rounded-xl px-4 py-3 text-sm placeholder-indigo-300 dark:placeholder-indigo-700/50 focus:ring-2 focus:ring-indigo-400"
+                                    value={aiTopic}
+                                    onChange={e => setAiTopic(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && !isGeneratingAi && aiTopic && handleGenerateAi()}
+                                />
+                            </div>
+                            <button
+                                onClick={handleGenerateAi}
+                                disabled={isGeneratingAi || !aiTopic}
+                                className="w-full md:w-auto shrink-0 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-sm text-sm"
+                            >
+                                {isGeneratingAi ? <AnimatedLoader className="scale-50 inline" /> : <Sparkles className="w-4 h-4" />}
+                                {isGeneratingAi ? 'Genererer...' : 'Generér Tekst'}
+                            </button>
+                        </div>
                     </div>
 
                     <div>

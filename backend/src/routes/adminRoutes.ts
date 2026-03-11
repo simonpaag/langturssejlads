@@ -7,7 +7,7 @@ import {
     getAdminPosts, updatePostModeration,
     getEmailTemplates, updateEmailTemplate, getSentEmails,
     getNativeAdsAdmin, createNativeAd, updateNativeAd, deleteNativeAd,
-    getAdminFaqs
+    getAdminFaqs, generateFaqContent
 } from '../controllers/adminController';
 import { getAllIdeasAdmin, updateIdeaStatus, deleteIdea, createIdeaAdmin } from '../controllers/ideaController';
 
@@ -45,8 +45,9 @@ router.post('/ads', createNativeAd);
 router.put('/ads/:id', updateNativeAd);
 router.delete('/ads/:id', deleteNativeAd);
 
-// Faqs
+// Faqs & AI
 router.get('/faqs', getAdminFaqs);
+router.post('/ai/generate', generateFaqContent);
 
 // Ideas
 router.get('/ideas', getAllIdeasAdmin);

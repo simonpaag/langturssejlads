@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../server';
+import { GoogleGenAI } from '@google/genai';
 
 // --- USERS ---
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
@@ -330,5 +331,40 @@ export const deleteNativeAd = async (req: Request, res: Response): Promise<void>
     } catch (error) {
         console.error('Error deleting ad:', error);
         res.status(500).json({ error: 'Failed to delete' });
+    }
+};
+
+// --- GEMINI AI INTEGRATION ---
+export const generateFaqContent = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { topic } = req.body;
+        if (!topic) {
+            res.status(400).json({ error: 'Emne mangler' });
+            return;
+        }
+
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            res.status(500).json({ error: 'GEMINI_API_KEY er ikke sat på serveren' });
+            return;
+        }
+
+        const ai = new GoogleGenAI({ apiKey });
+        
+        const prompt = `Skriv et detaljeret, informativt og engagerende råudkast til en FAQ-artikel (Vidensbase) til platformen 'Danske Langturssejlere'.
+Emne/Stikord for artiklen: "${topic}".
+Brug HTML-formatering med inspirerende overskrifter (<h2> og <h3>), letlæselige afsnit (<p>) og evt. punktopstillinger (<ul><li>).
+Sproget skal være maritimt, venligt men professionelt, henvendt til danske sejlere.
+Returnér kun den rene HTML-kode til lærredet, uden meta-tekst ("Her er din kodetekst:" eller markdown code blocks som \`\`\`html). Rå HTML kun.`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
+
+        res.json({ content: response.text });
+    } catch (error) {
+        console.error('Error generating AI text:', error);
+        res.status(500).json({ error: 'Fejl under kommunikation med Gemini AI' });
     }
 };
