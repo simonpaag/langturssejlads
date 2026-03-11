@@ -96,9 +96,6 @@ export default async function ProfilePage({ params }: ProfileProps) {
                         {/* Navn & Kort info */}
                         <div className="flex-1 mt-4 md:mt-8">
                             <h1 className="text-4xl md:text-5xl font-black font-merriweather mb-4 text-foreground">{user.name}</h1>
-                            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl font-medium leading-relaxed">
-                                Gasteprofil oprettet hos Danske Langturssejlere. Klar til at tage med på nye eventyr.
-                            </p>
                             
                             <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-8">
                                 <div className="flex items-center gap-2 bg-background border border-border px-4 py-2.5 rounded-xl shadow-sm">

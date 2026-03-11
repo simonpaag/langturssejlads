@@ -4,6 +4,15 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-11] - Notification Center & Smårettelser
+- **Admin Dashboard:**
+  - Ombygget Notification Center emails til et kompakt List View hvor skabeloner vises mere overskueligt.
+  - Tilføjet inline Editor til skabeloner, via "Rediger" knap, der åbner i en ny accordion block.
+  - Integreret to faneblade i editoren: **HTML Kode** (til at taste tags og templates) og **Vis Forhåndsvisning** (som render HTML live og ser det udenfor kildekoden).
+- **Frontend & Gastesider:**
+  - Fjernet uønsket/grå og fastlåst hardcoded placeholder-tekst under brugernavnet på `Profil` siden.
+
+
 ### [2026-03-11] - Global Aktivitetslog & Velkomstmail
 - **Nye Funktioner:**
   - Implementeret automatisk velkomstmail via Resend (i `authController`), der sendes i det øjeblik en ny bruger opretter sig.

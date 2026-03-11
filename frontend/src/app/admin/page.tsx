@@ -530,12 +530,14 @@ function PostsTab({ posts, setPosts }: { posts: any[], setPosts: any }) {
 }
 
 function EmailsTab({ templates }: { templates: any[] }) {
+    const [editingId, setEditingId] = useState<number | null>(null);
 
     // User friendly template name mapping
     const TEMPLATE_NAMES: Record<string, string> = {
         'INVITE_EMAIL': 'Mangler en båd du kender?',
         'BOAT_CONTACT_EMAIL': 'Profil-kontakt',
-        'VOYAGE_CONTACT_EMAIL': 'Togt-kontakt'
+        'VOYAGE_CONTACT_EMAIL': 'Togt-kontakt',
+        'WELCOME_EMAIL': 'System: Velkomstmail'
     };
 
     return (
@@ -545,14 +547,50 @@ function EmailsTab({ templates }: { templates: any[] }) {
                 Her kan du redigere de tekster der bliver afsendt fra platformens mail-skabeloner (Tilknyttet kontaktformularer mv).
             </p>
 
-            <div className="p-6 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900 rounded-2xl">
-                <h3 className="font-bold text-lg font-merriweather mb-6 text-primary">System Skabeloner</h3>
+            <div className="bg-card border border-border/50 rounded-2xl overflow-hidden shadow-sm">
+                <div className="p-5 bg-muted/20 border-b border-border/50">
+                    <h3 className="font-bold text-lg font-merriweather text-foreground">System Skabeloner</h3>
+                </div>
+                
                 {templates.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Ingen skabeloner fundet i databasen endnu.</p>
+                    <div className="p-8 text-center">
+                        <p className="text-sm text-muted-foreground">Ingen skabeloner fundet i databasen endnu.</p>
+                    </div>
                 ) : (
-                    <div className="space-y-8">
+                    <div className="divide-y divide-border/30">
                         {templates.map(tmpl => (
-                            <EditableTemplate key={tmpl.id} template={tmpl} displayName={TEMPLATE_NAMES[tmpl.name]} />
+                            <div key={tmpl.id} className="flex flex-col">
+                                {/* List Item */}
+                                <div className="p-4 flex items-center justify-between hover:bg-muted/10 transition-colors gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-primary/10 p-2 rounded-full text-primary shrink-0">
+                                            <Mail className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-sm text-foreground">{TEMPLATE_NAMES[tmpl.name] || tmpl.name}</h4>
+                                            <p className="text-xs text-muted-foreground truncate max-w-[250px] sm:max-w-md" title={tmpl.subject}>{tmpl.subject}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <button 
+                                        onClick={() => setEditingId(editingId === tmpl.id ? null : tmpl.id)}
+                                        className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 border border-border/50 rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-muted transition-colors"
+                                    >
+                                        {editingId === tmpl.id ? 'Luk' : <><Edit className="w-3.5 h-3.5" /> Rediger</>}
+                                    </button>
+                                </div>
+                                
+                                {/* Expanded Editor */}
+                                {editingId === tmpl.id && (
+                                    <div className="p-4 bg-muted/5 border-t border-border/20">
+                                        <EditableTemplate 
+                                            template={tmpl} 
+                                            displayName={TEMPLATE_NAMES[tmpl.name]} 
+                                            onCancel={() => setEditingId(null)} 
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         ))}
                     </div>
                 )}
@@ -561,10 +599,11 @@ function EmailsTab({ templates }: { templates: any[] }) {
     );
 }
 
-function EditableTemplate({ template, displayName }: { template: any, displayName?: string }) {
+function EditableTemplate({ template, displayName, onCancel }: { template: any, displayName?: string, onCancel?: () => void }) {
     const [subject, setSubject] = useState(template.subject || '');
     const [bodyHtml, setBodyHtml] = useState(template.bodyHtml || '');
     const [isSaving, setIsSaving] = useState(false);
+    const [viewMode, setViewMode] = useState<'edit' | 'preview'>('edit');
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -581,6 +620,7 @@ function EditableTemplate({ template, displayName }: { template: any, displayNam
             });
             if (res.ok) {
                 alert('Skabelon gemt!');
+                if (onCancel) onCancel();
             } else {
                 alert('Fejl ved gemning.');
             }
@@ -593,43 +633,85 @@ function EditableTemplate({ template, displayName }: { template: any, displayNam
     };
 
     return (
-        <div className="border border-border/50 rounded-xl p-5 bg-background shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2 mb-4">
-                <Mail className="w-5 h-5 text-muted-foreground" />
-                <h4 className="font-bold">
-                    {displayName || template.name}
-                </h4>
-                <span className="text-xs bg-muted px-2 py-1 rounded text-muted-foreground ml-auto font-mono">
-                    {template.name}
+        <div className="border border-border/60 rounded-xl bg-background shadow-xs overflow-hidden">
+            <div className="flex items-center justify-between bg-muted/30 px-4 py-3 border-b border-border/40">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <span className="font-mono bg-background border border-border/50 px-2 py-0.5 rounded text-[10px]">{template.name}</span>
                 </span>
+                
+                {/* View Mode Toggle */}
+                <div className="flex bg-muted/50 p-1 rounded-lg border border-border/50">
+                    <button 
+                        onClick={() => setViewMode('edit')}
+                        className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-md transition-all ${viewMode === 'edit' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        HTML Kode
+                    </button>
+                    <button 
+                        onClick={() => setViewMode('preview')}
+                        className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-md transition-all ${viewMode === 'preview' ? 'bg-background shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        Vis Forhåndsvisning
+                    </button>
+                </div>
             </div>
 
-            <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-muted-foreground">Emne / Subject</label>
-                <input
-                    type="text"
-                    value={subject}
-                    onChange={e => setSubject(e.target.value)}
-                    className="w-full px-4 py-2 bg-muted/20 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-                />
+            <div className="p-5 space-y-6">
+                {viewMode === 'edit' ? (
+                    <>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase tracking-wide text-foreground">Emne / Subject</label>
+                            <input
+                                type="text"
+                                value={subject}
+                                onChange={e => setSubject(e.target.value)}
+                                className="w-full px-4 py-2 bg-muted/10 border border-border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase tracking-wide text-foreground">HTML Indhold</label>
+                            <p className="text-[10px] text-muted-foreground -mt-1 mb-2">Du redigerer emailens kildekode. Variabler som {"{{name}}"} vil automatisk blive udskiftet.</p>
+                            <textarea
+                                value={bodyHtml}
+                                onChange={e => setBodyHtml(e.target.value)}
+                                rows={10}
+                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-border rounded-lg text-[13px] font-mono focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <div className="space-y-4">
+                        <div className="bg-muted/10 p-4 rounded-lg border border-border/40 mb-4">
+                            <p className="text-xs text-muted-foreground font-medium mb-1 uppercase tracking-wider">Emne:</p>
+                            <p className="font-bold text-sm">{subject || '(Intet emne)'}</p>
+                        </div>
+                        <div className="border border-border/50 rounded-xl p-6 bg-white dark:bg-slate-50 text-slate-900 mx-auto max-w-2xl min-h-[300px] shadow-sm relative overflow-hidden">
+                            {/* Mail Chrome for Preview */}
+                            <div className="absolute top-0 left-0 right-0 h-6 bg-slate-100 dark:bg-slate-200 border-b border-slate-200 dark:border-slate-300 flex items-center px-3 gap-1.5">
+                                <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                                <div className="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+                                <div className="w-2.5 h-2.5 rounded-full bg-green-400"></div>
+                            </div>
+                            <div className="mt-6" dangerouslySetInnerHTML={{ __html: bodyHtml || '<p style="color: grey; text-align: center; margin-top: 40px;"><i>(Tom mail body)</i></p>' }} />
+                        </div>
+                    </div>
+                )}
             </div>
 
-            <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-muted-foreground">HTML Indhold</label>
-                <p className="text-[10px] text-muted-foreground -mt-1 mb-2">Du kan redigere den underliggende HTML struktur her for bedst understøttelse i mail-klienter.</p>
-                <textarea
-                    value={bodyHtml}
-                    onChange={e => setBodyHtml(e.target.value)}
-                    rows={12}
-                    className="w-full px-4 py-3 bg-muted/20 border border-border rounded-lg text-sm font-mono focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-            </div>
-
-            <div className="pt-2 flex justify-end">
+            <div className="px-5 py-4 bg-muted/20 border-t border-border/40 flex justify-end gap-3">
+                {onCancel && (
+                    <button
+                        onClick={onCancel}
+                        className="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+                    >
+                        Annuller
+                    </button>
+                )}
                 <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-md disabled:opacity-50"
+                    className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg hover:bg-primary/90 transition-all shadow-md disabled:opacity-50"
                 >
                     <Save className="w-4 h-4" />
                     {isSaving ? 'Gemmer...' : 'Gem Skabelon'}
