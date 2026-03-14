@@ -1,10 +1,28 @@
+'use client';
+
 import Link from 'next/link';
 import { Anchor, Facebook, Instagram, Youtube } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { useState, useEffect } from 'react';
 
 export default function Footer() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            setIsLoggedIn(!!localStorage.getItem('user_token'));
+        };
+        checkAuth();
+        window.addEventListener('auth-change', checkAuth);
+        window.addEventListener('userStateChange', checkAuth);
+        return () => {
+            window.removeEventListener('auth-change', checkAuth);
+            window.removeEventListener('userStateChange', checkAuth);
+        };
+    }, []);
+
     return (
-        <footer className="bg-muted/30 border-t border-border mt-auto pt-16 pb-8">
+        <footer className={`bg-muted/30 border-t border-border mt-auto pt-16 pb-8 ${isLoggedIn ? 'hidden md:block' : ''}`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-16">
                     <div className="md:col-span-2 pr-4">

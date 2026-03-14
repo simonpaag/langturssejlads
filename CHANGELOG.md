@@ -4,6 +4,12 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-15] - Forbedret Mobil Oplevelse
+- **Frontend & Navigation:**
+  - Omskrevet `Footer.tsx` til at være et klient-side komponent, der automatisk lytter på brugerens log-ind status.
+  - Skjult footeren the indloggede brugere på mobilen, for the at give mere fokus the dashboardet uden unødvendigt scroll.
+
+
 ### [2026-03-15] - Audit Logging af Billede Uploads
 - **Backend & Audit Logs:**
   - Opdateret `authController`, `boatController` og `postController` the at spore alle oprettelser og ændringer der indeholder billeder.
