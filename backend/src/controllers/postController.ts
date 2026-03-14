@@ -3,6 +3,7 @@ import { prisma } from '../server';
 import { AuthRequest } from '../middlewares/authMiddleware';
 import { checkBoatAccess } from '../utils/authHelpers';
 import slugify from 'slugify';
+import { logAction } from '../utils/auditLogger';
 
 export const createPost = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
@@ -46,6 +47,16 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
                 status: 'PUBLISHED', // Trust first!
             },
         });
+        // Log the creation
+        logAction('CREATED_POST', authorId, newPost.id, { title: newPost.title, boatId: newPost.boatId }).catch(e => console.error(e));
+        
+        // Log explicitly if images be uploaded
+        if (imageUrl || (imageUrls && imageUrls.length > 0)) {
+            logAction('UPLOADED_POST_IMAGE', authorId, newPost.id, { 
+                hasMainImage: !!imageUrl, 
+                imageCount: imageUrls ? imageUrls.length : 0 
+            }).catch(e => console.error(e));
+        }
 
         res.status(201).json({ message: 'Post published successfully', post: newPost });
     } catch (error) {
@@ -350,6 +361,14 @@ export const updatePost = async (req: AuthRequest, res: Response): Promise<void>
                 slug: newSlug,
             },
         });
+        // Log explicit opslag hvis billeder var med i opdatering
+        if (imageUrl || (imageUrls && imageUrls.length > 0)) {
+            logAction('UPLOADED_POST_IMAGE', userId, updatedPost.id, { 
+                isUpdate: true,
+                hasMainImage: !!imageUrl, 
+                imageCount: imageUrls ? imageUrls.length : 0 
+            }).catch(e => console.error(e));
+        }
 
         res.json({ message: 'Post updated successfully', post: updatedPost });
     } catch (error) {

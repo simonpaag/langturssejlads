@@ -184,6 +184,11 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
         
         // Log profile update
         logAction('UPDATED_PROFILE', userId, undefined, dataToUpdate).catch((e: any) => {});
+        
+        // Specifik logning hvis profilbillede er blevet opdateret (og ikke fjernet)
+        if (profileImage) {
+            logAction('UPLOADED_PROFILE_IMAGE', userId, undefined, { profileImage }).catch((e: any) => {});
+        }
 
         res.status(200).json({
             message: 'Profile updated successfully',

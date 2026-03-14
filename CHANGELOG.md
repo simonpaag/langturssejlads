@@ -4,6 +4,13 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-15] - Audit Logging af Billede Uploads
+- **Backend & Audit Logs:**
+  - Opdateret `authController`, `boatController` og `postController` the at spore alle oprettelser og ændringer der indeholder billeder.
+  - Oprettet dedikerede system events: `UPLOADED_PROFILE_IMAGE`, `UPLOADED_BOAT_IMAGE` og `UPLOADED_POST_IMAGE` som nu alle kan følges direkte fra systemets Audit Log.
+  - Rettet en mangel i `postController` hvor der slet ikke var en grundlæggende `CREATED_POST` audit event tidligere, dette håndteres nu korrekt the the fange nye logbøger i administrationens oversigt.
+
+
 ### [2026-03-15] - Forbedring af mobilmenu & Navigation
 - **Frontend & Navigation:**
   - Flyttet "Under Dæk" (dashboard-linket) fast ud i headeren for mobilvisning, så det altid er synligt ved siden af søgefeltet fremfor at være skjult i burgermenuen.

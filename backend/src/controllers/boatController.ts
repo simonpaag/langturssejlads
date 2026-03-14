@@ -190,6 +190,14 @@ export const updateBoat = async (req: AuthRequest, res: Response): Promise<void>
         });
 
         logAction('UPDATED_BOAT_PROFILE', userId, updatedBoat.id, updateData).catch(e => console.error(e));
+        
+        // Specifik specifik logning for billeder, da det er højt engagerende content
+        if (coverImage || profileImage) {
+            logAction('UPLOADED_BOAT_IMAGE', userId, updatedBoat.id, { 
+                coverImage: coverImage ? true : undefined, 
+                profileImage: profileImage ? true : undefined 
+            }).catch(e => console.error(e));
+        }
 
         res.json({ message: 'Boat updated successfully', boat: updatedBoat });
     } catch (error) {
