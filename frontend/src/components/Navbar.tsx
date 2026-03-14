@@ -103,12 +103,10 @@ export default function Navbar() {
                                         <span className="hidden lg:inline text-[10px] font-black tracking-widest uppercase">Admin</span>
                                     </Link>
                                 )}
-                                {(user?.isSystemAdmin || (user && user.crewMemberships && user.crewMemberships.length > 0)) && (
-                                    <Link href="/dashboard" className="hidden sm:flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-colors" title="Under Dæk (Dashboard)">
-                                        <Settings className="w-4 h-4" />
-                                        <span className="font-bold tracking-widest uppercase text-[10px]">Under Dæk</span>
-                                    </Link>
-                                )}
+                                <Link href="/dashboard" className="flex items-center gap-1.5 bg-primary/10 hover:bg-primary/20 text-primary px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-colors" title="Under Dæk (Dashboard)">
+                                    <Settings className="w-4 h-4 hidden sm:block" />
+                                    <span className="font-bold tracking-widest text-[10px] uppercase">Under Dæk</span>
+                                </Link>
                                 <Link href="/profil" className="group flex items-center gap-2 hover:opacity-80 transition-opacity">
                                     <div className="w-[32px] h-[32px] sm:w-[36px] sm:h-[36px] overflow-hidden rounded-full border-2 border-primary/20 bg-muted flex items-center justify-center shadow-sm relative">
                                         {user?.profileImage ? (
@@ -125,12 +123,13 @@ export default function Navbar() {
                             </button>
                         ) : (
                             <div className="flex gap-2 items-center shrink-0">
-                                <Link href="/register" className="hidden sm:flex items-center text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="/register" className="hidden md:flex items-center text-muted-foreground hover:text-foreground transition-colors mr-2">
                                     Opret konto
                                 </Link>
-                                <Link href="/login" className="flex items-center gap-2 bg-primary text-white px-3 py-2 sm:px-5 sm:py-2.5 rounded-full hover:bg-primary/90 hover:scale-105 transition-all shadow-md">
-                                    <UserCircle className="h-[18px] w-[18px]" />
-                                    <span className="hidden sm:inline">Log ind</span>
+                                <Link href="/login" className="flex items-center gap-1.5 bg-primary text-white px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full hover:bg-primary/90 hover:scale-105 transition-all shadow-md">
+                                    <span className="font-bold tracking-widest text-[10px] sm:text-xs flex items-center gap-1 whitespace-nowrap">
+                                        <span className="uppercase">Under Dæk</span> <span className="opacity-90">(log ind)</span>
+                                    </span>
                                 </Link>
                             </div>
                         )}
@@ -178,39 +177,36 @@ export default function Navbar() {
                                     PosseidonAdmin
                                 </Link>
                             )}
-                            {(user?.isSystemAdmin || (user && user.crewMemberships && user.crewMemberships.length > 0)) && (
+                            {/* Dashboard Submenu in burger menu on mobile, only visible on dashboard */}
+                            {isLoggedIn && pathname.startsWith('/dashboard') && (
                                 <div className="flex flex-col gap-3 mt-2 border-t border-border pt-4">
-                                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-3">
+                                    <div className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-3">
                                         <Settings className="w-5 h-5 text-primary" />
-                                        Under Dæk
-                                    </Link>
-                                    
-                                    {/* Dashboard Submenu i Burgermenu for mobil, når man er på dashboardet */}
-                                    {pathname.startsWith('/dashboard') && (
-                                        <div className="flex flex-col gap-3 pl-8 mt-2 border-l-2 border-primary/20">
-                                            <button onClick={() => { router.push('/dashboard?tab=write'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'write' || !searchParams.get('tab') ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
-                                                <PenLine className="w-4 h-4" /> Skriv Logbog
-                                            </button>
-                                            <button onClick={() => { router.push('/dashboard?tab=voyages'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'voyages' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
-                                                <Compass className="w-4 h-4" /> Planlæg Togter
-                                            </button>
-                                            <button onClick={() => { router.push('/dashboard?tab=profile'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'profile' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
-                                                <Ship className="w-4 h-4" /> Bådens Profil
-                                            </button>
-                                            <button onClick={() => { router.push('/dashboard?tab=inbox'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'inbox' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
-                                                <Mail className="w-4 h-4" /> Indbakke
-                                            </button>
-                                            <button onClick={() => { router.push('/dashboard?tab=crew'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'crew' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
-                                                <Users className="w-4 h-4" /> Besætning
-                                            </button>
-                                            <button onClick={() => { router.push('/dashboard?tab=posts'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'posts' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
-                                                <FileText className="w-4 h-4" /> Administrer Logbøger
-                                            </button>
-                                            <Link href="/profil/gast" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium flex items-center gap-2 text-foreground hover:text-primary mt-2">
-                                                <UserCircle className="w-4 h-4" /> Mit Gasteopslag
-                                            </Link>
-                                        </div>
-                                    )}
+                                        Under Dæk Menu
+                                    </div>
+                                    <div className="flex flex-col gap-3 pl-4 mt-2">
+                                        <button onClick={() => { router.push('/dashboard?tab=write'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'write' || !searchParams.get('tab') ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                            <PenLine className="w-4 h-4" /> Skriv Logbog
+                                        </button>
+                                        <button onClick={() => { router.push('/dashboard?tab=voyages'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'voyages' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                            <Compass className="w-4 h-4" /> Planlæg Togter
+                                        </button>
+                                        <button onClick={() => { router.push('/dashboard?tab=profile'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'profile' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                            <Ship className="w-4 h-4" /> Bådens Profil
+                                        </button>
+                                        <button onClick={() => { router.push('/dashboard?tab=inbox'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'inbox' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                            <Mail className="w-4 h-4" /> Indbakke
+                                        </button>
+                                        <button onClick={() => { router.push('/dashboard?tab=crew'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'crew' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                            <Users className="w-4 h-4" /> Besætning
+                                        </button>
+                                        <button onClick={() => { router.push('/dashboard?tab=posts'); setIsMenuOpen(false); }} className={`text-sm font-medium flex items-center gap-2 ${searchParams.get('tab') === 'posts' ? 'text-primary' : 'text-foreground hover:text-primary'}`}>
+                                            <FileText className="w-4 h-4" /> Administrer Logbøger
+                                        </button>
+                                        <Link href="/profil/gast" onClick={() => setIsMenuOpen(false)} className="text-sm font-medium flex items-center gap-2 text-foreground hover:text-primary mt-2">
+                                            <UserCircle className="w-4 h-4" /> Mit Gasteopslag
+                                        </Link>
+                                    </div>
                                 </div>
                             )}
                             {(!isLoggedIn && !isAdmin) && (

@@ -4,6 +4,13 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-15] - Forbedring af mobilmenu & Navigation
+- **Frontend & Navigation:**
+  - Flyttet "Under Dæk" (dashboard-linket) fast ud i headeren for mobilvisning, så det altid er synligt ved siden af søgefeltet fremfor at være skjult i burgermenuen.
+  - Tilføjet tekst til log-ind knappen ("Under Dæk (log ind)"), for at tydeliggøre funktionen og forbedre konverteringen for ikke-indloggede brugere.
+  - Bevaret dashboard-undermenuen (Skriv Logbog, Indbakke mv.) inde i selve burgermenuen, når man er logget ind og befinder sig på dashboardet.
+
+
 ### [2026-03-11] - AI-Powered FAQ Editor & UI Fixes
 - **Admin Dashboard & Integration:**
   - Oprettet et dedikeret AI-assistent panel ("Spørg Gemini") inde i Vidensbase & FAQ tabben.
