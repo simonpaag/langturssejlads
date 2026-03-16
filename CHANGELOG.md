@@ -4,6 +4,15 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-16] - SEO og Indexeringsrettelser
+- **Frontend & SEO:**
+  - Tilføjet global `metadataBase` og default `canonical` tag i `layout.tsx`.
+  - Håndteret "Soft 404" fejl ved at kaste rigtige 404 statuskoder med Next.js `notFound()` på dynamiske sider (`boats`, `posts`, `faq`, `profil`) i stedet for 200 OK med et fejlbesked UI.
+  - Oprettet en visuel lækker global `not-found.tsx` der griber alle døde links.
+  - Indsat `generateMetadata` metoder på alle dynamiske sidetræer for at sikre korrekte og specifikke `canonical` urls på hvert enkelt opslag/båd.
+
+
+
 ### [2026-03-15] - Forbedret Mobil Oplevelse
 - **Frontend & Navigation:**
   - Omskrevet `Footer.tsx` til at være et klient-side komponent, der automatisk lytter på brugerens log-ind status.
