@@ -2,6 +2,8 @@ import { format } from 'date-fns';
 import { da } from 'date-fns/locale';
 import { MapPin, Anchor, Users, Navigation, Compass, Calendar, ArrowRight, UserCircle2, ArrowLeft, Globe, Link as LinkIcon, Info, Image as ImageIcon, Video, Ship, ChevronRight, MessageCircle, MoreVertical, X, Clock, ShieldAlert, Instagram, Youtube, Facebook, Ruler, Anchor as AnchorIcon } from 'lucide-react';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 
 export interface Post {
     id: number;
@@ -58,6 +60,32 @@ import ImageWithFallback from '@/components/ImageWithFallback';
 
 export const revalidate = 60; // Cache i et minut for superhastighed
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }): Promise<Metadata> {
+    const resolvedParams = await Promise.resolve(params);
+    const slug = resolvedParams.slug;
+    
+    try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        const res = await fetch(`${apiUrl}/api/boats/${slug}`, { next: { revalidate: 60 } });
+        if (res.ok) {
+            const boat = await res.json();
+            return {
+                title: `${boat.name} | Langturssejlads`,
+                description: boat.description?.substring(0, 160) || `Følg ${boat.name} på langturssejlads.`,
+                alternates: {
+                    canonical: `/boats/${slug}`,
+                }
+            };
+        }
+    } catch (error) {
+        console.error('Metadata fetch failed:', error);
+    }
+    
+    return {
+        title: 'Båd ikke fundet | Langturssejlads',
+    };
+}
+
 export default async function BoatProfile({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
     const resolvedParams = await Promise.resolve(params);
     const slug = resolvedParams.slug;
@@ -93,12 +121,7 @@ export default async function BoatProfile({ params }: { params: Promise<{ slug: 
     }
 
     if (!boat) {
-        return (
-            <div className="max-w-4xl mx-auto px-4 py-32 text-center border-b-[2px] border-foreground">
-                <h1 className="text-3xl font-merriweather font-bold text-muted-foreground">Logbogen er tom.</h1>
-                <p className="text-muted-foreground mt-4">Denne profil eksisterer ikke eller er blevet slettet.</p>
-            </div>
-        );
+        notFound();
     }
 
     return (

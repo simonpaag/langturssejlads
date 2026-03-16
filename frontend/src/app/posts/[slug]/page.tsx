@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { CalendarDays, Navigation, MapPin, UserCircle2, ArrowLeft, ShieldAlert } from 'lucide-react';
 import { getFallbackImage } from '@/utils/fallbackImage';
 import ImageWithFallback from '@/components/ImageWithFallback';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 
 interface Post {
     id: number;
@@ -21,6 +23,34 @@ interface Post {
 }
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }): Promise<Metadata> {
+    const resolvedParams = await Promise.resolve(params);
+    const slug = resolvedParams.slug;
+    
+    try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+        const res = await fetch(`${apiUrl}/api/posts/${encodeURIComponent(slug)}`, { next: { revalidate: 60 } });
+        if (res.ok) {
+            const post = await res.json();
+            const plainText = post.content?.replace(/<[^>]+>/g, ' ') || '';
+            const description = plainText.substring(0, 160) + '...';
+            return {
+                title: `${post.title || 'Logbog'} | ${post.boat?.name || 'Langturssejlads'}`,
+                description,
+                alternates: {
+                    canonical: `/posts/${slug}`,
+                }
+            };
+        }
+    } catch (error) {
+        console.error('Metadata fetch failed:', error);
+    }
+    
+    return {
+        title: 'Post ikke fundet | Langturssejlads',
+    };
+}
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
     const resolvedParams = await Promise.resolve(params);
@@ -40,15 +70,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     }
 
     if (!post) {
-        return (
-            <div className="max-w-4xl mx-auto px-4 py-32 text-center border-b-[2px] border-foreground">
-                <h1 className="text-3xl font-merriweather font-bold text-muted-foreground">Posten findes ikke.</h1>
-                <p className="text-muted-foreground mt-4">Dette indlæg er muligvis fjernet eller findes ikke i denne logbog.</p>
-                <Link href="/" className="mt-8 inline-block bg-foreground text-background font-bold py-3 px-8 rounded-full hover:bg-primary transition-colors">
-                    Gå tilbage til forsiden
-                </Link>
-            </div>
-        );
+        notFound();
     }
 
     const fallbackImage = getFallbackImage(post.boat.id, 'cover');

@@ -22,8 +22,12 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://langturssejlads.dk'),
   title: 'Langturssejlads.dk - Historier fra verdenshavene',
   description: 'En platform for danske langturssejlere og deres utrolige rejser.',
+  alternates: {
+    canonical: '/',
+  },
 };
 
 export default function RootLayout({

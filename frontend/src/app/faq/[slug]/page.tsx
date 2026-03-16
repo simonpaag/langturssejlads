@@ -20,9 +20,9 @@ async function getFaq(slug: string) {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+    const resolvedParams = await Promise.resolve(params);
     let faq = null;
     try {
-        const resolvedParams = await Promise.resolve(params);
         faq = await getFaq(resolvedParams.slug);
     } catch (e) {
         console.error('Metadata fetch fejet:', e);
@@ -41,6 +41,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return {
         title: `${faq.title} | Lær om langfart`,
         description: description,
+        alternates: {
+            canonical: `/faq/${resolvedParams.slug}`
+        },
         openGraph: {
             title: `${faq.title} | Lær om langfart`,
             description: description,

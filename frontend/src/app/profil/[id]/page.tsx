@@ -35,6 +35,9 @@ export async function generateMetadata({ params }: ProfileProps): Promise<Metada
     return {
         title: `${profile.user.name} | Gasteprofil`,
         description: profile.description.substring(0, 160) + '...',
+        alternates: {
+            canonical: `/profil/${resolvedParams.id}`,
+        }
     };
 }
 
