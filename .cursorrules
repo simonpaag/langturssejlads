@@ -1,0 +1,8 @@
+# Infrastruktur og Deployment
+
+Husk altid følgende arkitektur for dette projekt ("Langturssejlads"):
+
+1. **Frontend (Next.js)**: Kører på og deployes til **Google Cloud** (Cloud Run).
+2. **Backend (Node/Express/Prisma)**: Kører på og deployes til **Render**.
+
+Når du genererer kommandoer til deploy, hjælper med CI/CD eller foreskriver arkitekturmæssige ændringer, SKAL du tage højde for dette setup.
