@@ -4,6 +4,13 @@ Dette dokument vedligeholdes af AI-assistenter via `/afslut_session` workflowet 
 
 ---
 
+### [2026-03-23] - SEO Eksplicit Indexering
+- **Frontend & SEO:**
+  - Tilføjet en global `robots.ts` i `frontend/src/app` for at give crawlere eksplicit grønt lys og henvise til sitemap.
+  - Indsat eksplicitte `index: true, follow: true` properties og `googleBot` crawler-instruktioner direkte i global `metadata` på root `layout.tsx`, for at omgå at Google Cloud Run skjules fra indexering.
+
+
+
 ### [2026-03-16] - SEO og Indexeringsrettelser
 - **Frontend & SEO:**
   - Tilføjet global `metadataBase` og default `canonical` tag i `layout.tsx`.
