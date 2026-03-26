@@ -33,7 +33,7 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   author: Author | null;
-  boat: Boat;
+  boat: Boat | null;
   voyage: { id: number; title: string } | null;
 }
 
@@ -82,9 +82,9 @@ export default async function Home() {
           <Link href={`/posts/${featured.slug}`} className="relative h-64 md:h-full min-h-[400px] w-full lg:col-span-8 overflow-hidden rounded-3xl shadow-2xl group flex-shrink-0">
             <div className="absolute inset-0 relative w-full h-full">
               <ImageWithFallback
-                src={featured.imageUrl || (featured.imageUrls && featured.imageUrls.length > 0 ? featured.imageUrls[0] : null) || featured.boat.coverImage || featured.boat.profileImage || getFallbackImage(featured.boat.id, 'cover')}
-                fallbackSrc={getFallbackImage(featured.boat.id, 'cover')}
-                alt={`Opdatering fra ${featured.boat.name}: ${featured.title || 'Ingen titel'}`}
+                src={featured.imageUrl || (featured.imageUrls && featured.imageUrls.length > 0 ? featured.imageUrls[0] : null) || featured.boat?.coverImage || featured.boat?.profileImage || getFallbackImage(featured.boat?.id || 0, 'cover')}
+                fallbackSrc={getFallbackImage(featured.boat?.id || 0, 'cover')}
+                alt={`Opdatering fra ${featured.boat?.name || 'Langturssejlads.dk'}: ${featured.title || 'Ingen titel'}`}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
               />
             </div>
@@ -100,7 +100,7 @@ export default async function Home() {
 
           <div className="lg:col-span-4 flex flex-col justify-center h-full">
             <div className="flex items-center gap-3 mb-4 text-xs font-bold uppercase tracking-widest text-primary">
-              <Link href={`/boats/${featured.boat.slug}`} className="hover:underline underline-offset-4">{featured.boat.name}</Link>
+              <Link href={featured.boat ? `/boats/${featured.boat.slug}` : '/'} className="hover:underline underline-offset-4">{featured.boat?.name || 'Langturssejlads.dk'}</Link>
               <span className="text-muted-foreground font-normal">&bull;</span>
               <time className="text-muted-foreground font-normal" dateTime={featured.createdAt}>
                 {format(new Date(featured.createdAt), 'd. MMMM yyyy', { locale: da })}
@@ -161,9 +161,9 @@ export default async function Home() {
                     <article className="group flex flex-col h-full bg-background rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-border/50 overflow-hidden">
                       <Link href={`/posts/${post.slug}`} className="block relative w-full aspect-[4/3] bg-muted overflow-hidden">
                         <ImageWithFallback
-                          src={post.imageUrl || (post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls[0] : null) || post.boat.coverImage || post.boat.profileImage || getFallbackImage(post.id, 'cover')}
+                          src={post.imageUrl || (post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls[0] : null) || post.boat?.coverImage || post.boat?.profileImage || getFallbackImage(post.id, 'cover')}
                           fallbackSrc={getFallbackImage(post.id, 'cover')}
-                          alt={`Glimt fra havet: ${post.title || post.boat.name}`}
+                          alt={`Glimt fra havet: ${post.title || post.boat?.name || 'Nyhed'}`}
                           className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
                         />
                         {post.youtubeUrl && (
@@ -175,16 +175,16 @@ export default async function Home() {
 
                       <div className="flex flex-col flex-grow p-6">
                         <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-widest text-primary">
-                          <Link href={`/boats/${post.boat.slug}`} className="hover:underline underline-offset-4 flex gap-1.5 items-center">
+                          <Link href={post.boat ? `/boats/${post.boat.slug}` : '/'} className="hover:underline underline-offset-4 flex gap-1.5 items-center">
                             <div className="w-5 h-5 relative shrink-0">
                               <ImageWithFallback
-                                src={post.boat.profileImage || getFallbackImage(post.boat.id, 'avatar')}
-                                fallbackSrc={getFallbackImage(post.boat.id, 'avatar')}
-                                alt={`Logo for ${post.boat.name}`}
+                                src={post.boat?.profileImage || getFallbackImage(post.boat?.id || 0, 'avatar')}
+                                fallbackSrc={getFallbackImage(post.boat?.id || 0, 'avatar')}
+                                alt={`Logo for ${post.boat?.name || 'System'}`}
                                 className="absolute inset-0 w-full h-full rounded-full object-cover border border-primary/20 bg-background/50"
                               />
                             </div>
-                            {post.boat.name}
+                            {post.boat?.name || 'Langturssejlads.dk'}
                           </Link>
                           <span className="text-muted-foreground font-normal line-clamp-1 truncate block">&bull; {format(new Date(post.createdAt), 'd. MMM yyyy', { locale: da })}</span>
                         </div>

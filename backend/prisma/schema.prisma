@@ -160,8 +160,8 @@ model Post {
   author      User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
   authorId    Int?
   
-  boat        Boat          @relation(fields: [boatId], references: [id])
-  boatId      Int
+  boat        Boat?         @relation(fields: [boatId], references: [id])
+  boatId      Int?
 
   voyage      Voyage?       @relation(fields: [voyageId], references: [id])
   voyageId    Int?

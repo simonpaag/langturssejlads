@@ -12,7 +12,7 @@ const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ss
 
 export default function AdminDashboard() {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<'logs' | 'faqs' | 'posts' | 'emails' | 'ads' | 'users' | 'boats' | 'ideas'>('logs');
+    const [activeTab, setActiveTab] = useState<'logs' | 'faqs' | 'posts' | 'news' | 'emails' | 'ads' | 'users' | 'boats' | 'ideas'>('logs');
     const [isLoading, setIsLoading] = useState(true);
 
     // Data States
@@ -122,6 +122,7 @@ export default function AdminDashboard() {
                             <TabButton active={activeTab === 'users'} onClick={() => setActiveTab('users')} icon={<Users className="w-5 h-5" />} label="Brugere" />
                             <TabButton active={activeTab === 'boats'} onClick={() => setActiveTab('boats')} icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 17c0-2-1.5-2-1.5-2S19 14 16 14s-3.5 1-3.5 1S11 14 8 14 4.5 15 4.5 15 3 15 3 17" /><path d="M12 14v4" /><path d="M12 2v10" /><path d="M18 10L12 2l-6 8h12z" /></svg>} label="Både" />
                             <TabButton active={activeTab === 'posts'} onClick={() => setActiveTab('posts')} icon={<FileText className="w-5 h-5" />} label="Moderation" />
+                            <TabButton active={activeTab === 'news'} onClick={() => setActiveTab('news')} icon={<Megaphone className="w-5 h-5" />} label="Platform Nyheder" />
                             <TabButton active={activeTab === 'faqs'} onClick={() => setActiveTab('faqs')} icon={<BookOpen className="w-5 h-5" />} label="Artikler (FAQ)" />
                             <TabButton active={activeTab === 'emails'} onClick={() => setActiveTab('emails')} icon={<Mail className="w-5 h-5" />} label="Notification Center" />
                             <TabButton active={activeTab === 'ads'} onClick={() => setActiveTab('ads')} icon={<Megaphone className="w-5 h-5" />} label="Native Ads" />
@@ -135,6 +136,7 @@ export default function AdminDashboard() {
                         {activeTab === 'users' && <UsersTab users={users} setUsers={setUsers} />}
                         {activeTab === 'boats' && <BoatsTab boats={boats} setBoats={setBoats} />}
                         {activeTab === 'posts' && <PostsTab posts={posts} setPosts={setPosts} />}
+                        {activeTab === 'news' && <NewsTab />}
                         {activeTab === 'faqs' && <FaqsTab faqs={faqs} setFaqs={setFaqs} />}
                         {activeTab === 'emails' && <EmailsTab templates={templates} />}
                         {activeTab === 'ads' && <AdsTab ads={ads} setAds={setAds} />}
@@ -1360,6 +1362,99 @@ function FaqsTab({ faqs, setFaqs }: { faqs: any[], setFaqs: any }) {
                     </tbody>
                 </table>
                 {faqs.length === 0 && <p className="text-muted-foreground mt-8 text-center text-sm">Der er ikke oprettet nogen artikler endnu.</p>}
+            </div>
+        </div>
+    );
+}
+
+// ----------------------------------------------------
+function NewsTab() {
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleCreateNews = async () => {
+        if (!title.trim() || !content.trim()) {
+            alert('Titel og indhold er påkrævet.');
+            return;
+        }
+
+        setIsSaving(true);
+        const token = localStorage.getItem('user_token');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://angturssejlads-api.onrender.com';
+
+        try {
+            const res = await fetch(`${apiUrl}/api/posts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({
+                    title,
+                    content,
+                    imageUrl,
+                    postType: 'ARTICLE',
+                })
+            });
+
+            if (res.ok) {
+                alert('Nyheden er nu udgivet over hele platformen!');
+                setTitle('');
+                setContent('');
+                setImageUrl('');
+            } else {
+                const data = await res.json();
+                alert(`Kunne ikke oprette nyheden: ${data.error || 'Ukendt fejl'}`);
+            }
+        } catch (error) {
+            console.error('Network Error:', error);
+            alert('Systemfejl under publicering.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    return (
+        <div>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-merriweather font-bold text-foreground">Platform Nyheder</h2>
+            </div>
+            <p className="text-muted-foreground mb-8 text-sm">
+                Skriv nyheder der automatisk bliver blæst ud til alle brugere på forsiden under afsenderen "Langturssejlads.dk". De administreres centralt herfra, og skiller sig ud fra de almindelige båd-indlæg på tværs af sejlernes feeds.
+            </p>
+
+            <div className="space-y-6 bg-muted/10 border border-border/50 rounded-2xl p-6 lg:p-8 shadow-sm">
+                <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Opsigtsvækkende Titel *</label>
+                    <input
+                        type="text"
+                        className="w-full bg-background border border-border rounded-xl px-4 py-3"
+                        placeholder="F.eks. 'Vi har rundet 1.000 brugere!'"
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                    />
+                </div>
+                
+                <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Valgfrit Coverbillede (Hero)</label>
+                    <ImageUpload currentImage={imageUrl} onUploadSuccess={setImageUrl} label="Upload Nyhedens Billede" />
+                </div>
+                
+                <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Nyhedens Tekst *</label>
+                    <div className="prose-editor-wrapper bg-background rounded-xl border border-border overflow-hidden">
+                        <RichTextEditor content={content} onChange={setContent} />
+                    </div>
+                </div>
+                
+                <div className="pt-4 flex justify-end">
+                    <button
+                        onClick={handleCreateNews}
+                        disabled={isSaving || !title.trim() || !content.trim()}
+                        className="bg-primary text-primary-foreground font-bold uppercase tracking-widest text-sm py-3 px-8 rounded-full hover:bg-primary/90 flex items-center gap-2 transition-all disabled:opacity-50"
+                    >
+                        {isSaving ? <AnimatedLoader className="scale-50 inline" /> : <Megaphone className="w-5 h-5" />} Publicer til platformen
+                    </button>
+                </div>
             </div>
         </div>
     );

@@ -15,11 +15,16 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
             return;
         }
 
-        // Verify user is part of the boat crew (eller SuperAdmin)
-        const access = await checkBoatAccess(authorId, Number(boatId), req.user?.isSystemAdmin || false);
+        if (boatId) {
+            // Verify user is part of the boat crew (eller SuperAdmin)
+            const access = await checkBoatAccess(authorId, Number(boatId), req.user?.isSystemAdmin || false);
 
-        if (!access.hasAccess) {
-            res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
+            if (!access.hasAccess) {
+                res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
+                return;
+            }
+        } else if (!req.user?.isSystemAdmin) {
+            res.status(403).json({ error: 'Forbidden. Only system admins can create posts without a boat.' });
             return;
         }
 
@@ -43,12 +48,12 @@ export const createPost = async (req: AuthRequest, res: Response): Promise<void>
                 postType: postType || 'QUICK_TEXT',
                 voyageId: voyageId ? Number(voyageId) : undefined,
                 authorId,
-                boatId: Number(boatId),
+                boatId: boatId ? Number(boatId) : null,
                 status: 'PUBLISHED', // Trust first!
             },
         });
         // Log the creation
-        logAction('CREATED_POST', authorId, newPost.id, { title: newPost.title, boatId: newPost.boatId }).catch(e => console.error(e));
+        logAction('CREATED_POST', authorId, newPost.id, { title: newPost.title, boatId: newPost.boatId === null ? undefined : newPost.boatId }).catch(e => console.error(e));
         
         // Log explicitly if images be uploaded
         if (imageUrl || (imageUrls && imageUrls.length > 0)) {
@@ -238,10 +243,15 @@ export const togglePostStatus = async (req: AuthRequest, res: Response): Promise
             return;
         }
 
-        const access = await checkBoatAccess(userId, post.boatId, req.user?.isSystemAdmin || false);
+        if (post.boatId) {
+            const access = await checkBoatAccess(userId, post.boatId, req.user?.isSystemAdmin || false);
 
-        if (!access.hasAccess) {
-            res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
+            if (!access.hasAccess) {
+                res.status(403).json({ error: 'Forbidden. You are not a crew member of this boat.' });
+                return;
+            }
+        } else if (!req.user?.isSystemAdmin) {
+            res.status(403).json({ error: 'Forbidden. System admins only for system posts.' });
             return;
         }
 
@@ -332,10 +342,16 @@ export const updatePost = async (req: AuthRequest, res: Response): Promise<void>
 
         // Vurder om bruger er forfatter, eller admin på båden
         const isAuthor = post.authorId === userId;
-        const access = await checkBoatAccess(userId, post.boatId, req.user?.isSystemAdmin || false);
+        
+        if (post.boatId) {
+            const access = await checkBoatAccess(userId, post.boatId, req.user?.isSystemAdmin || false);
 
-        if (!isAuthor && !access.hasAccess) {
-            res.status(403).json({ error: 'Forbidden. Du har ikke rettigheder til at redigere dette indlæg.' });
+            if (!isAuthor && !access.hasAccess) {
+                res.status(403).json({ error: 'Forbidden. Du har ikke rettigheder til at redigere dette indlæg.' });
+                return;
+            }
+        } else if (!req.user?.isSystemAdmin) {
+            res.status(403).json({ error: 'Forbidden. Kun system admins kan redigere systemindlæg.' });
             return;
         }
 
